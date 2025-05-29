@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Monda";
+  src: url("../public/Monda-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Nunito";
+  src: url("../public/Nunito-VariableFont_wght.ttf") format("truetype");
+}
+
+:root {
+  /* Custom variables */
+  --ff: "Nunito";
+  --typography100: hsl(0, 0%, 100%);
+  --typography70: hsl(0, 0%, 70%);
+  --typography0: hsl(0, 0%, 0%);
+
+  --h1: bold 54px/60px var(--ff);
+  --h2: bold 36px/48px var(--ff);
+  --h3: bold 24px/36px var(--ff);
+  --links: 18px/18px var(--ff);
+  --p: 18px/30px var(--ff);
+  --subtext: 14px/20px var(--ff);
+  --text: 16px/18px var(--ff);
+
+  font-family: var(--ff), Helvetica, Arial, sans-serif;
+  font: var(--text);
+  background-color: var(--typography0);
+  color: var(--typography100);
+
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Base elements */
+@layer base {
+  h1 {
+    font: var(--h1);
+  }
+
+  h2 {
+    font: var(--h2);
+  }
+
+  h3 {
+    font: var(--h3);
+  }
+
+  p {
+    font: var(--p);
+  }
+  div {
+    font: var(--text);
+  }
+
+  span {
+    font: var(--subtext);
+  }
+
+  a {
+    font: var(--links);
+  }
+
+  button {
+    font: var(--text);
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-1.5 cursor-pointer bg-[var(--typography70)] rounded-md;
+  }
+
+  .btn-sm {
+    @apply px-2 py-1 text-sm;
+  }
+}
