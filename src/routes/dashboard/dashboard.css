@@ -1,0 +1,5 @@
+.dashboard__grid-container {
+  display: grid;
+  grid-template-columns: minmax(300px, min(20%, 350px)) 1fr;
+  min-height: 100%;
+}

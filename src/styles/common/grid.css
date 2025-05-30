@@ -1,0 +1,13 @@
+.grid-card {
+  @apply bg-[var(--bg-main)] rounded-sm p-6;
+}
+
+.grid-card-sm {
+  @apply p-4;
+  font-size: var(--text-sm);
+}
+
+.grid-card-lg {
+  @apply px-8 py-6;
+  font-size: var(--text-lg);
+}

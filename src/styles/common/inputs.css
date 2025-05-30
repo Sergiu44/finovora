@@ -1,0 +1,56 @@
+/* Inputs */
+.input {
+  @apply h-full block min-w-0 bg-[var(--white)] text-[var(--black)] rounded-sm pl-5 pr-3 placeholder:text-[var(--main)] py-2;
+}
+
+.input-sm {
+  @apply py-1.5 pr-2 pl-4;
+  font: var(--subtext);
+}
+
+.input-lg {
+  @apply py-2.5 pr-4 pl-6;
+  font: var(--p);
+}
+
+/* Labels */
+.label {
+  @apply block text-[var(--white)];
+}
+
+.label-sm {
+  font: var(--subtext);
+}
+
+.label-lg {
+  font: var(--p);
+}
+
+/* Left elements */
+.inputLeft {
+  @apply shrink-0 text-[var(--main)] select-none sm:text-sm/6 absolute left-1.5;
+}
+
+.inputLeft-sm {
+  @apply left-1;
+  font: var(--subtext);
+}
+
+.inputLeft-lg {
+  @apply left-2;
+  font: var(--p);
+}
+
+/* Errors */
+.inputError {
+  @apply mt-1 text-[var(--main)];
+  font: var(--subtext);
+}
+
+.inputError-sm {
+  font: var(--subtext);
+}
+
+.inputError-lg {
+  font: var(--text);
+}

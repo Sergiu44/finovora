@@ -1,0 +1,157 @@
+@import "tailwindcss";
+@import "./base.css";
+@import "./components.css";
+
+@font-face {
+  font-family: "Monda";
+  src: url("../public/Monda-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Nunito";
+  src: url("../public/Nunito-VariableFont_wght.ttf") format("truetype");
+}
+
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Prevent font size inflation */
+html {
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+/* Remove default margin in favour of better control in authored CSS */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin-block-end: 0;
+}
+
+/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+ul[role="list"],
+ol[role="list"] {
+  list-style: none;
+}
+
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+  user-select: none;
+}
+
+#root {
+  height: 100dvh;
+}
+
+/* Set shorter line heights on headings and interactive elements */
+h1,
+h2,
+h3,
+h4,
+button,
+input,
+label {
+  line-height: 1.1;
+}
+
+/* Balance text wrapping on headings */
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+  color: currentColor;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Make sure textareas without a rows attribute are not tiny */
+textarea:not([rows]) {
+  min-height: 10em;
+}
+
+/* Anything that has been anchored to should have extra scroll margin */
+:target {
+  scroll-margin-block: 5ex;
+}
+
+:root {
+  /* Custom variables */
+  --ff: "Nunito";
+  --ff-alternative: "Monda";
+  --white: hsl(0, 0%, 100%);
+  --light-gray: hsl(0, 0%, 90%);
+  --main: hsl(0, 0%, 70%);
+  --bg-main: hsl(0, 0%, 25%);
+  --bg-main-light: hsl(0, 0%, 12%);
+  --bg-dark: hsl(0, 0%, 2%);
+  --black: hsl(0, 0%, 0%);
+
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 36px;
+  --text-ultra: 54px;
+
+  --icon-sm: 16px;
+  --icon-base: 20px;
+  --icon-lg: 24px;
+
+  --h1: bold var(--text-ultra) / 60px var(--ff-alternative);
+  --h2: bold var(--text-3xl) / 48px var(--ff-alternative);
+  --h3: bold var(--text-2xl) / 36px var(--ff-alternative);
+  --links: var(--text-lg) / var(--text-lg) var(--ff);
+  --p: var(--text-lg) / 30px var(--ff);
+  --text: var(--text-base) / var(--text-lg) var(--ff);
+  --subtext: var(--text-sm) / 20px var(--ff);
+
+  font-family: var(--ff), Helvetica, Arial, sans-serif;
+  font: var(--text);
+  background-color: var(--bg-dark);
+  color: var(--white);
+
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
