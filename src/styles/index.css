@@ -50,7 +50,6 @@ ol[role="list"] {
 body {
   min-height: 100vh;
   line-height: 1.5;
-  user-select: none;
 }
 
 #root {
@@ -115,6 +114,7 @@ textarea:not([rows]) {
   --white: hsl(0, 0%, 100%);
   --light-gray: hsl(0, 0%, 90%);
   --main: hsl(0, 0%, 70%);
+  --main-washed: hsl(0, 0%, 55%);
   --bg-main: hsl(0, 0%, 25%);
   --bg-main-light: hsl(0, 0%, 12%);
   --bg-dark: hsl(0, 0%, 2%);
@@ -136,7 +136,7 @@ textarea:not([rows]) {
   --h2: bold var(--text-3xl) / 48px var(--ff-alternative);
   --h3: bold var(--text-2xl) / 36px var(--ff-alternative);
   --links: var(--text-lg) / var(--text-lg) var(--ff);
-  --p: var(--text-lg) / 30px var(--ff);
+  --p: var(--text-lg) / 20px var(--ff);
   --text: var(--text-base) / var(--text-lg) var(--ff);
   --subtext: var(--text-sm) / 20px var(--ff);
 

@@ -8,21 +8,34 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as DemoImport } from './routes/demo'
 import { Route as DashboardRouteImport } from './routes/dashboard/route'
-import { Route as AuthRouteImport } from './routes/auth/route'
 import { Route as IndexImport } from './routes/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
 import { Route as DashboardReportsImport } from './routes/dashboard/reports'
 import { Route as DashboardProfileImport } from './routes/dashboard/profile'
 import { Route as DashboardBillingImport } from './routes/dashboard/billing'
-import { Route as AuthRegisterImport } from './routes/auth/register'
-import { Route as AuthLoginImport } from './routes/auth/login'
+import { Route as AuthAuthImport } from './routes/auth/_auth'
+import { Route as AuthAuthRegisterImport } from './routes/auth/_auth.register'
+import { Route as AuthAuthLoginImport } from './routes/auth/_auth.login'
+import { Route as AuthAuthForgotPasswordImport } from './routes/auth/_auth.forgot-password'
+
+// Create Virtual Routes
+
+const AuthImport = createFileRoute('/auth')()
 
 // Create/Update Routes
+
+const AuthRoute = AuthImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const DemoRoute = DemoImport.update({
   id: '/demo',
@@ -33,12 +46,6 @@ const DemoRoute = DemoImport.update({
 const DashboardRouteRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const AuthRouteRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -72,16 +79,27 @@ const DashboardBillingRoute = DashboardBillingImport.update({
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 
-const AuthRegisterRoute = AuthRegisterImport.update({
-  id: '/register',
-  path: '/register',
-  getParentRoute: () => AuthRouteRoute,
+const AuthAuthRoute = AuthAuthImport.update({
+  id: '/_auth',
+  getParentRoute: () => AuthRoute,
 } as any)
 
-const AuthLoginRoute = AuthLoginImport.update({
+const AuthAuthRegisterRoute = AuthAuthRegisterImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => AuthAuthRoute,
+} as any)
+
+const AuthAuthLoginRoute = AuthAuthLoginImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => AuthRouteRoute,
+  getParentRoute: () => AuthAuthRoute,
+} as any)
+
+const AuthAuthForgotPasswordRoute = AuthAuthForgotPasswordImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => AuthAuthRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -93,13 +111,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRoute
     }
     '/dashboard': {
@@ -116,19 +127,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoImport
       parentRoute: typeof rootRoute
     }
-    '/auth/login': {
-      id: '/auth/login'
-      path: '/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthLoginImport
-      parentRoute: typeof AuthRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthImport
+      parentRoute: typeof rootRoute
     }
-    '/auth/register': {
-      id: '/auth/register'
-      path: '/register'
-      fullPath: '/auth/register'
-      preLoaderRoute: typeof AuthRegisterImport
-      parentRoute: typeof AuthRouteImport
+    '/auth/_auth': {
+      id: '/auth/_auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthAuthImport
+      parentRoute: typeof AuthRoute
     }
     '/dashboard/billing': {
       id: '/dashboard/billing'
@@ -158,24 +169,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexImport
       parentRoute: typeof DashboardRouteImport
     }
+    '/auth/_auth/forgot-password': {
+      id: '/auth/_auth/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/auth/forgot-password'
+      preLoaderRoute: typeof AuthAuthForgotPasswordImport
+      parentRoute: typeof AuthAuthImport
+    }
+    '/auth/_auth/login': {
+      id: '/auth/_auth/login'
+      path: '/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthAuthLoginImport
+      parentRoute: typeof AuthAuthImport
+    }
+    '/auth/_auth/register': {
+      id: '/auth/_auth/register'
+      path: '/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof AuthAuthRegisterImport
+      parentRoute: typeof AuthAuthImport
+    }
   }
 }
 
 // Create and export the route tree
-
-interface AuthRouteRouteChildren {
-  AuthLoginRoute: typeof AuthLoginRoute
-  AuthRegisterRoute: typeof AuthRegisterRoute
-}
-
-const AuthRouteRouteChildren: AuthRouteRouteChildren = {
-  AuthLoginRoute: AuthLoginRoute,
-  AuthRegisterRoute: AuthRegisterRoute,
-}
-
-const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
-  AuthRouteRouteChildren,
-)
 
 interface DashboardRouteRouteChildren {
   DashboardBillingRoute: typeof DashboardBillingRoute
@@ -195,96 +213,130 @@ const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
   DashboardRouteRouteChildren,
 )
 
+interface AuthAuthRouteChildren {
+  AuthAuthForgotPasswordRoute: typeof AuthAuthForgotPasswordRoute
+  AuthAuthLoginRoute: typeof AuthAuthLoginRoute
+  AuthAuthRegisterRoute: typeof AuthAuthRegisterRoute
+}
+
+const AuthAuthRouteChildren: AuthAuthRouteChildren = {
+  AuthAuthForgotPasswordRoute: AuthAuthForgotPasswordRoute,
+  AuthAuthLoginRoute: AuthAuthLoginRoute,
+  AuthAuthRegisterRoute: AuthAuthRegisterRoute,
+}
+
+const AuthAuthRouteWithChildren = AuthAuthRoute._addFileChildren(
+  AuthAuthRouteChildren,
+)
+
+interface AuthRouteChildren {
+  AuthAuthRoute: typeof AuthAuthRouteWithChildren
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthAuthRoute: AuthAuthRouteWithChildren,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/demo': typeof DemoRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/register': typeof AuthRegisterRoute
+  '/auth': typeof AuthAuthRouteWithChildren
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/reports': typeof DashboardReportsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/auth/forgot-password': typeof AuthAuthForgotPasswordRoute
+  '/auth/login': typeof AuthAuthLoginRoute
+  '/auth/register': typeof AuthAuthRegisterRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRouteRouteWithChildren
   '/demo': typeof DemoRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/register': typeof AuthRegisterRoute
+  '/auth': typeof AuthAuthRouteWithChildren
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/reports': typeof DashboardReportsRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/auth/forgot-password': typeof AuthAuthForgotPasswordRoute
+  '/auth/login': typeof AuthAuthLoginRoute
+  '/auth/register': typeof AuthAuthRegisterRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/auth': typeof AuthRouteRouteWithChildren
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/demo': typeof DemoRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/register': typeof AuthRegisterRoute
+  '/auth': typeof AuthRouteWithChildren
+  '/auth/_auth': typeof AuthAuthRouteWithChildren
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/reports': typeof DashboardReportsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/auth/_auth/forgot-password': typeof AuthAuthForgotPasswordRoute
+  '/auth/_auth/login': typeof AuthAuthLoginRoute
+  '/auth/_auth/register': typeof AuthAuthRegisterRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/auth'
     | '/dashboard'
     | '/demo'
-    | '/auth/login'
-    | '/auth/register'
+    | '/auth'
     | '/dashboard/billing'
     | '/dashboard/profile'
     | '/dashboard/reports'
     | '/dashboard/'
+    | '/auth/forgot-password'
+    | '/auth/login'
+    | '/auth/register'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/auth'
     | '/demo'
-    | '/auth/login'
-    | '/auth/register'
+    | '/auth'
     | '/dashboard/billing'
     | '/dashboard/profile'
     | '/dashboard/reports'
     | '/dashboard'
+    | '/auth/forgot-password'
+    | '/auth/login'
+    | '/auth/register'
   id:
     | '__root__'
     | '/'
-    | '/auth'
     | '/dashboard'
     | '/demo'
-    | '/auth/login'
-    | '/auth/register'
+    | '/auth'
+    | '/auth/_auth'
     | '/dashboard/billing'
     | '/dashboard/profile'
     | '/dashboard/reports'
     | '/dashboard/'
+    | '/auth/_auth/forgot-password'
+    | '/auth/_auth/login'
+    | '/auth/_auth/register'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthRouteRoute: typeof AuthRouteRouteWithChildren
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   DemoRoute: typeof DemoRoute
+  AuthRoute: typeof AuthRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthRouteRoute: AuthRouteRouteWithChildren,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
   DemoRoute: DemoRoute,
+  AuthRoute: AuthRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -298,20 +350,13 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/auth",
         "/dashboard",
-        "/demo"
+        "/demo",
+        "/auth"
       ]
     },
     "/": {
       "filePath": "index.tsx"
-    },
-    "/auth": {
-      "filePath": "auth/route.tsx",
-      "children": [
-        "/auth/login",
-        "/auth/register"
-      ]
     },
     "/dashboard": {
       "filePath": "dashboard/route.tsx",
@@ -325,13 +370,20 @@ export const routeTree = rootRoute
     "/demo": {
       "filePath": "demo.tsx"
     },
-    "/auth/login": {
-      "filePath": "auth/login.tsx",
-      "parent": "/auth"
+    "/auth": {
+      "filePath": "auth",
+      "children": [
+        "/auth/_auth"
+      ]
     },
-    "/auth/register": {
-      "filePath": "auth/register.tsx",
-      "parent": "/auth"
+    "/auth/_auth": {
+      "filePath": "auth/_auth.tsx",
+      "parent": "/auth",
+      "children": [
+        "/auth/_auth/forgot-password",
+        "/auth/_auth/login",
+        "/auth/_auth/register"
+      ]
     },
     "/dashboard/billing": {
       "filePath": "dashboard/billing.tsx",
@@ -348,6 +400,18 @@ export const routeTree = rootRoute
     "/dashboard/": {
       "filePath": "dashboard/index.tsx",
       "parent": "/dashboard"
+    },
+    "/auth/_auth/forgot-password": {
+      "filePath": "auth/_auth.forgot-password.tsx",
+      "parent": "/auth/_auth"
+    },
+    "/auth/_auth/login": {
+      "filePath": "auth/_auth.login.tsx",
+      "parent": "/auth/_auth"
+    },
+    "/auth/_auth/register": {
+      "filePath": "auth/_auth.register.tsx",
+      "parent": "/auth/_auth"
     }
   }
 }

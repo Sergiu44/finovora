@@ -11,26 +11,26 @@ export const Route = createFileRoute("/demo")({
 });
 
 function RouteComponent() {
-  const formValidator = new Validator()
-    .forProperty("email")
-    .check(VALIDATIONS.isRequired, "test is required");
+  const formValidator = new Validator().forProperty("email").check(VALIDATIONS.isRequired, "test is required");
 
   const { values, errors, onChangeInput } = useValidation(formValidator);
 
   return (
     <div className="flex flex-col">
       <div className="flex gap-2 items-center">
-        <button className="btn btn-sm">Test</button>
-        <button className="btn">Test</button>
-        <button className="btn btn-lg">Test</button>
+        <button className="btn btn-sm">.btn .btn-sm</button>
+        <button className="btn">.btn</button>
+        <button className="btn btn-lg">.btn .btn-lg</button>
+
+        <button className="btn btn-outline">.btn .btn-outline</button>
       </div>
 
       <div>
-        <input className="input pl-2!" />
+        <input className="input pl-2!" placeholder="input.input" />
 
-        <Input name="test" label="test" />
-        <Input name="test" leftElement="#" size="sm" label="test" />
-        <Input name="test" leftElement="#" size="lg" label="Test" />
+        <Input name="test" label="test" placeholder="Input" />
+        <Input name="test" leftElement="#" size="sm" label="test" placeholder="Input (size sm)" />
+        <Input name="test" leftElement="#" size="lg" label="Test" placeholder="Input (size lg)" />
         <Input name="no-test" size="lg" />
         <Input
           name="email"
@@ -43,21 +43,11 @@ function RouteComponent() {
         />
 
         <div className="w-96">
-          <IconLink
-            href="/"
-            icon={<FaceSmileIcon />}
-            text="Face Smile"
-            size="sm"
-          />
+          <IconLink href="/" icon={<FaceSmileIcon />} text="Face Smile" size="sm" />
 
           <IconLink href="/" icon={<FaceSmileIcon />} text="Face Smile" />
 
-          <IconLink
-            href="/"
-            icon={<FaceSmileIcon />}
-            text="Face Smile"
-            size="lg"
-          />
+          <IconLink href="/" icon={<FaceSmileIcon />} text="Face Smile" size="lg" />
         </div>
       </div>
     </div>
