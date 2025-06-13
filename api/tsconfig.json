@@ -1,19 +1,18 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "es2016",
     "outDir": "dist",
-    "sourceMap": true,                                
-    "module": "commonjs",                                
-    "esModuleInterop": true,                             
-    "forceConsistentCasingInFileNames": true,            
+    "sourceMap": true,
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "noImplicitAny": true,                                   
+    "noImplicitAny": true,
     "skipLibCheck": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "typeRoots": ["index.d.ts"]
   },
   "exclude": ["node_modules", "dist"],
-  "include": [
-    "src/**/*"
-  ],
+  "include": ["src/**/*", "index.d.ts"]
 }
