@@ -4,18 +4,13 @@ import AppErrorCode from "../constants/appErrorCode";
 import AppError from "./AppError";
 
 type AppAssert = (
-  condition: AssertPredicate | string | undefined,
+  condition: AssertPredicate | boolean | string | undefined | null,
   httpStatusCode: HttpStatusCode,
   message: string,
   appErrorCode?: AppErrorCode
 ) => asserts condition;
 
-const appAssert: AppAssert = (
-  condition,
-  httpStatusCode,
-  message,
-  appErrorCode
-) => {
+const appAssert: AppAssert = (condition, httpStatusCode, message, appErrorCode) => {
   assert(condition, new AppError(httpStatusCode, message, appErrorCode));
 };
 

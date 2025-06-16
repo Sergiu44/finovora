@@ -7,6 +7,9 @@ import { OK } from "../utils/constants/http";
 import { DatabaseFactory } from "./config/db/DatabaseFactory";
 import { IDatabaseConnection } from "./config/db/IDatabaseConnection";
 import errorHandler from "./middleware/errorHandler";
+import sessionRoutes from "./routes/session.routes";
+import authRoutes from "./routes/auth.routes";
+import userRoutes from "./routes/user.routes";
 
 dotenv.config();
 
@@ -26,11 +29,14 @@ app.get("/", (_, res) => {
   res.status(OK).send("Hello world!");
 });
 
+app.use(sessionRoutes);
+app.use(authRoutes);
+app.use(userRoutes);
+
 app.use(errorHandler);
 
 // Initialize database connection using factory
-const db: IDatabaseConnection =
-  DatabaseFactory.createDatabaseConnection(NODE_ENV);
+const db: IDatabaseConnection = DatabaseFactory.createDatabaseConnection(NODE_ENV);
 db.connectToDatabase()
   .then(() => {
     app.listen(PORT, () => {
