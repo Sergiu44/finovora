@@ -8,198 +8,198 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as DemoImport } from './routes/demo'
-import { Route as DashboardRouteImport } from './routes/dashboard/route'
-import { Route as IndexImport } from './routes/index'
-import { Route as DashboardIndexImport } from './routes/dashboard/index'
-import { Route as DashboardReportsImport } from './routes/dashboard/reports'
-import { Route as DashboardProfileImport } from './routes/dashboard/profile'
-import { Route as DashboardBillingImport } from './routes/dashboard/billing'
-import { Route as AuthAuthImport } from './routes/auth/_auth'
-import { Route as AuthAuthRegisterImport } from './routes/auth/_auth.register'
-import { Route as AuthAuthLoginImport } from './routes/auth/_auth.login'
-import { Route as AuthAuthForgotPasswordImport } from './routes/auth/_auth.forgot-password'
+import { Route as rootRoute } from "./routes/__root";
+import { Route as DemoImport } from "./routes/demo";
+import { Route as DashboardRouteImport } from "./routes/dashboard/route";
+import { Route as IndexImport } from "./routes/index";
+import { Route as DashboardIndexImport } from "./routes/dashboard/index";
+import { Route as DashboardReportsImport } from "./routes/dashboard/reports";
+import { Route as DashboardProfileImport } from "./routes/dashboard/profile";
+import { Route as DashboardBillingImport } from "./routes/dashboard/billing";
+import { Route as AuthAuthImport } from "./routes/auth/_auth";
+import { Route as AuthAuthRegisterImport } from "./routes/auth/_auth.register";
+import { Route as AuthAuthLoginImport } from "./routes/auth/_auth.login";
+import { Route as AuthAuthForgotPasswordImport } from "./routes/auth/_auth.forgot-password";
 
 // Create Virtual Routes
 
-const AuthImport = createFileRoute('/auth')()
+const AuthImport = createFileRoute("/auth")();
 
 // Create/Update Routes
 
 const AuthRoute = AuthImport.update({
-  id: '/auth',
-  path: '/auth',
+  id: "/auth",
+  path: "/auth",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const DemoRoute = DemoImport.update({
-  id: '/demo',
-  path: '/demo',
+  id: "/demo",
+  path: "/demo",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const DashboardRouteRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+  id: "/dashboard",
+  path: "/dashboard",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const IndexRoute = IndexImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const DashboardIndexRoute = DashboardIndexImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => DashboardRouteRoute,
-} as any)
+} as any);
 
 const DashboardReportsRoute = DashboardReportsImport.update({
-  id: '/reports',
-  path: '/reports',
+  id: "/reports",
+  path: "/reports",
   getParentRoute: () => DashboardRouteRoute,
-} as any)
+} as any);
 
 const DashboardProfileRoute = DashboardProfileImport.update({
-  id: '/profile',
-  path: '/profile',
+  id: "/profile",
+  path: "/profile",
   getParentRoute: () => DashboardRouteRoute,
-} as any)
+} as any);
 
 const DashboardBillingRoute = DashboardBillingImport.update({
-  id: '/billing',
-  path: '/billing',
+  id: "/billing",
+  path: "/billing",
   getParentRoute: () => DashboardRouteRoute,
-} as any)
+} as any);
 
 const AuthAuthRoute = AuthAuthImport.update({
-  id: '/_auth',
+  id: "/_auth",
   getParentRoute: () => AuthRoute,
-} as any)
+} as any);
 
 const AuthAuthRegisterRoute = AuthAuthRegisterImport.update({
-  id: '/register',
-  path: '/register',
+  id: "/register",
+  path: "/register",
   getParentRoute: () => AuthAuthRoute,
-} as any)
+} as any);
 
 const AuthAuthLoginRoute = AuthAuthLoginImport.update({
-  id: '/login',
-  path: '/login',
+  id: "/login",
+  path: "/login",
   getParentRoute: () => AuthAuthRoute,
-} as any)
+} as any);
 
 const AuthAuthForgotPasswordRoute = AuthAuthForgotPasswordImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
+  id: "/forgot-password",
+  path: "/forgot-password",
   getParentRoute: () => AuthAuthRoute,
-} as any)
+} as any);
 
 // Populate the FileRoutesByPath interface
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRoute
-    }
-    '/demo': {
-      id: '/demo'
-      path: '/demo'
-      fullPath: '/demo'
-      preLoaderRoute: typeof DemoImport
-      parentRoute: typeof rootRoute
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthImport
-      parentRoute: typeof rootRoute
-    }
-    '/auth/_auth': {
-      id: '/auth/_auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthAuthImport
-      parentRoute: typeof AuthRoute
-    }
-    '/dashboard/billing': {
-      id: '/dashboard/billing'
-      path: '/billing'
-      fullPath: '/dashboard/billing'
-      preLoaderRoute: typeof DashboardBillingImport
-      parentRoute: typeof DashboardRouteImport
-    }
-    '/dashboard/profile': {
-      id: '/dashboard/profile'
-      path: '/profile'
-      fullPath: '/dashboard/profile'
-      preLoaderRoute: typeof DashboardProfileImport
-      parentRoute: typeof DashboardRouteImport
-    }
-    '/dashboard/reports': {
-      id: '/dashboard/reports'
-      path: '/reports'
-      fullPath: '/dashboard/reports'
-      preLoaderRoute: typeof DashboardReportsImport
-      parentRoute: typeof DashboardRouteImport
-    }
-    '/dashboard/': {
-      id: '/dashboard/'
-      path: '/'
-      fullPath: '/dashboard/'
-      preLoaderRoute: typeof DashboardIndexImport
-      parentRoute: typeof DashboardRouteImport
-    }
-    '/auth/_auth/forgot-password': {
-      id: '/auth/_auth/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/auth/forgot-password'
-      preLoaderRoute: typeof AuthAuthForgotPasswordImport
-      parentRoute: typeof AuthAuthImport
-    }
-    '/auth/_auth/login': {
-      id: '/auth/_auth/login'
-      path: '/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthAuthLoginImport
-      parentRoute: typeof AuthAuthImport
-    }
-    '/auth/_auth/register': {
-      id: '/auth/_auth/register'
-      path: '/register'
-      fullPath: '/auth/register'
-      preLoaderRoute: typeof AuthAuthRegisterImport
-      parentRoute: typeof AuthAuthImport
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/dashboard": {
+      id: "/dashboard";
+      path: "/dashboard";
+      fullPath: "/dashboard";
+      preLoaderRoute: typeof DashboardRouteImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/demo": {
+      id: "/demo";
+      path: "/demo";
+      fullPath: "/demo";
+      preLoaderRoute: typeof DemoImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/auth": {
+      id: "/auth";
+      path: "/auth";
+      fullPath: "/auth";
+      preLoaderRoute: typeof AuthImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/auth/_auth": {
+      id: "/auth/_auth";
+      path: "/auth";
+      fullPath: "/auth";
+      preLoaderRoute: typeof AuthAuthImport;
+      parentRoute: typeof AuthRoute;
+    };
+    "/dashboard/billing": {
+      id: "/dashboard/billing";
+      path: "/billing";
+      fullPath: "/dashboard/billing";
+      preLoaderRoute: typeof DashboardBillingImport;
+      parentRoute: typeof DashboardRouteImport;
+    };
+    "/dashboard/profile": {
+      id: "/dashboard/profile";
+      path: "/profile";
+      fullPath: "/dashboard/profile";
+      preLoaderRoute: typeof DashboardProfileImport;
+      parentRoute: typeof DashboardRouteImport;
+    };
+    "/dashboard/reports": {
+      id: "/dashboard/reports";
+      path: "/reports";
+      fullPath: "/dashboard/reports";
+      preLoaderRoute: typeof DashboardReportsImport;
+      parentRoute: typeof DashboardRouteImport;
+    };
+    "/dashboard/": {
+      id: "/dashboard/";
+      path: "/";
+      fullPath: "/dashboard/";
+      preLoaderRoute: typeof DashboardIndexImport;
+      parentRoute: typeof DashboardRouteImport;
+    };
+    "/auth/_auth/forgot-password": {
+      id: "/auth/_auth/forgot-password";
+      path: "/forgot-password";
+      fullPath: "/auth/forgot-password";
+      preLoaderRoute: typeof AuthAuthForgotPasswordImport;
+      parentRoute: typeof AuthAuthImport;
+    };
+    "/auth/_auth/login": {
+      id: "/auth/_auth/login";
+      path: "/login";
+      fullPath: "/auth/login";
+      preLoaderRoute: typeof AuthAuthLoginImport;
+      parentRoute: typeof AuthAuthImport;
+    };
+    "/auth/_auth/register": {
+      id: "/auth/_auth/register";
+      path: "/register";
+      fullPath: "/auth/register";
+      preLoaderRoute: typeof AuthAuthRegisterImport;
+      parentRoute: typeof AuthAuthImport;
+    };
   }
 }
 
 // Create and export the route tree
 
 interface DashboardRouteRouteChildren {
-  DashboardBillingRoute: typeof DashboardBillingRoute
-  DashboardProfileRoute: typeof DashboardProfileRoute
-  DashboardReportsRoute: typeof DashboardReportsRoute
-  DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardBillingRoute: typeof DashboardBillingRoute;
+  DashboardProfileRoute: typeof DashboardProfileRoute;
+  DashboardReportsRoute: typeof DashboardReportsRoute;
+  DashboardIndexRoute: typeof DashboardIndexRoute;
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
@@ -207,129 +207,125 @@ const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardProfileRoute: DashboardProfileRoute,
   DashboardReportsRoute: DashboardReportsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
-}
+};
 
-const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
-  DashboardRouteRouteChildren,
-)
+const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(DashboardRouteRouteChildren);
 
 interface AuthAuthRouteChildren {
-  AuthAuthForgotPasswordRoute: typeof AuthAuthForgotPasswordRoute
-  AuthAuthLoginRoute: typeof AuthAuthLoginRoute
-  AuthAuthRegisterRoute: typeof AuthAuthRegisterRoute
+  AuthAuthForgotPasswordRoute: typeof AuthAuthForgotPasswordRoute;
+  AuthAuthLoginRoute: typeof AuthAuthLoginRoute;
+  AuthAuthRegisterRoute: typeof AuthAuthRegisterRoute;
 }
 
 const AuthAuthRouteChildren: AuthAuthRouteChildren = {
   AuthAuthForgotPasswordRoute: AuthAuthForgotPasswordRoute,
   AuthAuthLoginRoute: AuthAuthLoginRoute,
   AuthAuthRegisterRoute: AuthAuthRegisterRoute,
-}
+};
 
-const AuthAuthRouteWithChildren = AuthAuthRoute._addFileChildren(
-  AuthAuthRouteChildren,
-)
+const AuthAuthRouteWithChildren = AuthAuthRoute._addFileChildren(AuthAuthRouteChildren);
 
 interface AuthRouteChildren {
-  AuthAuthRoute: typeof AuthAuthRouteWithChildren
+  AuthAuthRoute: typeof AuthAuthRouteWithChildren;
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthAuthRoute: AuthAuthRouteWithChildren,
-}
+};
 
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRouteWithChildren
-  '/demo': typeof DemoRoute
-  '/auth': typeof AuthAuthRouteWithChildren
-  '/dashboard/billing': typeof DashboardBillingRoute
-  '/dashboard/profile': typeof DashboardProfileRoute
-  '/dashboard/reports': typeof DashboardReportsRoute
-  '/dashboard/': typeof DashboardIndexRoute
-  '/auth/forgot-password': typeof AuthAuthForgotPasswordRoute
-  '/auth/login': typeof AuthAuthLoginRoute
-  '/auth/register': typeof AuthAuthRegisterRoute
+  "/": typeof IndexRoute;
+  "/dashboard": typeof DashboardRouteRouteWithChildren;
+  "/demo": typeof DemoRoute;
+  "/auth": typeof AuthAuthRouteWithChildren;
+  "/dashboard/billing": typeof DashboardBillingRoute;
+  "/dashboard/profile": typeof DashboardProfileRoute;
+  "/dashboard/reports": typeof DashboardReportsRoute;
+  "/dashboard/": typeof DashboardIndexRoute;
+  "/auth/forgot-password": typeof AuthAuthForgotPasswordRoute;
+  "/auth/login": typeof AuthAuthLoginRoute;
+  "/auth/register": typeof AuthAuthRegisterRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/demo': typeof DemoRoute
-  '/auth': typeof AuthAuthRouteWithChildren
-  '/dashboard/billing': typeof DashboardBillingRoute
-  '/dashboard/profile': typeof DashboardProfileRoute
-  '/dashboard/reports': typeof DashboardReportsRoute
-  '/dashboard': typeof DashboardIndexRoute
-  '/auth/forgot-password': typeof AuthAuthForgotPasswordRoute
-  '/auth/login': typeof AuthAuthLoginRoute
-  '/auth/register': typeof AuthAuthRegisterRoute
+  "/": typeof IndexRoute;
+  "/demo": typeof DemoRoute;
+  "/auth": typeof AuthAuthRouteWithChildren;
+  "/dashboard/billing": typeof DashboardBillingRoute;
+  "/dashboard/profile": typeof DashboardProfileRoute;
+  "/dashboard/reports": typeof DashboardReportsRoute;
+  "/dashboard": typeof DashboardIndexRoute;
+  "/auth/forgot-password": typeof AuthAuthForgotPasswordRoute;
+  "/auth/login": typeof AuthAuthLoginRoute;
+  "/auth/register": typeof AuthAuthRegisterRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRouteWithChildren
-  '/demo': typeof DemoRoute
-  '/auth': typeof AuthRouteWithChildren
-  '/auth/_auth': typeof AuthAuthRouteWithChildren
-  '/dashboard/billing': typeof DashboardBillingRoute
-  '/dashboard/profile': typeof DashboardProfileRoute
-  '/dashboard/reports': typeof DashboardReportsRoute
-  '/dashboard/': typeof DashboardIndexRoute
-  '/auth/_auth/forgot-password': typeof AuthAuthForgotPasswordRoute
-  '/auth/_auth/login': typeof AuthAuthLoginRoute
-  '/auth/_auth/register': typeof AuthAuthRegisterRoute
+  __root__: typeof rootRoute;
+  "/": typeof IndexRoute;
+  "/dashboard": typeof DashboardRouteRouteWithChildren;
+  "/demo": typeof DemoRoute;
+  "/auth": typeof AuthRouteWithChildren;
+  "/auth/_auth": typeof AuthAuthRouteWithChildren;
+  "/dashboard/billing": typeof DashboardBillingRoute;
+  "/dashboard/profile": typeof DashboardProfileRoute;
+  "/dashboard/reports": typeof DashboardReportsRoute;
+  "/dashboard/": typeof DashboardIndexRoute;
+  "/auth/_auth/forgot-password": typeof AuthAuthForgotPasswordRoute;
+  "/auth/_auth/login": typeof AuthAuthLoginRoute;
+  "/auth/_auth/register": typeof AuthAuthRegisterRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | '/dashboard'
-    | '/demo'
-    | '/auth'
-    | '/dashboard/billing'
-    | '/dashboard/profile'
-    | '/dashboard/reports'
-    | '/dashboard/'
-    | '/auth/forgot-password'
-    | '/auth/login'
-    | '/auth/register'
-  fileRoutesByTo: FileRoutesByTo
+    | "/"
+    | "/dashboard"
+    | "/demo"
+    | "/auth"
+    | "/dashboard/billing"
+    | "/dashboard/profile"
+    | "/dashboard/reports"
+    | "/dashboard/"
+    | "/auth/forgot-password"
+    | "/auth/login"
+    | "/auth/register";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/'
-    | '/demo'
-    | '/auth'
-    | '/dashboard/billing'
-    | '/dashboard/profile'
-    | '/dashboard/reports'
-    | '/dashboard'
-    | '/auth/forgot-password'
-    | '/auth/login'
-    | '/auth/register'
+    | "/"
+    | "/demo"
+    | "/auth"
+    | "/dashboard/billing"
+    | "/dashboard/profile"
+    | "/dashboard/reports"
+    | "/dashboard"
+    | "/auth/forgot-password"
+    | "/auth/login"
+    | "/auth/register";
   id:
-    | '__root__'
-    | '/'
-    | '/dashboard'
-    | '/demo'
-    | '/auth'
-    | '/auth/_auth'
-    | '/dashboard/billing'
-    | '/dashboard/profile'
-    | '/dashboard/reports'
-    | '/dashboard/'
-    | '/auth/_auth/forgot-password'
-    | '/auth/_auth/login'
-    | '/auth/_auth/register'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/"
+    | "/dashboard"
+    | "/demo"
+    | "/auth"
+    | "/auth/_auth"
+    | "/dashboard/billing"
+    | "/dashboard/profile"
+    | "/dashboard/reports"
+    | "/dashboard/"
+    | "/auth/_auth/forgot-password"
+    | "/auth/_auth/login"
+    | "/auth/_auth/register";
+  fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
-  DemoRoute: typeof DemoRoute
-  AuthRoute: typeof AuthRouteWithChildren
+  IndexRoute: typeof IndexRoute;
+  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren;
+  DemoRoute: typeof DemoRoute;
+  AuthRoute: typeof AuthRouteWithChildren;
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -337,11 +333,9 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
   DemoRoute: DemoRoute,
   AuthRoute: AuthRouteWithChildren,
-}
+};
 
-export const routeTree = rootRoute
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
 
 /* ROUTE_MANIFEST_START
 {

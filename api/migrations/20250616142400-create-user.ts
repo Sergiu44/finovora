@@ -9,7 +9,7 @@ module.exports = {
       },
       firstName: {
         type: Sequelize.STRING(255),
-        allowNull: false,
+        allowNull: true,
       },
       lastName: {
         type: Sequelize.STRING(255),
@@ -26,24 +26,22 @@ module.exports = {
       verified: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
+        defaultValue: false,
       },
       createdAt: {
-        field: "created_at",
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
         allowNull: false,
       },
       updatedAt: {
-        field: "updated_at",
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
         allowNull: false,
       },
       deletedAt: {
-        field: "deleted_at",
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW,
-        allowNull: false,
+        defaultValue: null,
+        allowNull: true,
       },
     });
   },

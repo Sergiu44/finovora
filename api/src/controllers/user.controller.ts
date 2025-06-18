@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import catchErrors from "../../utils/utilities/catchErrors";
-import User from "../../models/user";
+import User from "../models/user";
 import appAssert from "../../utils/utilities/appAssert";
 import { NOT_FOUND } from "../../utils/constants/http";
 

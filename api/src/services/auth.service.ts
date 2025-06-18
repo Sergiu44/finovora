@@ -10,16 +10,17 @@ import VerificationCodeTypes from "../../utils/constants/verificationCodeTypes";
 import appAssert from "../../utils/utilities/appAssert";
 import {
   fiveMinutesAgo,
+  fiveMinutesFromNow,
   ONE_DAYS_MS,
   oneHourFromNow,
   oneYearFromNow,
   thirtyDaysFromNow,
 } from "../../utils/utilities/date";
-import User from "../../models/user";
-import VerificationCode from "../../models/verification";
+import User from "../models/user";
+import VerificationCode from "../models/verification";
 import { sendEmail } from "../../utils/emails/sendEmail";
 import { getPasswordResetTemplate, getVerifyEmailTemplate } from "../../utils/emails/templates";
-import { Session } from "../../models/session";
+import { Session } from "../models/session";
 import { RefreshTokenPayload, refreshTokenSignOptions, signToken, verifyToken } from "../../utils/utilities/jwt";
 import { Op } from "sequelize";
 import { hashPassword } from "../../utils/utilities/bcrypt";
@@ -40,33 +41,32 @@ export const createAccount = async (data: CreateAccountParams) => {
     email: data.email,
     password: data.password,
   });
-  const user = await newUser.save();
 
   const verificationCode = await VerificationCode.create({
-    userId: user.id,
+    userId: newUser.id,
     type: VerificationCodeTypes.EmailVerification,
-    expiresAt: oneYearFromNow(),
+    expiresAt: fiveMinutesFromNow(),
   });
 
-  const url = `${CLIENT_APP_ORIGIN}/email/verify/${verificationCode.id}`;
+  const url = `${CLIENT_APP_ORIGIN}/auth/verify-email/${verificationCode.id}`;
   const { error: errorEmail } = await sendEmail({
-    to: user.get({ plain: true }).email,
+    to: newUser.email,
     ...getVerifyEmailTemplate(url),
   });
 
   if (errorEmail) console.log("Failed to send verification email: " + errorEmail);
 
   const newSession = await Session.create({
-    userId: user.id,
+    userId: newUser.id,
     userAgent: data.userAgent,
   });
   const session = await newSession.save();
 
   const refreshToken = signToken({ sessionId: session.id }, refreshTokenSignOptions);
-  const accessToken = signToken({ sessionId: session.id, userId: user.id });
+  const accessToken = signToken({ sessionId: session.id, userId: newUser.id });
 
   return {
-    user: user.omitPassword(),
+    user: newUser.omitPassword(),
     accessToken,
     refreshToken,
   };
@@ -123,7 +123,7 @@ export const refreshUserAccessToken = async (refreshToken: string) => {
   const newRefreshToken = sessionNeedsRefresh
     ? signToken({ sessionId: session.id }, refreshTokenSignOptions)
     : undefined;
-  const accessToken = signToken({ userId: session.dataValues.userId.toString(), sessionId: session.id });
+  const accessToken = signToken({ userId: session.dataValues.userId, sessionId: session.id });
 
   return {
     accessToken,

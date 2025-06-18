@@ -2,7 +2,7 @@ import { NODE_ENV, EMAIL_SENDER } from "../constants/env";
 import resend from "../../src/config/resend";
 
 const getFromEmail = () => (NODE_ENV === "development" ? "onboarding@resend.dev" : EMAIL_SENDER);
-const getToEmail = (to: string) => (NODE_ENV === "development" ? "delivered@resend.dev" : to);
+const getToEmail = (to: string) => (NODE_ENV === "development" && to ? to : "");
 
 type Params = {
   to: string;

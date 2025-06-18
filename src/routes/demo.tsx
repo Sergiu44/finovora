@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import Input from "../components/Input";
+import Input from "../components/reusable/inputs/Input";
 import Validator from "../utils/hooks/useValidation/Validator";
 import VALIDATIONS from "../utils/hooks/useValidation";
 import { useValidation } from "../utils/hooks/useValidation/useValidation";

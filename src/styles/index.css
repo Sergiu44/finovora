@@ -138,7 +138,7 @@ textarea:not([rows]) {
   --links: var(--text-lg) / var(--text-lg) var(--ff);
   --p: var(--text-lg) / 20px var(--ff);
   --text: var(--text-base) / var(--text-lg) var(--ff);
-  --subtext: var(--text-sm) / 20px var(--ff);
+  --subtext: var(--text-sm) / 16px var(--ff);
 
   font-family: var(--ff), Helvetica, Arial, sans-serif;
   font: var(--text);

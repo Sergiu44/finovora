@@ -18,7 +18,7 @@ import {
 import { clearAuthCookies, setAuthCookies } from "../../utils/utilities/cookies";
 import { CREATED, OK, UNAUTHORIZED } from "../../utils/constants/http";
 import { verifyToken } from "../../utils/utilities/jwt";
-import { Session } from "../../models/session";
+import { Session } from "../models/session";
 import appAssert from "../../utils/utilities/appAssert";
 
 export const registerHandler = catchErrors(async (req: Request, res: Response) => {

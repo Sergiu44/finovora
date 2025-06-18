@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import catchErrors from "../../utils/utilities/catchErrors";
-import { Session } from "../../models/session";
+import { Session } from "../models/session";
 import { Op } from "sequelize";
 import { NOT_FOUND, OK } from "../../utils/constants/http";
 import z from "zod";

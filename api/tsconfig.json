@@ -12,9 +12,10 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "noUnusedLocals": false,
-    "noUnusedParameters": false
+    "noUnusedParameters": false,
+    "allowJs": true
   },
   "exclude": ["node_modules", "dist"],
-  "include": ["src/**/*", "index.d.ts", "models/session.ts", "models/user.ts", "models/verification.ts"],
+  "include": ["src/**/*", "index.d.ts", "src/models/session.ts", "src/models/user.ts", "src/models/verification.ts"],
   "files": ["index.d.ts"]
 }

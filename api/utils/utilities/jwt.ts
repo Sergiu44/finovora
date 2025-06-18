@@ -3,12 +3,12 @@ import { JWT_REFRESH_TOKEN, JWT_TOKEN } from "../constants/env";
 import jwt from "jsonwebtoken";
 
 export type RefreshTokenPayload = {
-  sessionId: string;
+  sessionId: number;
 };
 
 export type AccessTokenPayload = {
-  userId: string;
-  sessionId: string;
+  userId: number;
+  sessionId: number;
 };
 
 type SignOptionsWithSecret = SignOptions & {

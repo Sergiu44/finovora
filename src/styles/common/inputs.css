@@ -41,6 +41,21 @@
   font: var(--p);
 }
 
+/* Right elements */
+.inputRight {
+  @apply shrink-0 text-[var(--main)] select-none sm:text-sm/6 absolute right-1.5;
+}
+
+.inputRight-sm {
+  @apply right-1;
+  font: var(--subtext);
+}
+
+.inputRight-lg {
+  @apply right-2;
+  font: var(--p);
+}
+
 /* Errors */
 .inputError {
   @apply mt-1 text-[var(--main)];

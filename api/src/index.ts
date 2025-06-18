@@ -29,9 +29,9 @@ app.get("/", (_, res) => {
   res.status(OK).send("Hello world!");
 });
 
-app.use(sessionRoutes);
-app.use(authRoutes);
-app.use(userRoutes);
+app.use("/sessions", sessionRoutes);
+app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
 
 app.use(errorHandler);
 

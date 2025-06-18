@@ -1,4 +1,4 @@
-import { ErrorRequestHandler, Response } from "express";
+import { ErrorRequestHandler, NextFunction, Request, Response } from "express";
 import { z } from "zod";
 import { BAD_REQUEST, INTERNAL_SERVER_ERROR } from "../../utils/constants/http";
 import { clearAuthCookies } from "../../utils/utilities/cookies";
@@ -19,7 +19,7 @@ const handleAppError = (res: Response, error: AppError) => {
   });
 };
 
-const errorHandler: ErrorRequestHandler = (error, req, res) => {
+const errorHandler: ErrorRequestHandler = (error: any, req: Request, res: Response, next: NextFunction) => {
   console.log(`PATH: ${req.path} -> `, error);
 
   if (req.path === "/auth/refresh") clearAuthCookies(res);

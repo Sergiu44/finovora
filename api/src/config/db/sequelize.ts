@@ -1,5 +1,9 @@
 import { IDatabaseConnection } from "./IDatabaseConnection";
-import { Sequelize, Sequelize as SequelizeType } from "sequelize";
+import { Sequelize as SequelizeType } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
+import User from "../../models/user";
+import { Session } from "../../models/session";
+import VerificationCode from "../../models/verification";
 
 export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
   private static instance: SequelizeDatabaseWrapper | null = null;
@@ -31,6 +35,7 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
         const sequelize = this.getEnvironmentConfig();
         await sequelize.authenticate();
         SequelizeDatabaseWrapper.dbInstance = sequelize;
+        this.initializeModels();
         console.log(`Database connection established successfully for ${this.environment} environment.`);
       }
     } catch (err) {
@@ -43,19 +48,26 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
     // Add environment-specific configuration here
     switch (this.environment) {
       case "development":
-        return new Sequelize("test", "root", "Sergiu123!@_", {
+        return new Sequelize("finovora", "root", "Sergiu123!@_", {
           port: 3306,
           host: "localhost",
           dialect: "mysql",
           pool: {},
+          models: [User, Session, VerificationCode],
         });
       default:
-        return new Sequelize("test", "root", "Copernic@1234", {
+        return new Sequelize("finovora", "root", "Copernic@1234", {
           port: 3306,
           host: "localhost",
           dialect: "mysql",
           pool: {},
         });
     }
+  }
+
+  private initializeModels() {
+    User.configInit(this.getDatabaseInstance());
+    VerificationCode.configInit(this.getDatabaseInstance());
+    Session.configInit(this.getDatabaseInstance());
   }
 }
