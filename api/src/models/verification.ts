@@ -5,6 +5,7 @@ import { DataTypes, Optional, Sequelize } from "sequelize";
 type VerificationCodeAttributes = {
   id: number;
   userId: number;
+  code: string;
   type: VerificationCodeTypes;
   expiresAt: Date;
   createdAt: Date;
@@ -19,6 +20,7 @@ type VerificationCodeCreationAttributes = Optional<VerificationCodeAttributes, "
 export default class VerificationCode extends Model<VerificationCodeAttributes, VerificationCodeCreationAttributes> {
   declare id: number;
   declare userId: number;
+  declare code: string;
   declare type: VerificationCodeTypes;
   declare expiresAt: Date;
   declare createdAt: Date;
@@ -40,6 +42,10 @@ export default class VerificationCode extends Model<VerificationCodeAttributes, 
             },
             key: "id",
           },
+          allowNull: false,
+        },
+        code: {
+          type: DataTypes.STRING,
           allowNull: false,
         },
         type: {

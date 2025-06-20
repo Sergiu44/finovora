@@ -40,7 +40,7 @@ export const loginHandler = catchErrors(async (req: Request, res: Response) => {
 
   const { accessToken, refreshToken, user } = await loginUser(request);
 
-  return setAuthCookies({ res, accessToken, refreshToken }).status(CREATED).json({ message: "Login succesful" });
+  return setAuthCookies({ res, accessToken, refreshToken }).status(CREATED).json({ user, message: "Login succesful" });
 });
 
 export const logoutHandler = catchErrors(async (req: Request, res: Response) => {

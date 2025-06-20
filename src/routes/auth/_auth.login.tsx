@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import Input from "../../components/reusable/inputs/Input";
 import { EyeIcon } from "@heroicons/react/16/solid";
 import { useState } from "react";
@@ -11,6 +11,9 @@ export const Route = createFileRoute("/auth/_auth/login")({
 
 function RouteComponent() {
   const [active, setIsActive] = useState(false);
+
+  const router = useRouter();
+
   return (
     <div className="w-3/4 mx-auto py-20 flex flex-col justify-between h-full">
       <h1>Finovora</h1>
@@ -30,8 +33,11 @@ function RouteComponent() {
             const formData = new FormData(e.currentTarget);
             const email = formData.get("email");
             const password = formData.get("password");
-            axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password }).then((res) => {
-              alert(res);
+            axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password }).then(({ data }) => {
+              const { user, message } = data;
+              alert(message);
+              localStorage.setItem("user", user);
+              router.navigate({ to: "/dashboard" });
             });
           }}
         >

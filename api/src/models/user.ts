@@ -1,6 +1,6 @@
 import { DataTypes, Optional, Sequelize } from "sequelize";
 import { Model, Table } from "sequelize-typescript";
-import { compareValues } from "../../utils/utilities/bcrypt";
+import { compareValues, hashPassword } from "../../utils/utilities/bcrypt";
 
 type UserAttributes = {
   id: number;
@@ -38,8 +38,8 @@ export default class User extends Model<UserAttributes, UserCreationAttributes> 
     const { password, ...userWithoutPassword } = this.dataValues;
     return userWithoutPassword;
   }
-  public async comparePassword(val: string): Promise<boolean> {
-    return await compareValues(val, this.dataValues.password);
+  public async comparePassword(user: User, val: string): Promise<boolean> {
+    return await compareValues(val, user.password);
   }
 
   public static configInit(SequelizeInstance: Sequelize) {
@@ -75,6 +75,15 @@ export default class User extends Model<UserAttributes, UserCreationAttributes> 
       {
         sequelize: SequelizeInstance,
         tableName: "users",
+        hooks: {
+          async beforeCreate(attributes) {
+            const password = attributes.get("password") as string;
+            if (password) {
+              const hashedPassword = await hashPassword(password);
+              attributes.set("password", hashedPassword);
+            }
+          },
+        },
       }
     );
   }

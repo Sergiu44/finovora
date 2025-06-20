@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import "./dashboard.css";
 import IconLink from "../../components/IconLink";
 import {
@@ -8,12 +8,11 @@ import {
   CreditCardIcon,
   DocumentIcon,
   HomeIcon,
-  UserCircleIcon,
-  UserIcon,
 } from "@heroicons/react/20/solid";
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimateChangeInHeight } from "../../utils/hoc/AnimateChangeInHeight";
+import axios from "axios";
 
 export const Route = createFileRoute("/dashboard")({
   component: RouteComponent,
@@ -21,6 +20,19 @@ export const Route = createFileRoute("/dashboard")({
 
 function RouteComponent() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/sessions`, {
+        headers: {
+          Cookie:
+            "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uSWQiOjIsInVzZXJJZCI6MSwiaWF0IjoxNzUwMjU0MTEzLCJleHAiOjE3NTAyNTUwMTMsImF1ZCI6WyJ1c2VyIl19.YiJsFntRmloBOz8rcVkO2fuPN8vL2P3wjHwAV25LIEk; Path=/; Expires=Wed, 18 Jun 2025 13:56:53 GMT; HttpOnly; SameSite=Strict",
+        },
+      })
+      .then(({ data }) => {
+        console.log(data);
+      });
+  }, []);
   return (
     <div className="dashboard__grid-container">
       <div className="flex flex-col border-r border-[var(--bg-main-light)] p-4">
@@ -29,17 +41,9 @@ function RouteComponent() {
         <div className="flex flex-col mt-12 gap-2">
           <IconLink href="/dashboard" icon={<HomeIcon />} text="Home" />
 
-          <IconLink
-            href="/dashboard/reports"
-            icon={<DocumentIcon />}
-            text="Reports"
-          ></IconLink>
+          <IconLink href="/dashboard/reports" icon={<DocumentIcon />} text="Reports"></IconLink>
 
-          <IconLink
-            href="/dashboard/billing"
-            icon={<CreditCardIcon />}
-            text="Billing"
-          />
+          <IconLink href="/dashboard/billing" icon={<CreditCardIcon />} text="Billing" />
         </div>
 
         {/* Add user session */}

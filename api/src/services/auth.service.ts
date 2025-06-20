@@ -13,7 +13,6 @@ import {
   fiveMinutesFromNow,
   ONE_DAYS_MS,
   oneHourFromNow,
-  oneYearFromNow,
   thirtyDaysFromNow,
 } from "../../utils/utilities/date";
 import User from "../models/user";
@@ -24,6 +23,7 @@ import { Session } from "../models/session";
 import { RefreshTokenPayload, refreshTokenSignOptions, signToken, verifyToken } from "../../utils/utilities/jwt";
 import { Op } from "sequelize";
 import { hashPassword } from "../../utils/utilities/bcrypt";
+import { generateOTP } from "../../utils/utilities/otpGenerator";
 
 export type CreateAccountParams = {
   email: string;
@@ -44,14 +44,14 @@ export const createAccount = async (data: CreateAccountParams) => {
 
   const verificationCode = await VerificationCode.create({
     userId: newUser.id,
+    code: generateOTP(),
     type: VerificationCodeTypes.EmailVerification,
     expiresAt: fiveMinutesFromNow(),
   });
 
-  const url = `${CLIENT_APP_ORIGIN}/auth/verify-email/${verificationCode.id}`;
   const { error: errorEmail } = await sendEmail({
     to: newUser.email,
-    ...getVerifyEmailTemplate(url),
+    ...getVerifyEmailTemplate(verificationCode.code),
   });
 
   if (errorEmail) console.log("Failed to send verification email: " + errorEmail);
@@ -82,7 +82,7 @@ export const loginUser = async ({ email, password, userAgent }: LoginParams) => 
   const newUser = await User.findOne({ where: { email } });
   appAssert(newUser, UNAUTHORIZED, "Invalid email or password");
 
-  const isValid = await newUser.comparePassword(password);
+  const isValid = await newUser.comparePassword(newUser, password);
   appAssert(isValid, UNAUTHORIZED, "Invalid email or password");
 
   const userId = newUser.id;
@@ -127,20 +127,25 @@ export const refreshUserAccessToken = async (refreshToken: string) => {
 
   return {
     accessToken,
-    refreshToken,
+    refreshToken: newRefreshToken,
   };
 };
 
 export const verifyEmail = async (verificationCode: string) => {
   const validCode = await VerificationCode.findOne({
-    where: { type: VerificationCodeTypes.EmailVerification, expiresAt: { [Op.gt]: new Date() }, id: verificationCode },
+    where: {
+      type: VerificationCodeTypes.EmailVerification,
+      expiresAt: { [Op.gt]: new Date() },
+      code: verificationCode,
+    },
   });
   appAssert(validCode, NOT_FOUND, "Invalid or expired verification code");
 
   const user = await User.findOne({ where: { id: validCode.dataValues.userId } });
   appAssert(user, INTERNAL_SERVER_ERROR, "Failed to verify email");
 
-  await user.update("verified", true);
+  user.verified = true;
+  await user.save();
 
   await validCode.destroy();
 
@@ -167,6 +172,7 @@ export const sendPasswordResetEmail = async (email: string) => {
   const expiresAt = oneHourFromNow();
   const verificationCode = await VerificationCode.create({
     userId: user.id,
+    code: generateOTP(),
     type: VerificationCodeTypes.PasswordReset,
     expiresAt,
   });

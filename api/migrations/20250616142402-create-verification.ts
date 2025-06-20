@@ -17,6 +17,10 @@ module.exports = {
         },
         allowNull: false,
       },
+      code: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       type: {
         type: Sequelize.ENUM("email_verification", "password_reset"),
         allowNull: false,

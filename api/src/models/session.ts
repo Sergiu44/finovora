@@ -6,10 +6,11 @@ type SessionAttributes = {
   id: number;
   userId: number;
   userAgent?: string;
+  createdAt: Date;
   expiresAt: Date;
 };
 
-type SessionCreationAttributes = Optional<SessionAttributes, "expiresAt" | "id">;
+type SessionCreationAttributes = Optional<SessionAttributes, "expiresAt" | "id" | "createdAt">;
 
 @Table({
   tableName: "sessions",
@@ -20,6 +21,7 @@ export class Session extends Model<SessionAttributes, SessionCreationAttributes>
   declare userId: number;
   declare userAgent?: string;
   declare expiresAt: Date;
+  declare createdAt: Date;
 
   public static configInit(SequelizeInstance: Sequelize) {
     Session.init(
@@ -43,6 +45,11 @@ export class Session extends Model<SessionAttributes, SessionCreationAttributes>
         userAgent: {
           type: DataTypes.STRING(255),
           allowNull: true,
+        },
+        createdAt: {
+          type: DataTypes.DATE,
+          allowNull: false,
+          defaultValue: Date.now(),
         },
         expiresAt: {
           type: DataTypes.DATE,

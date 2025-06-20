@@ -40,7 +40,7 @@ const db: IDatabaseConnection = DatabaseFactory.createDatabaseConnection(NODE_EN
 db.connectToDatabase()
   .then(() => {
     app.listen(PORT, () => {
-      console.log("API server is running on http://localhost:3000");
+      console.log("API server is running on http://localhost:" + PORT);
     });
   })
   .catch((error) => {
