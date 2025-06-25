@@ -4,6 +4,9 @@ import { Sequelize } from "sequelize-typescript";
 import User from "../../models/user";
 import { Session } from "../../models/session";
 import VerificationCode from "../../models/verification";
+import { AccountType } from "../../models/accountType";
+import { Account } from "../../models/account";
+import { Currency } from "../../models/currency";
 
 export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
   private static instance: SequelizeDatabaseWrapper | null = null;
@@ -53,7 +56,7 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
           host: "localhost",
           dialect: "mysql",
           pool: {},
-          models: [User, Session, VerificationCode],
+          models: [User, Session, VerificationCode, AccountType, Account, Currency],
         });
       default:
         return new Sequelize("finovora", "root", "Copernic@1234", {
@@ -66,8 +69,12 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
   }
 
   private initializeModels() {
-    User.configInit(this.getDatabaseInstance());
-    VerificationCode.configInit(this.getDatabaseInstance());
-    Session.configInit(this.getDatabaseInstance());
+    const dbInstance = this.getDatabaseInstance();
+    User.configInit(dbInstance);
+    VerificationCode.configInit(dbInstance);
+    Session.configInit(dbInstance);
+    AccountType.configInit(dbInstance);
+    Account.configInit(dbInstance);
+    Currency.configInit(dbInstance);
   }
 }

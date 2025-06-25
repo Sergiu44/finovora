@@ -1,5 +1,5 @@
 .grid-card {
-  @apply bg-[var(--bg-main)] rounded-sm p-6;
+  @apply bg-[var(--color-bg-main)] rounded-sm p-6;
 }
 
 .grid-card-sm {

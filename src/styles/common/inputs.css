@@ -1,6 +1,6 @@
 /* Inputs */
 .input {
-  @apply h-full block min-w-0 bg-[var(--white)] text-[var(--black)] rounded-sm pl-5 pr-3 placeholder:text-[var(--main)] py-2;
+  @apply h-full block min-w-0 bg-[var(--color-white)] text-[var(--color-black)] rounded-sm pl-5 pr-3 placeholder:text-[var(--color-main)] py-2;
 }
 
 .input-sm {
@@ -15,7 +15,7 @@
 
 /* Labels */
 .label {
-  @apply block text-[var(--white)];
+  @apply block text-[var(--color-white)];
 }
 
 .label-sm {
@@ -28,7 +28,7 @@
 
 /* Left elements */
 .inputLeft {
-  @apply shrink-0 text-[var(--main)] select-none sm:text-sm/6 absolute left-1.5;
+  @apply shrink-0 text-[var(--color-main)] select-none sm:text-sm/6 absolute left-1.5;
 }
 
 .inputLeft-sm {
@@ -43,7 +43,7 @@
 
 /* Right elements */
 .inputRight {
-  @apply shrink-0 text-[var(--main)] select-none sm:text-sm/6 absolute right-1.5;
+  @apply shrink-0 text-[var(--color-main)] select-none sm:text-sm/6 absolute right-1.5;
 }
 
 .inputRight-sm {
@@ -58,7 +58,7 @@
 
 /* Errors */
 .inputError {
-  @apply mt-1 text-[var(--main)];
+  @apply mt-1 text-[var(--color-main)];
   font: var(--subtext);
 }
 

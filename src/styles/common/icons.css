@@ -1,6 +1,6 @@
 @layer components {
   .icon {
-    @apply h-[var(--icon-base)] w-[var(--icon-base)] text-[var(--main)] cursor-pointer;
+    @apply h-[var(--icon-base)] w-[var(--icon-base)] text-[var(--color-main)] cursor-pointer;
   }
 
   .icon-sm {
@@ -12,6 +12,6 @@
   }
 
   .icon-active {
-    @apply text-[var(--white)];
+    @apply text-[var(--color-white)];
   }
 }

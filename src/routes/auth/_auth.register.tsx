@@ -1,10 +1,9 @@
 import { EyeSlashIcon, EyeIcon } from "@heroicons/react/16/solid";
-import { createFileRoute, Link, Router, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import Input from "../../components/reusable/inputs/Input";
-import axios from "axios";
 import InputCode from "../../components/reusable/inputs/InputCode";
-
+import { createEnhancedAxios } from "../../configs/axios";
 export const Route = createFileRoute("/auth/_auth/register")({
   component: RouteComponent,
 });
@@ -22,7 +21,7 @@ function RouteComponent() {
 
   useEffect(() => {
     if (isRegistered) {
-      timer.current = setInterval(() => {
+      timer.current = window.setInterval(() => {
         setCounter((prevCounter) => prevCounter + 1);
       }, 1000);
     } else {
@@ -58,7 +57,7 @@ function RouteComponent() {
           <div className="">
             <div className="mb-10 block">
               <h3 className="block!">Sign in into your account</h3>
-              <p className="tracking-tight mt-2 mb-6 text-[var(--bg-main)] ">
+              <p className="tracking-tight mt-2 mb-6 text-[var(--color-bg-main)] ">
                 Access your account in order to be able to start a budget plan
               </p>
             </div>
@@ -71,7 +70,7 @@ function RouteComponent() {
                 const email = formData.get("email");
                 const password = formData.get("password");
                 const confirmPassword = formData.get("confirmPassword");
-                axios
+                createEnhancedAxios()
                   .post(`${import.meta.env.VITE_API_URL}/auth/register`, { email, password, confirmPassword })
                   .then(() => {
                     // set client details
@@ -131,7 +130,7 @@ function RouteComponent() {
 
               <button className="btn font-bold btn-outline w-full">Continue with Google</button>
               <Link
-                className="text-center hover:decoration-1 hover:underline text-base text-[var(--bg-main)] mt-6 block"
+                className="text-center hover:decoration-1 hover:underline text-base text-[var(--color-bg-main)] mt-6 block"
                 to="/auth/register"
               >
                 Already having an account? Log in here
@@ -140,7 +139,7 @@ function RouteComponent() {
           </div>
 
           <div className="text-center">
-            <Link className="text-base  text-[var(--main-washed)]" to="/auth/forgot-password">
+            <Link className="text-base  text-[var(--color-main-washed)]" to="/auth/forgot-password">
               Forgot your password?
             </Link>
           </div>
@@ -153,20 +152,22 @@ function RouteComponent() {
             <InputCode
               className="!items-center my-6"
               onComplete={(val) => {
-                axios.get(`${import.meta.env.VITE_API_URL}/auth/email/verify/${val}`).then(() => {
-                  router.navigate({ to: "/auth/login" });
-                });
+                createEnhancedAxios()
+                  .get(`${import.meta.env.VITE_API_URL}/auth/email/verify/${val}`)
+                  .then(() => {
+                    router.navigate({ to: "/auth/login" });
+                  });
               }}
               loading={false}
             />
 
             <div className="flex items-center flex-col">
               <p>Didn't receive the code?</p>
-              <button className="btn text-[var(--white)] mt-2">Resend code</button>
+              <button className="btn text-[var(--color-white)] mt-2">Resend code</button>
             </div>
 
             <div className="text-center mt-4">
-              <p className="text-2xl text-[var(--black)]">
+              <p className="text-2xl text-[var(--color-black)]">
                 {Math.floor((300 - counter) / 60)}:{(300 - counter) % 60 < 10 ? "0" : ""}
                 {(300 - counter) % 60}
               </p>

@@ -7,6 +7,9 @@
     "dev": "nodemon src/index.ts",
     "build": "tsc",
     "migrate:up": "npx sequelize-cli db:create && npx sequelize-cli db:migrate",
+    "migrate:down": "npx sequelize-cli db:migrate:undo:all",
+    "migrate:undo": "npx sequelize-cli db:migrate:undo",
+    "seed:all": "npx sequelize-cli db:seed:all",
     "start:dist": "node dist/src/index.ts",
     "typecheck": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
