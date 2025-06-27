@@ -3,7 +3,7 @@ import { Model, Table } from "sequelize-typescript";
 
 type AccountTypeAttributes = {
   id: number;
-  userId?: number;
+  userId: number | null;
   name: string;
   description?: string;
   createdAt: Date;
@@ -14,11 +14,12 @@ type AccountTypeCreationAttributes = Optional<AccountTypeAttributes, "id" | "cre
 
 @Table({
   tableName: "account-types",
+  freezeTableName: true,
   timestamps: false,
 })
 export class AccountType extends Model<AccountTypeAttributes, AccountTypeCreationAttributes> {
   declare id: number;
-  declare userId?: number;
+  declare userId: number | null;
   declare name: string;
   declare description?: string;
   declare createdAt: Date;
@@ -65,6 +66,8 @@ export class AccountType extends Model<AccountTypeAttributes, AccountTypeCreatio
       {
         sequelize: SequelizeInstance,
         timestamps: false,
+        tableName: "account-types",
+        freezeTableName: true,
       }
     );
   }

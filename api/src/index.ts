@@ -10,6 +10,7 @@ import errorHandler from "./middleware/errorHandler";
 import sessionRoutes from "./routes/session.routes";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
+import accountTypesRoutes from "./routes/accounts/accountTypes.routes";
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.get("/", (_, res) => {
 app.use("/sessions", sessionRoutes);
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
+app.use("/account-types", accountTypesRoutes);
 
 app.use(errorHandler);
 

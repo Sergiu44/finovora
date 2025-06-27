@@ -18,6 +18,7 @@ type AccountCreationAttributes = Optional<AccountAttributes, "id" | "createdAt" 
 
 @Table({
   tableName: "account",
+  freezeTableName: true,
   timestamps: false,
 })
 export class Account extends Model<AccountAttributes, AccountCreationAttributes> {
@@ -102,6 +103,7 @@ export class Account extends Model<AccountAttributes, AccountCreationAttributes>
       {
         timestamps: false,
         sequelize: SequelizeInstance,
+        tableName: "account-types",
       }
     );
   }

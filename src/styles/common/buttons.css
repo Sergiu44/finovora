@@ -18,4 +18,8 @@
   .btn-outline {
     @apply bg-[var(--color-white)] text-[var(--color-bg-main)] outline outline-[var(--color-bg-main)] hover:bg-neutral-100;
   }
+
+  .btn-underline {
+    @apply hover:underline hover:decoration-2;
+  }
 }

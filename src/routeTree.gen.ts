@@ -22,10 +22,12 @@ import { Route as DashboardProfileImport } from './routes/dashboard/profile'
 import { Route as DashboardBillingImport } from './routes/dashboard/billing'
 import { Route as AuthAuthImport } from './routes/auth/_auth'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings/route'
-import { Route as DashboardSettingsAccountsImport } from './routes/dashboard/settings/accounts'
 import { Route as AuthAuthRegisterImport } from './routes/auth/_auth.register'
 import { Route as AuthAuthLoginImport } from './routes/auth/_auth.login'
 import { Route as AuthAuthForgotPasswordImport } from './routes/auth/_auth.forgot-password'
+import { Route as DashboardSettingsAccountsRouteImport } from './routes/dashboard/settings/accounts/route'
+import { Route as DashboardSettingsAccountsAccountTypesCreateImport } from './routes/dashboard/settings/accounts/account-types-create'
+import { Route as DashboardSettingsAccountsAccountTypesImport } from './rout./routes/dashboard/settings/accounts/account-types-create
 
 // Create Virtual Routes
 
@@ -92,12 +94,6 @@ const DashboardSettingsRouteRoute = DashboardSettingsRouteImport.update({
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 
-const DashboardSettingsAccountsRoute = DashboardSettingsAccountsImport.update({
-  id: '/accounts',
-  path: '/accounts',
-  getParentRoute: () => DashboardSettingsRouteRoute,
-} as any)
-
 const AuthAuthRegisterRoute = AuthAuthRegisterImport.update({
   id: '/register',
   path: '/register',
@@ -115,6 +111,27 @@ const AuthAuthForgotPasswordRoute = AuthAuthForgotPasswordImport.update({
   path: '/forgot-password',
   getParentRoute: () => AuthAuthRoute,
 } as any)
+
+const DashboardSettingsAccountsRouteRoute =
+  DashboardSettingsAccountsRouteImport.update({
+    id: '/accounts',
+    path: '/accounts',
+    getParentRoute: () => DashboardSettingsRouteRoute,
+  } as any)
+
+const DashboardSettingsAccountsAccountTypesCreateRoute =
+  DashboardSettingsAccountsAccountTypesCreateImport.update({
+    id: '/account-types-create',
+    path: '/account-types-create',
+    getParentRoute: () => DashboardSettingsAccountsRouteRoute,
+  } as any)
+
+const DashboardSettingsAccountsAccountTypesRoute =
+  DashboardSettingsAccountsAccountTypesImport.update({
+    id: '/account-types',
+    path: '/account-types',
+    getParentRoute: () => DashboardSettingsAccountsRouteRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -190,6 +207,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexImport
       parentRoute: typeof DashboardRouteImport
     }
+    '/dashboard/settings/accounts': {
+      id: '/dashboard/settings/accounts'
+      path: '/accounts'
+      fullPath: '/dashboard/settings/accounts'
+      preLoaderRoute: typeof DashboardSettingsAccountsRouteImport
+      parentRoute: typeof DashboardSettingsRouteImport
+    }
     '/auth/_auth/forgot-password': {
       id: '/auth/_auth/forgot-password'
       path: '/forgot-password'
@@ -211,25 +235,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAuthRegisterImport
       parentRoute: typeof AuthAuthImport
     }
-    '/dashboard/settings/accounts': {
-      id: '/dashboard/settings/accounts'
-      path: '/accounts'
-      fullPath: '/dashboard/settings/accounts'
-      preLoaderRoute: typeof DashboardSettingsAccountsImport
-      parentRoute: typeof DashboardSettingsRouteImport
+    '/dashboard/settings/accounts/account-types': {
+      id: '/dashboard/settings/accounts/account-types'
+      path: '/account-types'
+      fullPath: '/dashboard/settings/accounts/account-types'
+      preLoaderRoute: typeof DashboardSettingsAccountsAccountTypesImport
+      parentRoute: typeof DashboardSettingsAccountsRouteImport
+    }
+    '/dashboard/settings/accounts/account-types-create': {
+      id: '/dashboard/settings/accounts/account-types-create'
+      path: '/account-types-create'
+      fullPath: '/dashboard/settings/accounts/account-types-create'
+      preLoaderRoute: typeof DashboardSettingsAccountsAccountTypesCreateImport
+      parentRoute: typeof DashboardSettingsAccountsRouteImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface DashboardSettingsAccountsRouteRouteChildren {
+  DashboardSettingsAccountsAccountTypesRoute: typeof DashboardSettingsAccountsAccountTypesRoute
+  DashboardSettingsAccountsAccountTypesCreateRoute: typeof DashboardSettingsAccountsAccountTypesCreateRoute
+}
+
+const DashboardSettingsAccountsRouteRouteChildren: DashboardSettingsAccountsRouteRouteChildren =
+  {
+    DashboardSettingsAccountsAccountTypesRoute:
+      DashboardSettingsAccountsAccountTypesRoute,
+    DashboardSettingsAccountsAccountTypesCreateRoute:
+      DashboardSettingsAccountsAccountTypesCreateRoute,
+  }
+
+const DashboardSettingsAccountsRouteRouteWithChildren =
+  DashboardSettingsAccountsRouteRoute._addFileChildren(
+    DashboardSettingsAccountsRouteRouteChildren,
+  )
+
 interface DashboardSettingsRouteRouteChildren {
-  DashboardSettingsAccountsRoute: typeof DashboardSettingsAccountsRoute
+  DashboardSettingsAccountsRouteRoute: typeof DashboardSettingsAccountsRouteRouteWithChildren
 }
 
 const DashboardSettingsRouteRouteChildren: DashboardSettingsRouteRouteChildren =
   {
-    DashboardSettingsAccountsRoute: DashboardSettingsAccountsRoute,
+    DashboardSettingsAccountsRouteRoute:
+      DashboardSettingsAccountsRouteRouteWithChildren,
   }
 
 const DashboardSettingsRouteRouteWithChildren =
@@ -293,10 +343,12 @@ export interface FileRoutesByFullPath {
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/reports': typeof DashboardReportsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/settings/accounts': typeof DashboardSettingsAccountsRouteRouteWithChildren
   '/auth/forgot-password': typeof AuthAuthForgotPasswordRoute
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
-  '/dashboard/settings/accounts': typeof DashboardSettingsAccountsRoute
+  '/dashboard/settings/accounts/account-types': typeof DashboardSettingsAccountsAccountTypesRoute
+  '/dashboard/settings/accounts/account-types-create': typeof DashboardSettingsAccountsAccountTypesCreateRoute
 }
 
 export interface FileRoutesByTo {
@@ -308,10 +360,12 @@ export interface FileRoutesByTo {
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/reports': typeof DashboardReportsRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/settings/accounts': typeof DashboardSettingsAccountsRouteRouteWithChildren
   '/auth/forgot-password': typeof AuthAuthForgotPasswordRoute
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
-  '/dashboard/settings/accounts': typeof DashboardSettingsAccountsRoute
+  '/dashboard/settings/accounts/account-types': typeof DashboardSettingsAccountsAccountTypesRoute
+  '/dashboard/settings/accounts/account-types-create': typeof DashboardSettingsAccountsAccountTypesCreateRoute
 }
 
 export interface FileRoutesById {
@@ -326,10 +380,12 @@ export interface FileRoutesById {
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/reports': typeof DashboardReportsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/settings/accounts': typeof DashboardSettingsAccountsRouteRouteWithChildren
   '/auth/_auth/forgot-password': typeof AuthAuthForgotPasswordRoute
   '/auth/_auth/login': typeof AuthAuthLoginRoute
   '/auth/_auth/register': typeof AuthAuthRegisterRoute
-  '/dashboard/settings/accounts': typeof DashboardSettingsAccountsRoute
+  '/dashboard/settings/accounts/account-types': typeof DashboardSettingsAccountsAccountTypesRoute
+  '/dashboard/settings/accounts/account-types-create': typeof DashboardSettingsAccountsAccountTypesCreateRoute
 }
 
 export interface FileRouteTypes {
@@ -344,10 +400,12 @@ export interface FileRouteTypes {
     | '/dashboard/profile'
     | '/dashboard/reports'
     | '/dashboard/'
+    | '/dashboard/settings/accounts'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
-    | '/dashboard/settings/accounts'
+    | '/dashboard/settings/accounts/account-types'
+    | '/dashboard/settings/accounts/account-types-create'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -358,10 +416,12 @@ export interface FileRouteTypes {
     | '/dashboard/profile'
     | '/dashboard/reports'
     | '/dashboard'
+    | '/dashboard/settings/accounts'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
-    | '/dashboard/settings/accounts'
+    | '/dashboard/settings/accounts/account-types'
+    | '/dashboard/settings/accounts/account-types-create'
   id:
     | '__root__'
     | '/'
@@ -374,10 +434,12 @@ export interface FileRouteTypes {
     | '/dashboard/profile'
     | '/dashboard/reports'
     | '/dashboard/'
+    | '/dashboard/settings/accounts'
     | '/auth/_auth/forgot-password'
     | '/auth/_auth/login'
     | '/auth/_auth/register'
-    | '/dashboard/settings/accounts'
+    | '/dashboard/settings/accounts/account-types'
+    | '/dashboard/settings/accounts/account-types-create'
   fileRoutesById: FileRoutesById
 }
 
@@ -465,6 +527,14 @@ export const routeTree = rootRoute
       "filePath": "dashboard/index.tsx",
       "parent": "/dashboard"
     },
+    "/dashboard/settings/accounts": {
+      "filePath": "dashboard/settings/accounts/route.tsx",
+      "parent": "/dashboard/settings",
+      "children": [
+        "/dashboard/settings/accounts/account-types",
+        "/dashboard/settings/accounts/account-types-create"
+      ]
+    },
     "/auth/_auth/forgot-password": {
       "filePath": "auth/_auth.forgot-password.tsx",
       "parent": "/auth/_auth"
@@ -477,9 +547,13 @@ export const routeTree = rootRoute
       "filePath": "auth/_auth.register.tsx",
       "parent": "/auth/_auth"
     },
-    "/dashboard/settings/accounts": {
-      "filePath": "dashboard/settings/accounts.tsx",
-      "parent": "/dashboard/settings"
+    "/dashboard/settings/accounts/account-types": {
+      "filePath": "dashboard/settings/accounts/account-types.tsx",
+      "parent": "/dashboard/settings/accounts"
+    },
+    "/dashboard/settings/accounts/account-types-create": {
+      "filePath": "dashboard/settings/accounts/account-types-create.tsx",
+      "parent": "/dashboard/settings/accounts"
     }
   }
 }

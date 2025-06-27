@@ -53,7 +53,7 @@ function RouteComponent() {
 
           <IconLink href="/dashboard/billing" icon={<CreditCardIcon />} text="Billing" />
 
-          <IconLink href="/dashboard/settings" icon={<Cog6ToothIcon />} text="Settings" />
+          <IconLink href="/dashboard/settings/profile" icon={<Cog6ToothIcon />} text="Settings" />
         </div>
 
         {/* Add user session */}
@@ -99,7 +99,7 @@ function RouteComponent() {
             </div>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto min-h-[80%]">
           <div className="mt-20 px-20">
             <Outlet />
           </div>

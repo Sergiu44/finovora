@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, useRouter } from "@tanstack/react-router";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "../../../components/ui/tabs";
 
 export const Route = createFileRoute("/dashboard/settings")({
   component: RouteComponent,
@@ -11,21 +11,23 @@ function RouteComponent() {
   const handleTabChange = (value: string) => {
     router.navigate({ to: `/dashboard/settings/${value}` });
   };
-
   return (
     <>
       <h1 className="text-2xl font-bold">Settings</h1>
-      <Tabs defaultValue="account" className="w-[400px]">
+      <Tabs defaultValue="profile" className="w-[400px]">
         <TabsList>
+          <TabsTrigger onClick={() => handleTabChange("profile")} value="profile">
+            Profile
+          </TabsTrigger>
           <TabsTrigger onClick={() => handleTabChange("accounts")} value="account">
-            Manage accounts
+            Accounts
           </TabsTrigger>
           <TabsTrigger onClick={() => handleTabChange("security")} value="security">
             Security
           </TabsTrigger>
         </TabsList>
-        <Outlet />
       </Tabs>
+      <Outlet />
     </>
   );
 }
