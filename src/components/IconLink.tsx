@@ -20,16 +20,14 @@ export default function IconLink({ icon, className, href, size, text, children }
         exact: href === "/dashboard",
       }}
       activeProps={{
-        className: "bg-[var(--color-bg-main)] hover:bg-[var(--color-bg-main)]",
+        className: "bg-bg-main hover:bg-bg-main",
       }}
-      className={`select-none py-3 px-4 hover:bg-[var(--color-bg-main-light)] rounded-md cursor-pointer items-center gap-2 w-full ${className || ""}`}
+      className={`select-none py-3 px-4 hover:bg-bg-main-light rounded-md cursor-pointer items-center gap-2 w-full ${className || ""}`}
     >
       {({ isActive }) => (
         <>
           <div onClick={() => setActive(!active)} className="flex flex-wrap gap-2 w-full flex-[100%] ">
-            <span className={`${size ? `icon icon-${size}` : "icon"} ${isActive && "text-[var(--color-white)]"}`}>
-              {icon}
-            </span>
+            <span className={`${size ? `icon icon-${size}` : "icon"} ${isActive && "text-white"}`}>{icon}</span>
             <div className={size ? `text-${size}` : "text-base"}>{text}</div>
             {children && (
               <ChevronRightIcon className={`icon ml-auto transition-discrete ${active ? "rotate-z-[90deg]" : ""}`} />

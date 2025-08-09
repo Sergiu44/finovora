@@ -1,5 +1,8 @@
-import { DataTypes, Optional, Sequelize } from "sequelize";
-import { Model, Table } from "sequelize-typescript";
+import { DataTypes, Sequelize, Optional, NonAttribute } from "sequelize";
+import { BelongsTo, Column, ForeignKey, HasOne, Model, Table } from "sequelize-typescript";
+import { AccountType } from "./accountType";
+import User from "./user";
+import { Currency } from "./currency";
 
 type AccountAttributes = {
   id: number;
@@ -17,14 +20,13 @@ type AccountAttributes = {
 type AccountCreationAttributes = Optional<AccountAttributes, "id" | "createdAt" | "updatedAt" | "balance">;
 
 @Table({
-  tableName: "account",
+  tableName: "accounts",
   freezeTableName: true,
   timestamps: false,
 })
 export class Account extends Model<AccountAttributes, AccountCreationAttributes> {
   declare id: number;
   declare userId: number;
-  declare accountTypeId: number;
   declare currencyId: number;
   declare name: string;
   declare description?: string;
@@ -32,6 +34,22 @@ export class Account extends Model<AccountAttributes, AccountCreationAttributes>
   declare balance: number;
   declare createdAt: Date;
   declare updatedAt: Date;
+  declare accountTypeId: number;
+  declare accountType: NonAttribute<AccountType>;
+
+  static associate() {
+    Account.belongsTo(AccountType, {
+      foreignKey: "accountTypeId",
+      as: "accountType",
+    });
+    Account.belongsTo(User, {
+      foreignKey: "userId",
+    });
+    Account.belongsTo(Currency, {
+      foreignKey: "currencyId",
+      as: "currency",
+    });
+  }
 
   public static configInit(SequelizeInstance: Sequelize) {
     Account.init(
@@ -46,21 +64,13 @@ export class Account extends Model<AccountAttributes, AccountCreationAttributes>
           type: DataTypes.BIGINT,
           allowNull: false,
           references: {
-            model: {
-              tableName: "account-types",
-            },
+            model: AccountType,
             key: "id",
           },
         },
         userId: {
           type: DataTypes.BIGINT,
-          allowNull: true,
-          references: {
-            model: {
-              tableName: "users",
-            },
-            key: "id",
-          },
+          allowNull: false,
         },
         name: {
           type: DataTypes.STRING(50),
@@ -79,9 +89,7 @@ export class Account extends Model<AccountAttributes, AccountCreationAttributes>
           type: DataTypes.BIGINT,
           allowNull: false,
           references: {
-            model: {
-              tableName: "currencies",
-            },
+            model: Currency,
             key: "id",
           },
         },
@@ -92,18 +100,19 @@ export class Account extends Model<AccountAttributes, AccountCreationAttributes>
         createdAt: {
           type: DataTypes.DATE,
           allowNull: false,
-          defaultValue: Date.now(),
+          defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
         updatedAt: {
           type: DataTypes.DATE,
           allowNull: false,
-          defaultValue: Date.now(),
+          defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
       },
       {
-        timestamps: false,
         sequelize: SequelizeInstance,
-        tableName: "account-types",
+        timestamps: false,
+        tableName: "accounts",
+        freezeTableName: true,
       }
     );
   }

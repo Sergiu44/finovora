@@ -33,7 +33,7 @@ export default class Validator {
     return this;
   };
 
-  check = (callbackFn: (val: string) => void, message: string) => {
+  check = (callbackFn: Function, message: string) => {
     for (const keyIndex in this.currentKey) {
       this.configuration = {
         ...this.configuration,

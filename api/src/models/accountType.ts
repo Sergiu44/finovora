@@ -1,5 +1,7 @@
-import { DataTypes, Sequelize, Optional } from "sequelize";
-import { Model, Table } from "sequelize-typescript";
+import { DataTypes, Sequelize, Optional, NonAttribute } from "sequelize";
+import { Account } from "./account";
+import { HasMany, Model, Table } from "sequelize-typescript";
+import User from "./user";
 
 type AccountTypeAttributes = {
   id: number;
@@ -19,11 +21,21 @@ type AccountTypeCreationAttributes = Optional<AccountTypeAttributes, "id" | "cre
 })
 export class AccountType extends Model<AccountTypeAttributes, AccountTypeCreationAttributes> {
   declare id: number;
-  declare userId: number | null;
   declare name: string;
   declare description?: string;
   declare createdAt: Date;
   declare updatedAt: Date;
+
+  declare accounts?: NonAttribute<Account[]>;
+
+  static associate() {
+    AccountType.hasOne(Account, {
+      foreignKey: "accountTypeId",
+    });
+    AccountType.belongsTo(User, {
+      foreignKey: "userId",
+    });
+  }
 
   public static configInit(SequelizeInstance: Sequelize) {
     AccountType.init(
@@ -37,12 +49,6 @@ export class AccountType extends Model<AccountTypeAttributes, AccountTypeCreatio
         userId: {
           type: DataTypes.BIGINT,
           allowNull: true,
-          references: {
-            model: {
-              tableName: "users",
-            },
-            key: "id",
-          },
         },
         name: {
           type: DataTypes.STRING(50),
@@ -55,12 +61,12 @@ export class AccountType extends Model<AccountTypeAttributes, AccountTypeCreatio
         createdAt: {
           type: DataTypes.DATE,
           allowNull: false,
-          defaultValue: Date.now(),
+          defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
         updatedAt: {
           type: DataTypes.DATE,
           allowNull: false,
-          defaultValue: Date.now(),
+          defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
       },
       {

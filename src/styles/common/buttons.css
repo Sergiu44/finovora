@@ -1,14 +1,14 @@
 @layer components {
   .btn {
-    @apply px-5 py-2.5 cursor-pointer bg-[var(--color-bg-main)] rounded-md;
+    @apply px-5 py-2.5 cursor-pointer bg-[var(--color-bg-main)] hover:bg-bg-main-hover rounded-md;
   }
 
   .btn-sm {
-    @apply px-3 py-1.5 text-sm;
+    @apply px-3 py-1.5 !text-sm;
   }
 
   .btn-lg {
-    @apply px-7 py-2.5 text-lg;
+    @apply px-7 py-2.5 !text-lg;
   }
 
   .btn-secondary {
@@ -16,7 +16,7 @@
   }
 
   .btn-outline {
-    @apply bg-[var(--color-white)] text-[var(--color-bg-main)] outline outline-[var(--color-bg-main)] hover:bg-neutral-100;
+    @apply bg-transparent text-white border border-white hover:bg-bg-main-light;
   }
 
   .btn-underline {

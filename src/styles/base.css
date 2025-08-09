@@ -12,6 +12,10 @@
     font: var(--h3);
   }
 
+  h4 {
+    font: var(--h4);
+  }
+
   p {
     font: var(--p);
   }

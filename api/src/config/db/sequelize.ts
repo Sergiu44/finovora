@@ -56,7 +56,7 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
           host: "localhost",
           dialect: "mysql",
           pool: {},
-          models: [User, Session, VerificationCode, AccountType, Account, Currency],
+          models: [User, Session, VerificationCode, Account, AccountType, Currency],
         });
       default:
         return new Sequelize("finovora", "root", "Copernic@1234", {
@@ -73,8 +73,11 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
     User.configInit(dbInstance);
     VerificationCode.configInit(dbInstance);
     Session.configInit(dbInstance);
-    AccountType.configInit(dbInstance);
-    Account.configInit(dbInstance);
     Currency.configInit(dbInstance);
+    Account.configInit(dbInstance);
+    AccountType.configInit(dbInstance);
+
+    Account.associate();
+    AccountType.associate();
   }
 }

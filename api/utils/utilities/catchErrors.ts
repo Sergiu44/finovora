@@ -7,6 +7,7 @@ const catchErrors = (controller: AsyncController): AsyncController => {
     try {
       await controller(req, res, next);
     } catch (err) {
+      console.error("Error in controller:", err);
       next(err);
     }
   };

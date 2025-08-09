@@ -6,20 +6,27 @@ export const useValidation = (validator: Validator) => {
   const checkOnlyOnSubmit = validator.getCheckOnlyOnSubmit();
 
   const [values, setValues] = useState(
-    Object.keys(formData).reduce((acc, el) => {
-      acc[el] = formData[el].value;
-      return acc;
-    }, {} as { [key: string]: any })
+    Object.keys(formData).reduce(
+      (acc, el) => {
+        acc[el] = formData[el].value;
+        return acc;
+      },
+      {} as { [key: string]: any }
+    )
   );
   const [errors, setErrors] = useState(
-    Object.keys(formData).reduce((acc, el) => {
-      acc[el] = "";
-      return acc;
-    }, {} as { [key: string]: any })
+    Object.keys(formData).reduce(
+      (acc, el) => {
+        acc[el] = "";
+        return acc;
+      },
+      {} as { [key: string]: any }
+    )
   );
 
-  const onChangeInput = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked } = ev.target;
+  const onChangeInput = (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = ev.target;
+    const checked = (ev.target as HTMLInputElement).checked || false;
     const inputValue = typeof values[name] === "boolean" ? checked : value;
     setErrors({ ...errors, [name]: "" });
 
@@ -35,7 +42,26 @@ export const useValidation = (validator: Validator) => {
     setErrors({
       ...errors,
       [name]: formData[name].validations.find(
-        (validation: { check: Function, errorMessage: string }) => !validation.check(inputValue)
+        (validation: { check: Function; errorMessage: string }) => !validation.check(inputValue)
+      )?.errorMessage,
+    });
+  };
+
+  const onChangeValue = (name: string, value: string) => {
+    setErrors({ ...errors, [name]: "" });
+    setValues({
+      ...values,
+      [name]: value,
+    });
+
+    if (checkOnlyOnSubmit) {
+      return;
+    }
+
+    setErrors({
+      ...errors,
+      [name]: formData[name].validations.find(
+        (validation: { check: Function; errorMessage: string }) => !validation.check(value)
       )?.errorMessage,
     });
   };
@@ -50,11 +76,7 @@ export const useValidation = (validator: Validator) => {
     });
     setErrors({ ...errors });
 
-    return (
-      Object.keys(errors).filter(
-        (key) => typeof errors[key] === "string" && errors[key].trim() !== ""
-      ).length > 0
-    );
+    return Object.keys(errors).filter((key) => typeof errors[key] === "string" && errors[key].trim() !== "").length > 0;
   };
 
   const applyErrorsFromApi = (errors: { [key: string]: string[] }) => {
@@ -73,5 +95,6 @@ export const useValidation = (validator: Validator) => {
     onChangeInput,
     handleCheckFormErrors,
     applyErrorsFromApi,
+    onChangeValue,
   };
 };

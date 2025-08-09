@@ -1,6 +1,8 @@
-import { DataTypes, Optional, Sequelize } from "sequelize";
-import { Model, Table } from "sequelize-typescript";
+import { DataTypes, NonAttribute, Optional, Sequelize } from "sequelize";
+import { HasMany, Model, Table } from "sequelize-typescript";
 import { compareValues, hashPassword } from "../../utils/utilities/bcrypt";
+import { Account } from "./account";
+import { AccountType } from "./accountType";
 
 type UserAttributes = {
   id: number;
@@ -12,6 +14,7 @@ type UserAttributes = {
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
+  primaryAccountId?: number;
 };
 
 type UserCreationAttributes = Optional<
@@ -33,6 +36,13 @@ export default class User extends Model<UserAttributes, UserCreationAttributes> 
   declare createdAt?: Date;
   declare updatedAt?: Date;
   declare deletedAt?: Date;
+  declare primaryAccountId?: number;
+
+  @HasMany(() => Account, "userId")
+  declare accounts: NonAttribute<Account[]>;
+
+  @HasMany(() => AccountType, "userId")
+  declare accountTypes: NonAttribute<AccountType[]>;
 
   public omitPassword(): Omit<UserAttributes, "password"> {
     const { password, ...userWithoutPassword } = this.dataValues;
@@ -49,6 +59,16 @@ export default class User extends Model<UserAttributes, UserCreationAttributes> 
           type: DataTypes.BIGINT,
           primaryKey: true,
           autoIncrement: true,
+        },
+        primaryAccountId: {
+          type: DataTypes.BIGINT,
+          allowNull: true,
+          references: {
+            model: "accounts",
+            key: "id",
+          },
+          onUpdate: "CASCADE",
+          onDelete: "SET NULL",
         },
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,

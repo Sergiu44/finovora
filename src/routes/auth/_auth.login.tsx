@@ -4,6 +4,7 @@ import { EyeIcon } from "@heroicons/react/16/solid";
 import { useState } from "react";
 import { EyeSlashIcon } from "@heroicons/react/20/solid";
 import { createEnhancedAxios } from "../../configs/axios";
+import { useUserMainAccount } from "../../context/UserMainAccount";
 
 export const Route = createFileRoute("/auth/_auth/login")({
   component: RouteComponent,
@@ -11,6 +12,7 @@ export const Route = createFileRoute("/auth/_auth/login")({
 
 function RouteComponent() {
   const [active, setIsActive] = useState(false);
+  const { setUserMainAccountId } = useUserMainAccount();
 
   const router = useRouter();
 
@@ -44,6 +46,7 @@ function RouteComponent() {
               .then(({ data }) => {
                 const { user, message } = data;
                 alert(message);
+                setUserMainAccountId(user.primaryAccountId);
                 localStorage.setItem("user", JSON.stringify(user));
                 router.navigate({ to: "/dashboard" });
               });

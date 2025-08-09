@@ -4,7 +4,7 @@ import AppErrorCode from "../constants/appErrorCode";
 import AppError from "./AppError";
 
 type AppAssert = (
-  condition: AssertPredicate | boolean | string | undefined | null,
+  condition: AssertPredicate | boolean | string | undefined | null | number,
   httpStatusCode: HttpStatusCode,
   message: string,
   appErrorCode?: AppErrorCode

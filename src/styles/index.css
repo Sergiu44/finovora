@@ -124,10 +124,19 @@ textarea:not([rows]) {
   --color-light-gray: hsl(0, 0%, 90%);
   --color-main: hsl(0, 0%, 70%);
   --color-main-washed: hsl(0, 0%, 55%);
+  --color-bg-main-hover: hsl(0, 0%, 30%);
   --color-bg-main: hsl(0, 0%, 25%);
   --color-bg-main-light: hsl(0, 0%, 12%);
-  --color-bg-dark: hsl(0, 0%, 2%);
+  --color-bg-dark: hsl(0, 0%, 7%);
   --color-black: hsl(0, 0%, 0%);
+
+  --color-error-200: hsl(0, 92%, 5%);
+  --color-error-300: hsl(359, 93%, 18%);
+  --color-error-400: hsl(359, 94%, 31%);
+  --color-error: hsl(359, 94%, 44%);
+  --color-error-600: hsl(359, 75%, 61%);
+  --color-error-700: hsl(358, 77%, 78%);
+  --color-error-800: hsl(358, 92%, 95%);
 
   --text-sm: 14px;
   --text-base: 16px;
@@ -144,8 +153,9 @@ textarea:not([rows]) {
   --h1: bold var(--text-ultra) / 60px var(--font-ff-alternative);
   --h2: bold var(--text-3xl) / 48px var(--font-ff-alternative);
   --h3: bold var(--text-2xl) / 36px var(--font-ff-alternative);
+  --h4: bold var(--text-xl) / 30px var(--font-ff-alternative);
   --links: var(--text-lg) / var(--text-lg) var(--font-ff);
-  --p: var(--text-lg) / 20px var(--font-ff);
+  --p: var(--text-base) / 20px var(--font-ff);
   --text: var(--text-base) / var(--text-lg) var(--font-ff);
   --subtext: var(--text-sm) / 16px var(--font-ff);
 }

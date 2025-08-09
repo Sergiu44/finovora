@@ -11,6 +11,8 @@ import sessionRoutes from "./routes/session.routes";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import accountTypesRoutes from "./routes/accounts/accountTypes.routes";
+import accountsRoutes from "./routes/accounts/accounts.routes";
+import currencyRoutes from "./routes/currency.routes";
 
 dotenv.config();
 
@@ -34,7 +36,8 @@ app.use("/sessions", sessionRoutes);
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/account-types", accountTypesRoutes);
-
+app.use("/accounts", accountsRoutes);
+app.use("/currencies", currencyRoutes); // Importing currency routes
 app.use(errorHandler);
 
 // Initialize database connection using factory
