@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useRouter } from "@tanstack/react-router";
 import "./dashboard.css";
 import IconLink from "../../components/IconLink";
 import {
@@ -17,6 +17,9 @@ import { createEnhancedAxios } from "../../configs/axios";
 import { useQuery } from "@tanstack/react-query";
 import { getAccountsForSwitch } from "../../actions/accounts/userAccounts";
 import { useUserMainAccount } from "../../context/UserMainAccount";
+import { Card } from "../../components/ui/card";
+import { PlusIcon, TypeIcon } from "lucide-react";
+import { Button } from "../../components/ui/button";
 
 export const Route = createFileRoute("/dashboard")({
   component: RouteComponent,
@@ -26,6 +29,7 @@ function RouteComponent() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [walletOpen, setWalletOpen] = useState(false);
   const { account, setUserMainAccountId } = useUserMainAccount();
+  const router = useRouter();
 
   const { data, status } = useQuery({
     queryKey: ["accounts"],
@@ -39,11 +43,12 @@ function RouteComponent() {
       })
       .then(() => {
         localStorage.removeItem("user");
+        router.navigate({ to: "/auth/login" });
       });
   };
   return (
     <div className="dashboard__grid-container">
-      <div className="flex flex-col border-r border-bg-main-light p-4 max-h-screen sticky top-0">
+      <Card className="flex flex-col border-r border-bg-main-light p-4 max-h-screen sticky top-0">
         <h3>Finovora</h3>
 
         <div className="flex flex-col mt-12 gap-2">
@@ -52,6 +57,8 @@ function RouteComponent() {
           <IconLink href="/dashboard/reports" icon={<DocumentIcon />} text="Reports"></IconLink>
 
           <IconLink href="/dashboard/billing" icon={<CreditCardIcon />} text="Billing" />
+
+          <IconLink href="/dashboard/categories" icon={<TypeIcon />} text="Categories" />
 
           <IconLink href="/dashboard/settings/profile" icon={<Cog6ToothIcon />} text="Settings" />
         </div>
@@ -84,6 +91,12 @@ function RouteComponent() {
                 </div>
               )}
             </AnimateChangeInHeight>
+            {!walletOpen && (
+              <Button className="flex items-center w-[85%] rounded-3xl mx-auto">
+                <PlusIcon />
+                <span className="font-bold text-[16px]">Add transaction</span>
+              </Button>
+            )}
             <div
               onClick={() => setWalletOpen(!walletOpen)}
               className="hover:bg-[var(--color-bg-main-light)] cursor-pointer pl-4 pr-2 py-4 rounded-md  flex items-center justify-between"
@@ -102,7 +115,7 @@ function RouteComponent() {
         ) : (
           <div className="mt-auto rounded-xl h-[40px] w-full animate-pulse bg-main"></div>
         )}
-      </div>
+      </Card>
 
       <div className="grow-1">
         <div className="bg-[var(--color-bg-main-light)] px-6 py-5">

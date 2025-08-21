@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { BaseProps } from "../types/components/BaseProps";
-import { useRef, useState, type PropsWithChildren } from "react";
-import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
+import { useState, type PropsWithChildren } from "react";
+import { ChevronRightIcon } from "@heroicons/react/16/solid";
 import { AnimatePresence, motion } from "framer-motion";
 import { AnimateChangeInHeight } from "../utils/hoc/AnimateChangeInHeight";
 
@@ -20,9 +20,9 @@ export default function IconLink({ icon, className, href, size, text, children }
         exact: href === "/dashboard",
       }}
       activeProps={{
-        className: "bg-bg-main hover:bg-bg-main",
+        className: "bg-primary hover:bg-primary/90 rounded-[32px] transition-all ease-in-out duration-500",
       }}
-      className={`select-none py-3 px-4 hover:bg-bg-main-light rounded-md cursor-pointer items-center gap-2 w-full ${className || ""}`}
+      className={`select-none py-3 px-4 hover:bg-bg-main-light cursor-pointer items-center gap-2 w-full ${className || ""}`}
     >
       {({ isActive }) => (
         <>

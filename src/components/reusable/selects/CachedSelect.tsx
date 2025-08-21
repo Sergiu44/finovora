@@ -41,7 +41,7 @@ export default function CachedSelect({
         name={name}
         disabled={isLoading}
       >
-        <SelectTrigger className="mt-2 text-black">
+        <SelectTrigger className="mt-2 text-white">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent className={`${errorMessage && "input-error"}`}>

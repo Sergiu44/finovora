@@ -5,6 +5,7 @@ import { useState } from "react";
 import { EyeSlashIcon } from "@heroicons/react/20/solid";
 import { createEnhancedAxios } from "../../configs/axios";
 import { useUserMainAccount } from "../../context/UserMainAccount";
+import { Button } from "../../components/ui/button";
 
 export const Route = createFileRoute("/auth/_auth/login")({
   component: RouteComponent,
@@ -72,7 +73,9 @@ function RouteComponent() {
             className="border border-neutral-200 w-full"
             placeholder="Enter password..."
           />
-          <button className="btn btn-secondary w-full mt-2">Submit</button>
+          <Button variant="secondary" className="w-full mt-2">
+            Submit
+          </Button>
 
           <div className="grid grid-cols-[1fr_30px_1fr] my-4">
             <div></div>
@@ -80,7 +83,7 @@ function RouteComponent() {
             <div></div>
           </div>
 
-          <button className="btn  btn-outline w-full">Continue with Google</button>
+          <Button className="w-full">Continue with Google</Button>
           <span className="mt-6 inline-block w-full text-center text-base">
             Don't have an account yet?
             <Link

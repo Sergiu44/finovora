@@ -18,6 +18,8 @@ import {
 import ConfirmationModal from "../../../../components/reusable/dialogs/ConfirmationModal";
 import { useState } from "react";
 import { Checkbox } from "../../../../components/ui/checkbox";
+import { Button } from "../../../../components/ui/button";
+import { Card } from "../../../../components/ui/card";
 
 export const Route = createFileRoute("/dashboard/settings/accounts/")({
   component: RouteComponent,
@@ -76,14 +78,11 @@ function RouteComponent() {
       <div className="grid grid-cols-[minmax(250px,max(20%,250px))_1fr] p-4">
         <div className="flex items-baseline justify-between col-span-2">
           <p className="font-bold col-span-2">Accounts</p>
-          <button
-            className="btn btn-sm btn-outline"
-            onClick={() => router.navigate({ to: "/dashboard/settings/accounts/create" })}
-          >
+          <Button size="sm" onClick={() => router.navigate({ to: "/dashboard/settings/accounts/create" })}>
             Add new account
-          </button>
+          </Button>
         </div>
-        <div className="w-full bg-bg-main mt-4 col-span-2 rounded-md p-8 relative">
+        <Card className="w-full  mt-4 col-span-2 rounded-md p-8 relative">
           {Object.keys(data[1]).length > 0 ? (
             <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto">
               {Object.keys(data[1]).map((accountType) => (
@@ -156,18 +155,18 @@ function RouteComponent() {
 
           {defaultAccountId !== null && (
             <div className="absolute bottom-12 right-16">
-              <button
-                className="btn btn-sm bg-white text-black opacity-80"
+              <Button
+                size="sm"
                 onClick={(e) => {
                   e.stopPropagation();
                   defaultAccountMutation.mutate(defaultAccountId);
                 }}
               >
                 Save default account
-              </button>
+              </Button>
             </div>
           )}
-        </div>
+        </Card>
       </div>
       <Separator className="col-span-2 bg-bg-main-light !h-[1.5px]" />
 

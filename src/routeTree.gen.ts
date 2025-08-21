@@ -22,6 +22,7 @@ import { Route as DashboardProfileImport } from './routes/dashboard/profile'
 import { Route as DashboardBillingImport } from './routes/dashboard/billing'
 import { Route as AuthAuthImport } from './routes/auth/_auth'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings/route'
+import { Route as DashboardCategoriesIndexImport } from './routes/dashboard/categories/index'
 import { Route as AuthAuthRegisterImport } from './routes/auth/_auth.register'
 import { Route as AuthAuthLoginImport } from './routes/auth/_auth.login'
 import { Route as AuthAuthForgotPasswordImport } from './routes/auth/_auth.forgot-password'
@@ -94,6 +95,12 @@ const AuthAuthRoute = AuthAuthImport.update({
 const DashboardSettingsRouteRoute = DashboardSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+
+const DashboardCategoriesIndexRoute = DashboardCategoriesIndexImport.update({
+  id: '/categories/',
+  path: '/categories/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 
@@ -252,6 +259,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAuthRegisterImport
       parentRoute: typeof AuthAuthImport
     }
+    '/dashboard/categories/': {
+      id: '/dashboard/categories/'
+      path: '/categories'
+      fullPath: '/dashboard/categories'
+      preLoaderRoute: typeof DashboardCategoriesIndexImport
+      parentRoute: typeof DashboardRouteImport
+    }
     '/dashboard/settings/accounts/create': {
       id: '/dashboard/settings/accounts/create'
       path: '/accounts/create'
@@ -333,6 +347,7 @@ interface DashboardRouteRouteChildren {
   DashboardProfileRoute: typeof DashboardProfileRoute
   DashboardReportsRoute: typeof DashboardReportsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardCategoriesIndexRoute: typeof DashboardCategoriesIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
@@ -341,6 +356,7 @@ const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardProfileRoute: DashboardProfileRoute,
   DashboardReportsRoute: DashboardReportsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardCategoriesIndexRoute: DashboardCategoriesIndexRoute,
 }
 
 const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
@@ -386,6 +402,7 @@ export interface FileRoutesByFullPath {
   '/auth/forgot-password': typeof AuthAuthForgotPasswordRoute
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
+  '/dashboard/categories': typeof DashboardCategoriesIndexRoute
   '/dashboard/settings/accounts/create': typeof DashboardSettingsAccountsCreateRoute
   '/dashboard/settings/accounts': typeof DashboardSettingsAccountsIndexRoute
   '/dashboard/settings/accounts/edit/$accountId': typeof DashboardSettingsAccountsEditAccountIdRouteRoute
@@ -406,6 +423,7 @@ export interface FileRoutesByTo {
   '/auth/forgot-password': typeof AuthAuthForgotPasswordRoute
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
+  '/dashboard/categories': typeof DashboardCategoriesIndexRoute
   '/dashboard/settings/accounts/create': typeof DashboardSettingsAccountsCreateRoute
   '/dashboard/settings/accounts': typeof DashboardSettingsAccountsIndexRoute
   '/dashboard/settings/accounts/edit/$accountId': typeof DashboardSettingsAccountsEditAccountIdRouteRoute
@@ -429,6 +447,7 @@ export interface FileRoutesById {
   '/auth/_auth/forgot-password': typeof AuthAuthForgotPasswordRoute
   '/auth/_auth/login': typeof AuthAuthLoginRoute
   '/auth/_auth/register': typeof AuthAuthRegisterRoute
+  '/dashboard/categories/': typeof DashboardCategoriesIndexRoute
   '/dashboard/settings/accounts/create': typeof DashboardSettingsAccountsCreateRoute
   '/dashboard/settings/accounts/': typeof DashboardSettingsAccountsIndexRoute
   '/dashboard/settings/accounts/edit/$accountId': typeof DashboardSettingsAccountsEditAccountIdRouteRoute
@@ -452,6 +471,7 @@ export interface FileRouteTypes {
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
+    | '/dashboard/categories'
     | '/dashboard/settings/accounts/create'
     | '/dashboard/settings/accounts'
     | '/dashboard/settings/accounts/edit/$accountId'
@@ -471,6 +491,7 @@ export interface FileRouteTypes {
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
+    | '/dashboard/categories'
     | '/dashboard/settings/accounts/create'
     | '/dashboard/settings/accounts'
     | '/dashboard/settings/accounts/edit/$accountId'
@@ -492,6 +513,7 @@ export interface FileRouteTypes {
     | '/auth/_auth/forgot-password'
     | '/auth/_auth/login'
     | '/auth/_auth/register'
+    | '/dashboard/categories/'
     | '/dashboard/settings/accounts/create'
     | '/dashboard/settings/accounts/'
     | '/dashboard/settings/accounts/edit/$accountId'
@@ -541,7 +563,8 @@ export const routeTree = rootRoute
         "/dashboard/billing",
         "/dashboard/profile",
         "/dashboard/reports",
-        "/dashboard/"
+        "/dashboard/",
+        "/dashboard/categories/"
       ]
     },
     "/demo": {
@@ -601,6 +624,10 @@ export const routeTree = rootRoute
     "/auth/_auth/register": {
       "filePath": "auth/_auth.register.tsx",
       "parent": "/auth/_auth"
+    },
+    "/dashboard/categories/": {
+      "filePath": "dashboard/categories/index.tsx",
+      "parent": "/dashboard"
     },
     "/dashboard/settings/accounts/create": {
       "filePath": "dashboard/settings/accounts/create.tsx",

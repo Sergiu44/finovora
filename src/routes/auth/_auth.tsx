@@ -8,10 +8,10 @@ export const Route = createFileRoute("/auth/_auth")({
 function RouteComponent() {
   return (
     <div className="grid grid-cols-5 h-full">
-      <div className="bg-white col-span-2 text-black">
+      <div className="col-span-2 text-black bg-white">
         <Outlet />
       </div>
-      <div className="col-span-3">
+      <div className="col-span-3 bg-black">
         <Auth3DModels />
       </div>
     </div>

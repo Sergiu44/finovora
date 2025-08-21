@@ -137,3 +137,21 @@ export const setDefaultAccountHandler = catchErrors(async (req: Request, res: Re
 
   return res.status(200).json({ message: "Default account set successfully" });
 });
+
+export const deleteAccountHandler = catchErrors(async (req: Request, res: Response) => {
+  const accountId = req.params.id;
+  const userId = req.userId;
+
+  const deletedCount = await Account.destroy({
+    where: {
+      id: accountId,
+      userId: userId,
+    },
+  });
+
+  if (deletedCount === 0) {
+    return res.status(404).json({ message: "Account not found or not deleted" });
+  }
+
+  return res.status(200).json({ message: "Account deleted successfully" });
+});

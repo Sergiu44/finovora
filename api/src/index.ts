@@ -13,6 +13,7 @@ import userRoutes from "./routes/user.routes";
 import accountTypesRoutes from "./routes/accounts/accountTypes.routes";
 import accountsRoutes from "./routes/accounts/accounts.routes";
 import currencyRoutes from "./routes/currency.routes";
+import categoryRoutes from "./routes/category.routes";
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/account-types", accountTypesRoutes);
 app.use("/accounts", accountsRoutes);
+app.use("/categories", categoryRoutes);
 app.use("/currencies", currencyRoutes); // Importing currency routes
 app.use(errorHandler);
 

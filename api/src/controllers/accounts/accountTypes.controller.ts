@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import catchErrors from "../../../utils/utilities/catchErrors";
 import { AccountType } from "../../models/accountType";
 import { Op } from "sequelize";
-import { createAccountTypeSchema, deletAccountTypeSchema } from "../schemas/accountTypes.schemas";
+import { createAccountTypeSchema, deletAccountTypeSchema } from "../../schemas/accountTypes.schemas";
 import User from "../../models/user";
 import appAssert from "../../../utils/utilities/appAssert";
 import { NOT_FOUND } from "../../../utils/constants/http";

@@ -2,6 +2,7 @@ import { Router } from "express";
 import authenticate from "../../middleware/authenticate";
 import {
   createAccountHandler,
+  deleteAccountHandler,
   getAccountHandler,
   getAccountsForSwitchHandler,
   getAccountsGroupedByAccountTypeHandler,
@@ -19,5 +20,6 @@ accountsRoutes.get("/switch", [authenticate], getAccountsForSwitchHandler);
 accountsRoutes.get("/groupedByAccountTypes", [authenticate], getAccountsGroupedByAccountTypeHandler);
 accountsRoutes.put("/:id", [authenticate], updateAccountHandler);
 accountsRoutes.get("/:id", [authenticate], getAccountHandler);
+accountsRoutes.delete("/:id", [authenticate], deleteAccountHandler);
 
 export default accountsRoutes;

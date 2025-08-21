@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Input from "../../components/reusable/inputs/Input";
 import InputCode from "../../components/reusable/inputs/InputCode";
 import { createEnhancedAxios } from "../../configs/axios";
+import { Button } from "../../components/ui/button";
 export const Route = createFileRoute("/auth/_auth/register")({
   component: RouteComponent,
 });
@@ -120,7 +121,9 @@ function RouteComponent() {
                 className="border border-neutral-200 w-full pl-6!"
                 placeholder="Confirm password..."
               />
-              <button className="btn font-bold btn-secondary w-full mt-2">Submit</button>
+              <Button variant="secondary" className="w-full mt-2">
+                Submit
+              </Button>
 
               <div className="grid grid-cols-[1fr_30px_1fr] my-8">
                 <div></div>
@@ -128,13 +131,16 @@ function RouteComponent() {
                 <div></div>
               </div>
 
-              <button className="btn font-bold btn-outline w-full">Continue with Google</button>
-              <Link
-                className="text-center hover:decoration-1 hover:underline text-base text-[var(--color-bg-main)] mt-6 block"
-                to="/auth/register"
-              >
-                Already having an account? Log in here
-              </Link>
+              <Button className="w-full">Continue with Google</Button>
+              <span className="mt-6 inline-block w-full text-center text-base">
+                Already having an account?
+                <Link
+                  className="text-center inline-block hover:decoration-1 hover:underline text-[var(--color-bg-main)] ml-1"
+                  to="/auth/login"
+                >
+                  Log in here
+                </Link>
+              </span>
             </form>
           </div>
 
@@ -163,7 +169,7 @@ function RouteComponent() {
 
             <div className="flex items-center flex-col">
               <p>Didn't receive the code?</p>
-              <button className="btn text-[var(--color-white)] mt-2">Resend code</button>
+              <Button>Resend code</Button>
             </div>
 
             <div className="text-center mt-4">

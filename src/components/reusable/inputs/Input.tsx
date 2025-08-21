@@ -1,6 +1,7 @@
-import React from "react";
+import React, { type Ref } from "react";
 import type { BaseProps } from "../../../types/components/BaseProps";
 import { ExclamationTriangleIcon } from "@heroicons/react/16/solid";
+import { Input } from "../../ui/input";
 
 interface InputProps extends BaseProps {
   leftElement?: React.ReactNode;
@@ -15,9 +16,11 @@ interface InputProps extends BaseProps {
   errorMessage?: string;
   id?: string;
   mode?: "input" | "textarea";
+  ref?: Ref<HTMLInputElement | HTMLTextAreaElement>;
+  onBlur?: (ev: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
 
-export default function Input({
+export default function CustomInput({
   className,
   id,
   leftElement,
@@ -29,7 +32,9 @@ export default function Input({
   size,
   errorMessage,
   onChange,
+  onBlur,
   defaultValue,
+  ref,
   value,
   mode = "input",
 }: InputProps) {
@@ -40,16 +45,18 @@ export default function Input({
           {label}
         </label>
       )}
-      <div className="flex items-center relative mt-2">
+      <div className="flex items-center relative">
         {leftElement && <div className={`inputLeft ${size && "inputLeft-" + size}`}>{leftElement}</div>}
-        <input
+        <Input
+          onBlur={onBlur}
+          ref={ref as Ref<HTMLInputElement>}
           defaultValue={defaultValue}
           onChange={onChange}
           value={value}
           id={id}
           name={name}
           type={type}
-          className={`input ${size && "input-" + size} ${className} ${!leftElement && "pl-3!"} ${errorMessage && "input-error"}`}
+          className={`${className} ${!leftElement && "pl-3!"} ${errorMessage && "input-error"}`}
           placeholder={placeholder}
         />
 
@@ -71,6 +78,8 @@ export default function Input({
       )}
 
       <textarea
+        onBlur={onBlur}
+        ref={ref as Ref<HTMLTextAreaElement>}
         rows={4}
         defaultValue={defaultValue}
         onChange={onChange}

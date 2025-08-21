@@ -3,10 +3,7 @@ export default class Validator {
   public configuration: { [key: string]: any } = {};
   public checkOnlyOnSubmit: boolean = false;
 
-  constructor(
-  ) {
-
-  }
+  constructor() {}
 
   forProperty = (name: string, value = "") => {
     const keys = name.split(".");

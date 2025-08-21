@@ -11,6 +11,7 @@ import {
 import { TrashIcon } from "@heroicons/react/16/solid";
 import { useQueryClient, type InvalidateQueryFilters, type UseMutateFunction } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { Button } from "../../ui/button";
 
 interface IConfirmationModalProps<T> {
   open: boolean;
@@ -28,12 +29,14 @@ export default function ConfirmationModal<T>(props: IConfirmationModalProps<T>) 
     <Dialog open={props.open}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-bg-main">Are you sure?</DialogTitle>
+          <DialogTitle>Are you sure?</DialogTitle>
           <DialogDescription>{props.description || "You are about to delete something"}</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <DialogClose onClick={() => props.setOpen(false)} asChild>
-            <button className="btn btn-sm">Cancel</button>
+            <Button variant="outline" size="sm">
+              Cancel
+            </Button>
           </DialogClose>
           <form
             onSubmit={(e) => {
@@ -53,11 +56,7 @@ export default function ConfirmationModal<T>(props: IConfirmationModalProps<T>) 
               });
             }}
           >
-            <button
-              onClick={() => console.log("test")}
-              className="flex items-center gap-1 btn btn-sm bg-error outline-error hover:bg-error-400 font-bold"
-              type="submit"
-            >
+            <Button size="sm" onClick={() => console.log("test")} variant="destructive" type="submit">
               {props.loading ? (
                 <div className="flex items-center gap-2 text-sm">
                   <svg
@@ -92,7 +91,7 @@ export default function ConfirmationModal<T>(props: IConfirmationModalProps<T>) 
                   <TrashIcon className="w-4 h-4 fill-white" />
                 </>
               )}
-            </button>
+            </Button>
           </form>
         </DialogFooter>
       </DialogContent>

@@ -1,5 +1,5 @@
 import { DataTypes, Sequelize, Optional, NonAttribute } from "sequelize";
-import { BelongsTo, Column, ForeignKey, HasOne, Model, Table } from "sequelize-typescript";
+import { Model, Table } from "sequelize-typescript";
 import { AccountType } from "./accountType";
 import User from "./user";
 import { Currency } from "./currency";

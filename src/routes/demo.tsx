@@ -5,6 +5,7 @@ import VALIDATIONS from "../utils/hooks/useValidation";
 import { useValidation } from "../utils/hooks/useValidation/useValidation";
 import IconLink from "../components/IconLink";
 import { FaceSmileIcon } from "@heroicons/react/16/solid";
+import { Button } from "../components/ui/button";
 
 export const Route = createFileRoute("/demo")({
   component: RouteComponent,
@@ -18,11 +19,10 @@ function RouteComponent() {
   return (
     <div className="flex flex-col">
       <div className="flex gap-2 items-center">
-        <button className="btn btn-sm">.btn .btn-sm</button>
-        <button className="btn">.btn</button>
-        <button className="btn btn-lg">.btn .btn-lg</button>
-
-        <button className="btn btn-outline">.btn .btn-outline</button>
+        <Button className="btn btn-sm">.btn .btn-sm</Button>
+        <Button className="btn">.btn</Button>
+        <Button className="btn btn-lg">.btn .btn-lg</Button>
+        <Button className="btn btn-outline">.btn .btn-outline</Button>
       </div>
 
       <div>

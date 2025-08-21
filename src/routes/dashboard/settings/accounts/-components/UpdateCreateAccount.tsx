@@ -8,6 +8,7 @@ import { createUserAccount, updateUserAccount, type CreateAccount } from "../../
 import Input from "../../../../../components/reusable/inputs/Input";
 import CachedSelect from "../../../../../components/reusable/selects/CachedSelect";
 import { toast } from "sonner";
+import { Button } from "../../../../../components/ui/button";
 
 interface IUpdateCreateAccountProps {
   id?: string;
@@ -131,16 +132,14 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
           placeholder="Description: Accounts for extra income"
         />
         <div className="flex gap-2 self-end">
-          <button
+          <Button
+            variant="outline"
             type="button"
-            className="btn btn-outline"
             onClick={() => router.navigate({ to: "/dashboard/settings/accounts" })}
           >
             Cancel
-          </button>
-          <button type="submit" className="btn btn-primary">
-            {isPending ? "Loading..." : props.data?.name ? "Edit" : "Create"}
-          </button>
+          </Button>
+          <Button type="submit">{isPending ? "Loading..." : props.data?.name ? "Edit" : "Create"}</Button>
         </div>
       </form>
     </div>

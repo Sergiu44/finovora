@@ -10,6 +10,7 @@ import VALIDATIONS from "../../../../../../utils/hooks/useValidation";
 import { useRouter } from "@tanstack/react-router";
 import Input from "../../../../../../components/reusable/inputs/Input";
 import { useEffect } from "react";
+import { Button } from "../../../../../../components/ui/button";
 
 interface IUpdateCreateAccountTypeProps {
   id?: string;
@@ -96,16 +97,15 @@ export default function UpdateCreateAccountType(props: IUpdateCreateAccountTypeP
           className="w-full"
           placeholder="Description: Accounts for extra income"
         />
-        <button
+        <Button
           type="button"
-          className="btn mb-4"
+          variant="ghost"
+          className="mb-4"
           onClick={() => router.navigate({ to: "/dashboard/settings/accounts/account-types" })}
         >
           Cancel
-        </button>
-        <button type="submit" className="btn btn-primary">
-          {props.data?.name ? "Edit" : "Create"}
-        </button>
+        </Button>
+        <Button type="submit">{props.data?.name ? "Edit" : "Create"}</Button>
       </form>
     </div>
   );

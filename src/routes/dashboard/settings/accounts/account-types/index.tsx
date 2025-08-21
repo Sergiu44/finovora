@@ -21,6 +21,7 @@ import {
   DropdownMenuSeparator,
 } from "../../../../../components/ui/dropdown-menu";
 import ConfirmationModal from "../../../../../components/reusable/dialogs/ConfirmationModal";
+import { Button } from "../../../../../components/ui/button";
 
 export const Route = createFileRoute("/dashboard/settings/accounts/account-types/")({
   component: RouteComponent,
@@ -72,13 +73,14 @@ function RouteComponent() {
           <ChevronLeftIcon className="h-6 w-6" />
           <h3>Account types</h3>
         </span>
-        <button
+        <Button
+          size="sm"
           onClick={() => router.navigate({ to: "/dashboard/settings/accounts/account-types/create" })}
-          className="btn btn-sm text-sm px-3 py-2 flex items-center gap-0.5"
+          className="text-sm px-3 py-2 flex items-center gap-0.5"
         >
           <PlusIcon className="h-3.5 w-3.5" />
           Create Account Type
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-3 gap-10 mt-6">
@@ -89,8 +91,8 @@ function RouteComponent() {
                 <div className="font-bold">{data[selectedAccountType].name}</div>
                 <div className="flex items-center gap-2">
                   {data[selectedAccountType].userId && (
-                    <button
-                      className="btn btn-sm"
+                    <Button
+                      size="sm"
                       onClick={() =>
                         router.navigate({
                           to: `/dashboard/settings/accounts/account-types/${data[selectedAccountType].id}`,
@@ -98,13 +100,13 @@ function RouteComponent() {
                       }
                     >
                       Edit
-                    </button>
+                    </Button>
                   )}
                   <DropdownMenu>
                     <DropdownMenuTrigger className="btn btn-sm flex gap-1.5 items-center">
                       Actions <EllipsisVerticalIcon className="w-4 h-4" />{" "}
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="rounded-md text-bg-main-light p-2">
+                    <DropdownMenuContent className="rounded-md p-2">
                       <DropdownMenuItem>Profile</DropdownMenuItem>
                       <DropdownMenuItem>Billing</DropdownMenuItem>
                       <DropdownMenuItem>Team</DropdownMenuItem>

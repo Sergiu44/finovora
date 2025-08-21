@@ -7,10 +7,7 @@ const X = 4;
 const Y = 6;
 
 export default function Auth3DModels() {
-  const font = useFont("../../../../public/nunito.json");
-
   const cardAuthRef = useRef<Mesh>(null);
-  const fontRef = useRef<Mesh>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -18,8 +15,8 @@ export default function Auth3DModels() {
 
     // Apply rotation based on mouse position
     // Using smaller multipliers for smoother rotation
-    const rotationX = mousePosition.y * 0.01; // Vertical mouse movement affects X rotation
-    const rotationY = mousePosition.x * 0.01; // Horizontal mouse movement affects Y rotation
+    const rotationX = mousePosition.y * 0.02; // Vertical mouse movement affects X rotation
+    const rotationY = mousePosition.x * 0.02; // Horizontal mouse movement affects Y rotation
 
     cardAuthRef.current.rotation.x = rotationX;
     cardAuthRef.current.rotation.y = rotationY;
@@ -36,7 +33,7 @@ export default function Auth3DModels() {
     window.addEventListener("mousemove", handleMouseMove);
 
     return () => {
-      window.removeEventListener("mousemove", (e) => handleMouseMove);
+      window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
 

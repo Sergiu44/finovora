@@ -6,7 +6,7 @@ import {
   registerSchema,
   resetPasswordSchema,
   verificationCodeSchema,
-} from "./schemas/auth.schemas";
+} from "../schemas/auth.schemas";
 import {
   createAccount,
   loginUser,
