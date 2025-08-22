@@ -8,6 +8,7 @@ import { AccountType } from "../../models/accountType";
 import { Account } from "../../models/account";
 import { Currency } from "../../models/currency";
 import { Category } from "../../models/category";
+import { TransactionType } from "../../models/transactionType";
 
 export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
   private static instance: SequelizeDatabaseWrapper | null = null;
@@ -57,7 +58,7 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
           host: "localhost",
           dialect: "mysql",
           pool: {},
-          models: [User, Session, VerificationCode, Account, AccountType, Currency, Category],
+          models: [User, Session, VerificationCode, Account, AccountType, Currency, Category, TransactionType],
         });
       default:
         return new Sequelize("finovora", "root", "Copernic@1234", {

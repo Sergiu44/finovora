@@ -1,6 +1,7 @@
 import { DataTypes, NonAttribute, Sequelize } from "sequelize";
 import { Model, Table } from "sequelize-typescript";
 import User from "./user";
+import { TransactionType } from "./transactionType";
 
 type CategoryAttributes = {
   id: number;
@@ -9,6 +10,7 @@ type CategoryAttributes = {
   createdAt: Date;
   updatedAt: Date;
   parentCategoryId: number | null;
+  transactionTypeId: number;
 };
 
 type CategoryCreationAttributes = Omit<CategoryAttributes, "id" | "createdAt" | "updatedAt">;
@@ -26,6 +28,8 @@ export class Category extends Model<CategoryAttributes, CategoryCreationAttribut
   declare updatedAt: Date;
   declare parentCategoryId: number | null;
   declare parentCategory?: NonAttribute<Category>;
+  declare transactionTypeId: number;
+  declare transactionType?: NonAttribute<TransactionType>;
 
   static associate() {
     Category.belongsTo(User, {
@@ -40,6 +44,10 @@ export class Category extends Model<CategoryAttributes, CategoryCreationAttribut
       foreignKey: "parentCategoryId",
       as: "subCategories",
       onDelete: "CASCADE",
+    });
+    Category.hasOne(TransactionType, {
+      foreignKey: "transactionTypeId",
+      as: "transactionType",
     });
   }
 
@@ -78,6 +86,14 @@ export class Category extends Model<CategoryAttributes, CategoryCreationAttribut
           allowNull: true,
           references: {
             model: Category,
+            key: "id",
+          },
+        },
+        transactionTypeId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: TransactionType,
             key: "id",
           },
         },

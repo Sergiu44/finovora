@@ -14,9 +14,11 @@ const validator = new Validator().forProperty("name").check(VALIDATIONS.isRequir
 export default function TableCategoriesCreateRow({
   columns,
   parentCategoryId,
+  transactionTypeId,
 }: {
   columns: any[];
   parentCategoryId?: string;
+  transactionTypeId: number;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -26,7 +28,7 @@ export default function TableCategoriesCreateRow({
   const { mutate } = useMutation({
     mutationKey: ["createCategory"],
     mutationFn: (data: CreateCategory) => {
-      return createCategory(data, parentCategoryId);
+      return createCategory(data);
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
@@ -39,6 +41,7 @@ export default function TableCategoriesCreateRow({
     mutate({
       name: values["name"] as string,
       parentCategoryId: undefined,
+      transactionTypeId,
     });
   };
 

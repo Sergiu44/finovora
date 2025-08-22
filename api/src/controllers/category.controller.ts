@@ -6,8 +6,9 @@ import appAssert from "../../utils/utilities/appAssert";
 import { NOT_FOUND } from "../../utils/constants/http";
 
 export const getCategoriesAsync = catchErrors(async (req: Request, res: Response) => {
+  const { type } = req.query;
   const categories = await Category.findAll({
-    where: { userId: req.userId, parentCategoryId: null },
+    where: { userId: req.userId, parentCategoryId: null, transactionTypeId: type as string },
     attributes: ["name", "id"],
     include: [
       {
@@ -21,8 +22,8 @@ export const getCategoriesAsync = catchErrors(async (req: Request, res: Response
 });
 
 export const createCategoryAsync = catchErrors(async (req: Request, res: Response) => {
-  const { name, parentCategoryId } = req.body;
-  const category = await Category.create({ name, parentCategoryId, userId: req.userId });
+  const { name, parentCategoryId, transactionTypeId } = req.body;
+  const category = await Category.create({ name, parentCategoryId, userId: req.userId, transactionTypeId });
   return res.status(201).json(category);
 });
 

@@ -6,21 +6,25 @@ export interface BaseCategory {
   subCategories: BaseCategory[];
 }
 
-export async function getCategories(): Promise<BaseCategory[]> {
+export async function getCategories(categoriesType?: number): Promise<BaseCategory[]> {
   const { data } = await createEnhancedAxios().get(`${import.meta.env.VITE_API_URL}/categories`, {
     withCredentials: true,
+    params: {
+      type: categoriesType,
+    },
   });
   return data;
 }
 
 export interface CreateCategory {
   name: string;
+  transactionTypeId: number;
   parentCategoryId?: string;
 }
-export async function createCategory(data: CreateCategory, parentCategoryId?: string): Promise<boolean[]> {
+export async function createCategory(data: CreateCategory): Promise<boolean[]> {
   const { data: response } = await createEnhancedAxios().post(
     `${import.meta.env.VITE_API_URL}/categories`,
-    { ...data, parentCategoryId },
+    { ...data },
     {
       withCredentials: true,
     }

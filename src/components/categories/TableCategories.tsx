@@ -17,19 +17,22 @@ import React, { Fragment, useMemo, useState } from "react";
 import { type BaseCategory } from "../../actions/categories";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Button } from "../ui/button";
-import { ChevronDown, ChevronDownIcon, ChevronRightIcon, EditIcon } from "lucide-react";
+import { ChevronDownIcon, ChevronRightIcon, EditIcon } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
 import TableCategoriesCreateRow from "./TableCategoriesCreateRow";
 import EditCategoryDialog from "./EditCategoryDialog";
+import type { CategoryType } from "../../types/enums/TransactionTypes";
 
 export default function TableCategories({
   data,
   setRowSelection,
   rowSelection,
+  transactionTypeId,
 }: {
   data: BaseCategory[];
   setRowSelection: React.Dispatch<React.SetStateAction<{}>>;
   rowSelection: RowSelectionState;
+  transactionTypeId: CategoryType;
 }) {
   const [selectedCategory, setSelectedCategory] = useState<{ name: string; id: string } | null>(null);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -134,11 +137,15 @@ export default function TableCategories({
                 ))}
               </TableRow>
               {row.getIsExpanded() && row.depth === 0 && (
-                <TableCategoriesCreateRow parentCategoryId={row.original.id} columns={columns} />
+                <TableCategoriesCreateRow
+                  transactionTypeId={transactionTypeId}
+                  parentCategoryId={row.original.id}
+                  columns={columns}
+                />
               )}
             </Fragment>
           ))}
-          <TableCategoriesCreateRow columns={columns} />
+          <TableCategoriesCreateRow transactionTypeId={transactionTypeId} columns={columns} />
         </TableBody>
       </Table>
 
