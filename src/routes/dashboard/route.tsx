@@ -20,12 +20,14 @@ import { useUserMainAccount } from "../../context/UserMainAccount";
 import { Card } from "../../components/ui/card";
 import { PlusIcon, TypeIcon } from "lucide-react";
 import { Button } from "../../components/ui/button";
+import AddTransactionForCurrentAccount from "../../components/dashboard/AddTransactionForCurrentAccount";
 
 export const Route = createFileRoute("/dashboard")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const [addTransactionOpen, setAddTransactionOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [walletOpen, setWalletOpen] = useState(false);
   const { account, setUserMainAccountId } = useUserMainAccount();
@@ -68,7 +70,7 @@ function RouteComponent() {
           <div className="mt-auto">
             <AnimateChangeInHeight className="mb-2">
               {walletOpen && (
-                <div className="py-3 rounded-md bg-[var(--color-bg-main-light)] text-[var(--color-white)] ">
+                <div className="py-3 rounded-md bg-bg-main-light text-white ">
                   {data && data.length > 0 ? (
                     data?.map((account) => (
                       <div
@@ -76,7 +78,7 @@ function RouteComponent() {
                           setWalletOpen(false);
                           setUserMainAccountId(account.id);
                         }}
-                        className="mx-2 px-4 rounded-md py-3 flex justify-between items-start cursor-pointer hover:bg-bg-main-hover"
+                        className="mx-2 px-4 rounded-3xl py-3 flex justify-between items-start cursor-pointer hover:bg-bg-main-hover"
                         key={account.id}
                       >
                         <div className="text-gray-500">{account.name}</div>
@@ -92,14 +94,18 @@ function RouteComponent() {
               )}
             </AnimateChangeInHeight>
             {!walletOpen && (
-              <Button className="flex items-center w-[85%] rounded-3xl mx-auto">
+              <Button
+                onClick={() => setAddTransactionOpen(true)}
+                className="flex items-center w-[85%] rounded-3xl mx-auto"
+                variant="default"
+              >
                 <PlusIcon />
                 <span className="font-bold text-[16px]">Add transaction</span>
               </Button>
             )}
             <div
               onClick={() => setWalletOpen(!walletOpen)}
-              className="hover:bg-[var(--color-bg-main-light)] cursor-pointer pl-4 pr-2 py-4 rounded-md  flex items-center justify-between"
+              className="hover:bg-bg-main-light cursor-pointer pl-4 pr-2 py-4 mt-1 rounded-md  flex items-center justify-between"
             >
               <p className="text-sm text-light-gray text-ellipsis overflow-hidden whitespace-nowrap">
                 {account && account.name}
@@ -118,7 +124,7 @@ function RouteComponent() {
       </Card>
 
       <div className="grow-1">
-        <div className="bg-[var(--color-bg-main-light)] px-6 py-5">
+        <div className="bg-bg-main-light px-6 py-5">
           <div className="flex items-start justify-between">
             <span className="font-bold">{moment().format("DD MMM YYYY")}</span>
 
@@ -129,28 +135,28 @@ function RouteComponent() {
                 <div className="mt-auto relative">
                   <div
                     onClick={() => setMenuOpen(!menuOpen)}
-                    className="hover:bg-[var(--color-bg-main-light)] cursor-pointer px-4 py-2 rounded-md  flex items-center justify-between"
+                    className="hover:bg-bg-main-light cursor-pointer px-4 py-2 rounded-md  flex items-center justify-between"
                   >
                     <p className="text-sm">stanciusergiu988@gmail.com</p>
                     <ChevronUpDownIcon className="icon" />
                   </div>
 
-                  <AnimateChangeInHeight className="mb-2 absolute inset-x-0">
+                  <AnimateChangeInHeight className="mb-2 absolute z-100 inset-x-0">
                     {menuOpen && (
                       <div className="py-2 rounded-md bg-bg-main-light text-white">
-                        <div className="flex px-6 cursor-pointer  py-2 items-center justify-between">
+                        <div className="flex px-6 cursor-pointer py-2 items-center justify-between">
                           <div>My Profile</div>
-                          <ArrowLeftStartOnRectangleIcon className="icon icon-sm" />
+                          <ArrowLeftStartOnRectangleIcon className="h-6 w-6" />
                         </div>
-                        <div className="flex px-6 cursor-pointer  py-2 items-center justify-between">
+                        <div className="flex px-6 cursor-pointer py-2 items-center justify-between">
                           <div>Settings</div>
-                          <ArrowLeftStartOnRectangleIcon className="icon icon-sm" />
+                          <ArrowLeftStartOnRectangleIcon className="h-6 w-6" />
                         </div>
 
-                        <div className="h-[1px] bg-[var(--color-bg-main)] w-full my-2" />
+                        <div className="h-[1px] bg-bg-main w-full my-2" />
                         <div className="flex px-6 cursor-pointer  py-2 items-center justify-between">
                           <div onClick={async () => handleLogout()}>Logout</div>
-                          <ArrowLeftStartOnRectangleIcon className="icon icon-sm" />
+                          <ArrowLeftStartOnRectangleIcon className="h-6 w-6" />
                         </div>
                       </div>
                     )}
@@ -166,6 +172,7 @@ function RouteComponent() {
           </div>
         </div>
       </div>
+      <AddTransactionForCurrentAccount open={addTransactionOpen} setOpen={setAddTransactionOpen} />
     </div>
   );
 }

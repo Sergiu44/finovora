@@ -1,6 +1,6 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("categories", {
+    await queryInterface.createTable("transaction-categories", {
       id: {
         type: Sequelize.BIGINT,
         allowNull: false,
@@ -31,20 +31,29 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
       },
+      transactionTypeId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "transaction-types",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
+      },
       parentCategoryId: {
         type: Sequelize.BIGINT,
         allowNull: true,
         onDelete: "CASCADE",
         references: {
           model: {
-            tableName: "categories",
+            tableName: "transaction-categories",
           },
           key: "id",
         },
       },
     });
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("categories");
+  async down(queryInterface) {
+    await queryInterface.dropTable("transaction-categories");
   },
 };

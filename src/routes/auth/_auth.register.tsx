@@ -58,7 +58,7 @@ function RouteComponent() {
           <div className="">
             <div className="mb-10 block">
               <h3 className="block!">Sign in into your account</h3>
-              <p className="tracking-tight mt-2 mb-6 text-[var(--color-bg-main)] ">
+              <p className="tracking-tight mt-2 mb-6 text-muted-foreground">
                 Access your account in order to be able to start a budget plan
               </p>
             </div>
@@ -135,7 +135,7 @@ function RouteComponent() {
               <span className="mt-6 inline-block w-full text-center text-base">
                 Already having an account?
                 <Link
-                  className="text-center inline-block hover:decoration-1 hover:underline text-[var(--color-bg-main)] ml-1"
+                  className="text-center inline-block hover:decoration-1 hover:underline text-muted-foreground ml-1"
                   to="/auth/login"
                 >
                   Log in here
@@ -145,7 +145,7 @@ function RouteComponent() {
           </div>
 
           <div className="text-center">
-            <Link className="text-base  text-[var(--color-main-washed)]" to="/auth/forgot-password">
+            <Link className="text-base text-muted-foreground" to="/auth/forgot-password">
               Forgot your password?
             </Link>
           </div>
@@ -173,7 +173,7 @@ function RouteComponent() {
             </div>
 
             <div className="text-center mt-4">
-              <p className="text-2xl text-[var(--color-black)]">
+              <p className="text-2xl text-foreground">
                 {Math.floor((300 - counter) / 60)}:{(300 - counter) % 60 < 10 ? "0" : ""}
                 {(300 - counter) % 60}
               </p>

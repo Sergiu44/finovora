@@ -24,7 +24,7 @@ function RouteComponent() {
       <div className="">
         <div className="mb-10 block">
           <h3 className="block!">Sign in into your account</h3>
-          <p className="tracking-tight mt-2 mb-6 text-[var(--color-bg-main)] ">
+          <p className="tracking-tight mt-2 mb-6 text-muted-foreground">
             Access your account in order to be able to start a budget plan
           </p>
         </div>
@@ -87,7 +87,7 @@ function RouteComponent() {
           <span className="mt-6 inline-block w-full text-center text-base">
             Don't have an account yet?
             <Link
-              className="text-center inline-block hover:decoration-1 hover:underline text-[var(--color-bg-main)] ml-1"
+              className="text-center inline-block hover:decoration-1 hover:underline text-muted-foreground ml-1"
               to="/auth/register"
             >
               Start here
@@ -97,7 +97,7 @@ function RouteComponent() {
       </div>
 
       <div className="text-center">
-        <Link className="text-sm text-[var(--color-main-washed)]" to="/auth/forgot-password">
+        <Link className="text-sm text-muted-foreground" to="/auth/forgot-password">
           Forgot your password?
         </Link>
       </div>

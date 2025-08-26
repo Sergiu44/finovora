@@ -5,12 +5,9 @@ interface AnimateChangeInHeightProps extends PropsWithChildren {
   className?: string;
 }
 
-export const AnimateChangeInHeight: React.FC<AnimateChangeInHeightProps> = ({
-  children,
-  className,
-}) => {
+export const AnimateChangeInHeight: React.FC<AnimateChangeInHeightProps> = ({ children, className }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [height, setHeight] = useState<number | "auto">("auto");
+  const [height, setHeight] = useState<number | "auto">(0);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -32,7 +29,7 @@ export const AnimateChangeInHeight: React.FC<AnimateChangeInHeightProps> = ({
       className={`${className} overflow-hidden`}
       style={{ height }}
       animate={{ height }}
-      transition={{ duration: 0.1 }}
+      transition={{ duration: 0.25 }}
     >
       <div ref={containerRef}>{children}</div>
     </motion.div>

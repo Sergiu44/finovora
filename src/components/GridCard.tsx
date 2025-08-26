@@ -11,30 +11,12 @@ interface GridCardProps extends PropsWithChildren<BaseProps> {
   wrapperClassname?: string;
 }
 
-export default function GridCard({
-  title,
-  wrapperClassname = "col-span-1",
-  className,
-  size,
-  children,
-}: GridCardProps) {
-  const renderTitle = useCallback(() => {
-    switch (size) {
-      case "lg":
-        return <h2 className="mb-4!">{title.text}</h2>;
-      case "sm":
-        return <p className="mb-2!">{title.text}</p>;
-      default:
-        return <h3 className="mb-3!">{title.text}</h3>;
-    }
-  }, [size]);
+export default function GridCard({ title, wrapperClassname = "col-span-1", className, children }: GridCardProps) {
   return (
     <div className={wrapperClassname}>
-      {!title.inside && renderTitle()}
-      <div
-        className={`${size ? `grid-card grid-card-${size}` : "grid-card"} ${className}`}
-      >
-        {title.inside && renderTitle()}
+      {!title.inside && <h1>{title.text}</h1>}
+      <div className={`${className}`}>
+        {title.inside && <h1>{title.text}</h1>}
         {children}
       </div>
     </div>

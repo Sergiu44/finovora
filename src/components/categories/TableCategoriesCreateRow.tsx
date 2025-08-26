@@ -8,6 +8,7 @@ import { type CreateCategory, createCategory } from "../../actions/categories";
 import Validator from "../../hooks/useValidation/Validator";
 import VALIDATIONS from "../../utils/hooks/useValidation";
 import { useValidation } from "../../hooks/useValidation/useValidation";
+import { Input } from "../ui/input";
 
 const validator = new Validator().forProperty("name").check(VALIDATIONS.isRequired, "Name is required");
 
@@ -70,23 +71,20 @@ export default function TableCategoriesCreateRow({
         {isCreating ? (
           <form onSubmit={handleCreateCategory} ref={formRef}>
             <div className="relative">
-              <CustomInput
+              <Input
                 type="text"
-                mode="input"
                 onChange={(ev) => onChangeInput(ev as React.ChangeEvent<HTMLInputElement>)}
                 value={(values["name"] || "") as string}
                 name="name"
-                rightElement={
-                  <Button
-                    type="submit"
-                    disabled={!!errors["name"] || values["name"] === ""}
-                    className="h-[28px] px-3 rounded-xl"
-                  >
-                    Save
-                  </Button>
-                }
                 placeholder="Create a new (sub)category"
               />
+              <Button
+                type="submit"
+                disabled={!!errors["name"] || values["name"] === ""}
+                className="h-[28px] px-3 rounded-xl absolute right-2 z-10 top-1"
+              >
+                Save
+              </Button>
             </div>
           </form>
         ) : (

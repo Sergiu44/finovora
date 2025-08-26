@@ -23,7 +23,7 @@ function RouteComponent() {
     queryFn: () => getCategories(categoriesType),
   });
 
-  const { mutate: deleteMutate, status: deleteStatus } = useMutation({
+  const { mutate: deleteMutate } = useMutation({
     mutationKey: ["deleteCategories"],
     mutationFn: deleteCategories,
     onSuccess: () => {

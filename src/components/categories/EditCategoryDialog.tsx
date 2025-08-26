@@ -1,8 +1,8 @@
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
-import CustomInput from "../reusable/inputs/Input";
 import { Button } from "../ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { editCategory } from "../../actions/categories";
+import { Input } from "../ui/input";
 
 export default function EditCategoryDialog({
   category,
@@ -38,8 +38,8 @@ export default function EditCategoryDialog({
           <DialogHeader>
             <DialogTitle>Edit Category</DialogTitle>
           </DialogHeader>
-          <CustomInput name="id" type="hidden" defaultValue={category.id} />
-          <CustomInput name="categoryName" defaultValue={category.name} />
+          <Input name="id" type="hidden" defaultValue={category.id} />
+          <Input name="categoryName" defaultValue={category.name} />
 
           <DialogFooter>
             <DialogClose asChild>
