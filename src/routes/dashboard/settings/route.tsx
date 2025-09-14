@@ -14,7 +14,7 @@ function RouteComponent() {
   return (
     <>
       <h1 className="text-2xl font-bold">Settings</h1>
-      <Tabs defaultValue="profile" className="w-[400px]">
+      <Tabs defaultValue="profile" className="w-[400px] my-2">
         <TabsList>
           <TabsTrigger onClick={() => handleTabChange("profile")} value="profile">
             Profile

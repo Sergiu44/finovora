@@ -11,6 +11,8 @@ interface ICachedSelectProps {
   errorMessage?: string;
   onChange: (value: string) => void;
   defaultValue?: string;
+  className?: string;
+  params?: Record<string, string>;
 }
 
 export default function CachedSelect({
@@ -20,12 +22,16 @@ export default function CachedSelect({
   errorMessage,
   onChange,
   defaultValue,
+  className,
+  params,
 }: PropsWithChildren<ICachedSelectProps>) {
   const [value, setValue] = useState<string | undefined>(undefined);
   const { data, isLoading } = useQuery({
-    queryKey: [`cached-select-${entityName}`],
+    queryKey: [`cached-select-${entityName}`, params],
     queryFn: async () => {
-      const response = await createEnhancedAxios().get(`${import.meta.env.VITE_API_URL}/${entityName}/dropdown`);
+      const response = await createEnhancedAxios().get(`${import.meta.env.VITE_API_URL}/${entityName}/dropdown`, {
+        params,
+      });
       return response.data;
     },
   });
@@ -41,7 +47,7 @@ export default function CachedSelect({
         name={name}
         disabled={isLoading}
       >
-        <SelectTrigger className="mt-2 text-white">
+        <SelectTrigger className={`${className} mt-2`}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent className={`${errorMessage && "input-error"}`}>

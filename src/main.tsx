@@ -3,8 +3,8 @@ import { createRoot } from "react-dom/client";
 import "./styles/index.css";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
-import { Toaster } from "sonner";
 import Providers from "./context/Providers";
+import { Toaster } from "./components/ui/sonner";
 
 const router = createRouter({ routeTree });
 

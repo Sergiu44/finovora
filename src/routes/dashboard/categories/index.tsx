@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { deleteCategories, getCategories } from "../../../actions/categories";
-import TableCategories from "../../../components/categories/TableCategories";
+import { deleteCategories, getCategories } from "../../../utils/actions/categories";
+import TableCategories from "./-components/TableCategories";
 import { Button } from "../../../components/ui/button";
 import { useState } from "react";
 import { type RowSelectionState } from "@tanstack/react-table";
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/dashboard/categories/")({
 });
 
 function RouteComponent() {
-  const [categoriesType, setCategoriesType] = useState(CategoryType.INCOME);
+  const [categoriesType, setCategoriesType] = useState(CategoryType.Income);
   const queryClient = useQueryClient();
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const { data, status } = useQuery({
@@ -46,7 +46,7 @@ function RouteComponent() {
         </Button>
       </div>
       <RadioGroup
-        className="flex my-6"
+        className="flex my-6 gap-0"
         value={categoriesType.toString()}
         onValueChange={(e) =>
           setCategoriesType(
@@ -59,9 +59,12 @@ function RouteComponent() {
         }
       >
         {getEnumValues(CategoryType).map((key) => (
-          <div className="relative flex items-center gap-2" key={key}>
-            <RadioGroupItem value={CategoryType[key as keyof typeof CategoryType].toString()} id={key} />
-            <Label className="p-4" htmlFor={key}>
+          <div className="relative flex items-center gap-2" key={"categories-" + key}>
+            <RadioGroupItem
+              value={CategoryType[key as keyof typeof CategoryType].toString()}
+              id={"categories-" + key}
+            />
+            <Label className="p-4" htmlFor={"categories-" + key}>
               {key}
             </Label>
           </div>

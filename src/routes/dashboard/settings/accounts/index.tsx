@@ -6,7 +6,7 @@ import {
   type InvalidateQueryFilters,
   type UseMutateFunction,
 } from "@tanstack/react-query";
-import { getUserAccountTypes, type DeleteAccountType } from "../../../../actions/accounts/userAccountTypes";
+import { getUserAccountTypes, type DeleteAccountType } from "../../../../utils/actions/accounts/userAccountTypes";
 import { Separator } from "../../../../components/ui/separator";
 import { ArrowRightIcon, LockClosedIcon, PencilIcon, TrashIcon } from "@heroicons/react/16/solid";
 import {
@@ -14,7 +14,7 @@ import {
   getUserAccountsGroupedByAccountTypes,
   setUserAccountAsDefault,
   type DeleteAccount,
-} from "../../../../actions/accounts/userAccounts";
+} from "../../../../utils/actions/accounts/userAccounts";
 import ConfirmationModal from "../../../../components/reusable/dialogs/ConfirmationModal";
 import { useState } from "react";
 import { Checkbox } from "../../../../components/ui/checkbox";
@@ -82,7 +82,7 @@ function RouteComponent() {
             Add new account
           </Button>
         </div>
-        <Card className="w-full  mt-4 col-span-2 rounded-md p-8 relative">
+        <Card className="w-full  mt-4 col-span-2 rounded-md p-8 relative border-muted bg-card">
           {Object.keys(data[1]).length > 0 ? (
             <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto">
               {Object.keys(data[1]).map((accountType) => (
@@ -145,7 +145,7 @@ function RouteComponent() {
                       )}
                     </div>
                   </div>
-                  <hr className="border-main-washed" />
+                  <hr className="border-border" />
                 </div>
               ))}
             </div>

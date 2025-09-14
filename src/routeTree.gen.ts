@@ -13,7 +13,6 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as DemoImport } from './routes/demo'
 import { Route as DashboardRouteImport } from './routes/dashboard/route'
 import { Route as IndexImport } from './routes/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
@@ -42,12 +41,6 @@ const AuthImport = createFileRoute('/auth')()
 const AuthRoute = AuthImport.update({
   id: '/auth',
   path: '/auth',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const DemoRoute = DemoImport.update({
-  id: '/demo',
-  path: '/demo',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -180,13 +173,6 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRoute
-    }
-    '/demo': {
-      id: '/demo'
-      path: '/demo'
-      fullPath: '/demo'
-      preLoaderRoute: typeof DemoImport
       parentRoute: typeof rootRoute
     }
     '/dashboard/settings': {
@@ -392,7 +378,6 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
-  '/demo': typeof DemoRoute
   '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
   '/auth': typeof AuthAuthRouteWithChildren
   '/dashboard/billing': typeof DashboardBillingRoute
@@ -413,7 +398,6 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/demo': typeof DemoRoute
   '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
   '/auth': typeof AuthAuthRouteWithChildren
   '/dashboard/billing': typeof DashboardBillingRoute
@@ -436,7 +420,6 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRouteWithChildren
-  '/demo': typeof DemoRoute
   '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/auth/_auth': typeof AuthAuthRouteWithChildren
@@ -461,7 +444,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
-    | '/demo'
     | '/dashboard/settings'
     | '/auth'
     | '/dashboard/billing'
@@ -481,7 +463,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/demo'
     | '/dashboard/settings'
     | '/auth'
     | '/dashboard/billing'
@@ -502,7 +483,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/dashboard'
-    | '/demo'
     | '/dashboard/settings'
     | '/auth'
     | '/auth/_auth'
@@ -526,14 +506,12 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
-  DemoRoute: typeof DemoRoute
   AuthRoute: typeof AuthRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
-  DemoRoute: DemoRoute,
   AuthRoute: AuthRouteWithChildren,
 }
 
@@ -549,7 +527,6 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/dashboard",
-        "/demo",
         "/auth"
       ]
     },
@@ -566,9 +543,6 @@ export const routeTree = rootRoute
         "/dashboard/",
         "/dashboard/categories/"
       ]
-    },
-    "/demo": {
-      "filePath": "demo.tsx"
     },
     "/dashboard/settings": {
       "filePath": "dashboard/settings/route.tsx",

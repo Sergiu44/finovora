@@ -14,6 +14,7 @@ import accountTypesRoutes from "./routes/accounts/accountTypes.routes";
 import accountsRoutes from "./routes/accounts/accounts.routes";
 import currencyRoutes from "./routes/currency.routes";
 import categoryRoutes from "./routes/category.routes";
+import transactionRoutes from "./routes/transaction.routes";
 
 dotenv.config();
 
@@ -39,7 +40,9 @@ app.use("/user", userRoutes);
 app.use("/account-types", accountTypesRoutes);
 app.use("/accounts", accountsRoutes);
 app.use("/categories", categoryRoutes);
-app.use("/currencies", currencyRoutes); // Importing currency routes
+app.use("/currencies", currencyRoutes);
+app.use("/transactions", transactionRoutes);
+
 app.use(errorHandler);
 
 // Initialize database connection using factory

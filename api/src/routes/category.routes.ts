@@ -4,6 +4,7 @@ import {
   deleteBulkCategoriesAsync,
   editCategoryAsync,
   getCategoriesAsync,
+  getCategoriesDropdownAsync,
 } from "../controllers/category.controller";
 import authenticate from "../middleware/authenticate";
 
@@ -13,4 +14,5 @@ categoryRoutes.get("/", [authenticate], getCategoriesAsync);
 categoryRoutes.post("/", [authenticate], createCategoryAsync);
 categoryRoutes.delete("/", [authenticate], deleteBulkCategoriesAsync);
 categoryRoutes.put("/:id", [authenticate], editCategoryAsync);
+categoryRoutes.get("/dropdown", [authenticate], getCategoriesDropdownAsync);
 export default categoryRoutes;

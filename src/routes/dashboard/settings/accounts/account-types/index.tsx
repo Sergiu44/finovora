@@ -11,7 +11,7 @@ import {
   deleteUserAccountType,
   getUserAccountTypes,
   type DeleteAccountType,
-} from "../../../../../actions/accounts/userAccountTypes";
+} from "../../../../../utils/actions/accounts/userAccountTypes";
 import { useEffect, useState } from "react";
 import {
   DropdownMenu,

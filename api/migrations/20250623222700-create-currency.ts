@@ -17,7 +17,7 @@ module.exports = {
         allowNull: false,
       },
       symbol: {
-        type: Sequelize.STRING(10), // e.g., '$', '€'
+        type: Sequelize.STRING(10),
         allowNull: false,
       },
     });

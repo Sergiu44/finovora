@@ -3,14 +3,14 @@ import {
   createUserAccountType,
   updateUserAccountType,
   type CreateAccountType,
-} from "../../../../../../actions/accounts/userAccountTypes";
+} from "../../../../../../utils/actions/accounts/userAccountTypes";
 import { useValidation } from "../../../../../../utils/hooks/useValidation/useValidation";
-import Validator from "../../../../../../hooks/useValidation/Validator";
 import VALIDATIONS from "../../../../../../utils/hooks/useValidation";
 import { useRouter } from "@tanstack/react-router";
-import Input from "../../../../../../components/reusable/inputs/Input";
 import { useEffect } from "react";
 import { Button } from "../../../../../../components/ui/button";
+import Validator from "../../../../../../utils/hooks/useValidation/Validator";
+import { Input } from "../../../../../../components/ui/input";
 
 interface IUpdateCreateAccountTypeProps {
   id?: string;
@@ -83,13 +83,13 @@ export default function UpdateCreateAccountType(props: IUpdateCreateAccountTypeP
       </p>
       <form onSubmit={handleSubmit}>
         <Input
-          errorMessage={errors["name"]}
           onChange={onChangeInput}
           defaultValue={props.data?.name || ""}
           name="name"
           className="w-full"
           placeholder="Name: Vouchers"
         />
+        {errors["name"] && <p className="text-red-500">{errors["name"]}</p>}
         <Input
           onChange={onChangeInput}
           defaultValue={props.data?.description || ""}

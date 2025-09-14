@@ -16,7 +16,7 @@ type CategoryAttributes = {
 type CategoryCreationAttributes = Omit<CategoryAttributes, "id" | "createdAt" | "updatedAt">;
 
 @Table({
-  tableName: "categories",
+  tableName: "transaction-categories",
   timestamps: true,
   freezeTableName: true,
 })
@@ -45,7 +45,7 @@ export class Category extends Model<CategoryAttributes, CategoryCreationAttribut
       as: "subCategories",
       onDelete: "CASCADE",
     });
-    Category.hasOne(TransactionType, {
+    Category.belongsTo(TransactionType, {
       foreignKey: "transactionTypeId",
       as: "transactionType",
     });
@@ -100,7 +100,7 @@ export class Category extends Model<CategoryAttributes, CategoryCreationAttribut
       },
       {
         sequelize: SequelizeInstance,
-        tableName: "categories",
+        tableName: "transaction-categories",
         timestamps: true,
         freezeTableName: true,
       }

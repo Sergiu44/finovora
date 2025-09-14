@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import Auth3DModels from "../../components/auth/Auth3DModels";
+import Logo from "../../components/reusable/utils/Logo";
 
 export const Route = createFileRoute("/auth/_auth")({
   component: RouteComponent,
@@ -7,12 +7,15 @@ export const Route = createFileRoute("/auth/_auth")({
 
 function RouteComponent() {
   return (
-    <div className="grid grid-cols-5 h-full">
-      <div className="col-span-2 text-black bg-white">
-        <Outlet />
+    <div className="grid grid-rows-[100px_1fr] h-full">
+      {/* <Auth3DModels /> */}
+      <div className="flex justify-between items-center my-auto w-5/7 mx-auto h-[100px]">
+        <Logo />
+        {/* <h1 className="text-2xl font-bold">Finovora</h1> */}
       </div>
-      <div className="col-span-3 bg-black">
-        <Auth3DModels />
+
+      <div className="relative grid place-content-center text-black">
+        <Outlet />
       </div>
     </div>
   );

@@ -80,10 +80,10 @@ type LoginParams = {
 
 export const loginUser = async ({ email, password, userAgent }: LoginParams) => {
   const newUser = await User.findOne({ where: { email } });
-  appAssert(newUser, UNAUTHORIZED, "Invalid email or password");
+  appAssert(newUser, NOT_FOUND, "Email/password combination does not exist");
 
   const isValid = await newUser.comparePassword(newUser, password);
-  appAssert(isValid, UNAUTHORIZED, "Invalid email or password");
+  appAssert(isValid, UNAUTHORIZED, "Email/password combination does not exist");
 
   const userId = newUser.id;
   const newSession = await Session.create({

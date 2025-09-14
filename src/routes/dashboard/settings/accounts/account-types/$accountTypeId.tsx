@@ -1,7 +1,7 @@
 import { createFileRoute, Router, useLoaderData, useParams } from "@tanstack/react-router";
 import { createEnhancedAxios } from "../../../../../configs/axios";
 import UpdateCreateAccountType from "./-components/UpdateCreateAccountType";
-import { getUserAccountType } from "../../../../../actions/accounts/userAccountTypes";
+import { getUserAccountType } from "../../../../../utils/actions/accounts/userAccountTypes";
 
 export const Route = createFileRoute("/dashboard/settings/accounts/account-types/$accountTypeId")({
   component: RouteComponent,

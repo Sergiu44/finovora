@@ -1,42 +1,50 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import Input from "../../components/reusable/inputs/Input";
-import { EyeIcon } from "@heroicons/react/16/solid";
-import { useState } from "react";
-import { EyeSlashIcon } from "@heroicons/react/20/solid";
 import { createEnhancedAxios } from "../../configs/axios";
 import { useUserMainAccount } from "../../context/UserMainAccount";
 import { Button } from "../../components/ui/button";
+import { useValidation } from "../../utils/hooks/useValidation/useValidation";
+import Validator from "../../utils/hooks/useValidation/Validator";
+import VALIDATIONS from "../../utils/hooks/useValidation";
+import CustomInput from "../../components/reusable/inputs/CustomInput";
+import { EyeClosedIcon, EyeIcon } from "lucide-react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/auth/_auth/login")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const { errors, onChangeInput, applyErrorsFromApi, setErrors } = useValidation(
+    new Validator()
+      .forProperty("email")
+      .check(VALIDATIONS.isEmail, "Invalid email")
+      .forProperty("password")
+      .check(VALIDATIONS.isRequired, "Password is required")
+  );
   const [active, setIsActive] = useState(false);
   const { setUserMainAccountId } = useUserMainAccount();
 
   const router = useRouter();
 
   return (
-    <div className="w-3/4 mx-auto py-20 flex flex-col justify-between h-full">
-      <h1>Finovora</h1>
-
+    <div className="mx-auto pb-20 flex flex-col justify-between h-full">
       <div className="">
-        <div className="mb-10 block">
-          <h3 className="block!">Sign in into your account</h3>
-          <p className="tracking-tight mt-2 mb-6 text-muted-foreground">
+        <div className="mb-4 block">
+          <h3 className="text-lg">Sign in into your account</h3>
+          <p className="text-sm text-muted-foreground font-bold">
             Access your account in order to be able to start a budget plan
           </p>
         </div>
         <form
           className="block"
           onSubmit={(e) => {
+            setErrors({ ...errors, email: "", password: "" });
             e.preventDefault();
 
             const formData = new FormData(e.currentTarget);
             const email = formData.get("email");
             const password = formData.get("password");
-            createEnhancedAxios()
+            createEnhancedAxios(undefined, applyErrorsFromApi)
               .post(
                 `${import.meta.env.VITE_API_URL}/auth/login`,
                 { email, password },
@@ -45,33 +53,36 @@ function RouteComponent() {
                 }
               )
               .then(({ data }) => {
-                const { user, message } = data;
-                alert(message);
+                const { user } = data;
+
                 setUserMainAccountId(user.primaryAccountId);
                 localStorage.setItem("user", JSON.stringify(user));
                 router.navigate({ to: "/dashboard" });
               });
           }}
         >
-          <Input name="email" type="email" className="border border-neutral-200 w-full" placeholder="Enter email..." />
-          <Input
-            rightElement={
-              active ? (
-                <EyeSlashIcon
-                  onClick={() => setIsActive(false)}
-                  className="fill-neutral-400 hover:fill-neutral-500 cursor-pointer h-4 w-4"
-                />
-              ) : (
-                <EyeIcon
-                  onClick={() => setIsActive(true)}
-                  className="fill-neutral-400 hover:fill-neutral-500 cursor-pointer h-4 w-4"
-                />
-              )
-            }
+          <CustomInput
+            name="email"
+            onChange={onChangeInput}
+            type="email"
+            placeholder="Enter email..."
+            errorMessage={errors["email"]}
+          />
+
+          <CustomInput
             name="password"
             type={active ? "text" : "password"}
-            className="border border-neutral-200 w-full"
             placeholder="Enter password..."
+            wrapperClassName="mt-2"
+            onChange={onChangeInput}
+            errorMessage={errors["password"]}
+            leftElement={
+              active ? (
+                <EyeIcon onClick={() => setIsActive(!active)} className="h-4 w-4 select-none" />
+              ) : (
+                <EyeClosedIcon onClick={() => setIsActive(!active)} className="h-4 w-4 select-none" />
+              )
+            }
           />
           <Button variant="secondary" className="w-full mt-2">
             Submit

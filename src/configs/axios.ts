@@ -3,7 +3,10 @@ import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { toast } from "sonner";
 
 // Custom enhancer function
-export function createEnhancedAxios(config?: AxiosRequestConfig): AxiosInstance {
+export function createEnhancedAxios(
+  config?: AxiosRequestConfig,
+  applyErrorsFromApi?: (errors: any[]) => void
+): AxiosInstance {
   const instance = axios.create(config);
 
   // Request Interceptor
@@ -26,16 +29,26 @@ export function createEnhancedAxios(config?: AxiosRequestConfig): AxiosInstance 
 
   // Response Interceptor
   instance.interceptors.response.use(
-    (response: AxiosResponse) => response,
+    (response: AxiosResponse) => {
+      if (response.data.message) {
+        toast.success("Success", { description: response.data.message });
+      }
+      return response;
+    },
     async (error: AxiosError) => {
       if (error.response) {
         const status = error.response.status;
         // Try to infer a better type for data
-        const data = error.response.data as { message?: string } | undefined;
-        const message = data?.message || error.message;
+        const data = error.response.data as any;
+        const message = data!.message || error.message;
         switch (status) {
           case 400:
-            toast.error("Bad Request", { description: message });
+            applyErrorsFromApi?.(data.errors);
+            toast.error("Bad Request", {
+              description:
+                "Invalid fields: " + Array.from(new Set(data.errors.map((error: any) => error.path))).join(", "),
+              duration: 5000,
+            });
             break;
           case 401:
             toast.error("Unauthorized", { description: "Session expired. Redirecting to login...", duration: 5000 });
@@ -49,6 +62,7 @@ export function createEnhancedAxios(config?: AxiosRequestConfig): AxiosInstance 
             toast.error("Forbidden", { description: message });
             break;
           case 404:
+            console.log(message);
             toast.error("Not Found", { description: message });
             break;
           case 500:

@@ -4,6 +4,7 @@ import {
   createAccountHandler,
   deleteAccountHandler,
   getAccountHandler,
+  getAccountsDropDownHandler,
   getAccountsForSwitchHandler,
   getAccountsGroupedByAccountTypeHandler,
   getAccountsHandler,
@@ -15,6 +16,7 @@ const accountsRoutes = Router();
 
 accountsRoutes.put("/set", [authenticate], setDefaultAccountHandler);
 accountsRoutes.get("/", [authenticate], getAccountsHandler);
+accountsRoutes.get("/dropdown", [authenticate], getAccountsDropDownHandler);
 accountsRoutes.post("/", [authenticate], createAccountHandler);
 accountsRoutes.get("/switch", [authenticate], getAccountsForSwitchHandler);
 accountsRoutes.get("/groupedByAccountTypes", [authenticate], getAccountsGroupedByAccountTypeHandler);

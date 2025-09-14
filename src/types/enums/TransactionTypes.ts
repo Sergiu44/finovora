@@ -1,10 +1,11 @@
 export enum CategoryType {
-  INCOME = 1,
-  EXPENSE = 2,
+  Income = 1,
+  Expense = 2,
+  Transfer = 3,
 }
 
 export enum TransactionTypes {
-  INCOME = 1,
-  EXPENSE = 2,
-  TRANSFER = 3,
+  Income = 1,
+  Expense = 2,
+  Transfer = 3,
 }

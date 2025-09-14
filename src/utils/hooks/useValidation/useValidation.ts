@@ -67,7 +67,7 @@ export const useValidation = (validator: Validator) => {
   };
 
   const handleCheckFormErrors = () => {
-    let errors = {} as { [key: string]: string };
+    const errors = {} as { [key: string]: string };
     Object.keys(values).map((key) => {
       const validation = formData[key].validations.find(
         (validation: { check: Function }) => !validation.check(values[key])
@@ -79,10 +79,10 @@ export const useValidation = (validator: Validator) => {
     return Object.keys(errors).filter((key) => typeof errors[key] === "string" && errors[key].trim() !== "").length > 0;
   };
 
-  const applyErrorsFromApi = (errors: { [key: string]: string[] }) => {
-    let errorsToAppend = {} as { [key: string]: string };
-    Object.keys(errors).map((key) => {
-      errorsToAppend[key] = errors[key][0];
+  const applyErrorsFromApi = (errors: any[]) => {
+    const errorsToAppend = {} as { [key: string]: string };
+    errors.forEach((error) => {
+      errorsToAppend[error.path] = error.message;
     });
 
     setErrors({ ...errors, ...errorsToAppend });
@@ -92,6 +92,7 @@ export const useValidation = (validator: Validator) => {
     values,
     setValues,
     errors,
+    setErrors,
     onChangeInput,
     handleCheckFormErrors,
     applyErrorsFromApi,

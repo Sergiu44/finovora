@@ -1,5 +1,7 @@
 import { DataTypes, Optional, Sequelize } from "sequelize";
 import { Model, Table } from "sequelize-typescript";
+import { Transaction } from "./transaction";
+import { Category } from "./category";
 
 type TransactionTypeAttributes = {
   id: number;
@@ -11,7 +13,7 @@ type TransactionTypeAttributes = {
 type TransactionTypeCreationAttributes = Optional<TransactionTypeAttributes, "id" | "name" | "createdAt" | "updatedAt">;
 
 @Table({
-  tableName: "transactionTypes",
+  tableName: "transaction-types",
   timestamps: true,
   freezeTableName: true,
 })
@@ -20,6 +22,17 @@ export class TransactionType extends Model<TransactionTypeAttributes, Transactio
   declare name: string;
   declare createdAt: Date;
   declare updatedAt: Date;
+
+  static associate() {
+    TransactionType.hasMany(Transaction, {
+      foreignKey: "transactionTypeId",
+      as: "transactions",
+    });
+    TransactionType.hasMany(Category, {
+      foreignKey: "transactionTypeId",
+      as: "categories",
+    });
+  }
 
   public static configInit(SequelizeInstance: Sequelize) {
     TransactionType.init(
@@ -45,7 +58,7 @@ export class TransactionType extends Model<TransactionTypeAttributes, Transactio
           defaultValue: DataTypes.NOW,
         },
       },
-      { sequelize: SequelizeInstance, tableName: "transactionTypes", timestamps: true }
+      { sequelize: SequelizeInstance, tableName: "transaction-types", timestamps: true }
     );
   }
 }

@@ -1,14 +1,18 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useValidation } from "../../../../../utils/hooks/useValidation/useValidation";
-import Validator from "../../../../../hooks/useValidation/Validator";
 import VALIDATIONS from "../../../../../utils/hooks/useValidation";
 import { useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { createUserAccount, updateUserAccount, type CreateAccount } from "../../../../../actions/accounts/userAccounts";
-import Input from "../../../../../components/reusable/inputs/Input";
+import {
+  createUserAccount,
+  updateUserAccount,
+  type CreateAccount,
+} from "../../../../../utils/actions/accounts/userAccounts";
 import CachedSelect from "../../../../../components/reusable/selects/CachedSelect";
 import { toast } from "sonner";
 import { Button } from "../../../../../components/ui/button";
+import Validator from "../../../../../utils/hooks/useValidation/Validator";
+import { Input } from "../../../../../components/ui/input";
 
 interface IUpdateCreateAccountProps {
   id?: string;
@@ -96,13 +100,13 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
       </p>
       <form onSubmit={handleSubmit} className="flex flex-col gap-2">
         <Input
-          errorMessage={errors["name"]}
           onChange={onChangeInput}
           defaultValue={props.data?.name || ""}
           name="name"
           className="w-full text-sm"
           placeholder="Name: Vouchers"
         />
+        {errors["name"] && <p className="text-red-500">{errors["name"]}</p>}
 
         <CachedSelect
           onChange={(value) => onChangeValue("accountTypeId", value)}
@@ -123,7 +127,6 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
         />
 
         <Input
-          errorMessage={errors["description"]}
           mode="textarea"
           onChange={onChangeInput}
           defaultValue={props.data?.description || ""}
@@ -131,6 +134,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
           className="w-full text-sm mt-2"
           placeholder="Description: Accounts for extra income"
         />
+        {errors["description"] && <p className="text-red-500">{errors["description"]}</p>}
         <div className="flex gap-2 self-end">
           <Button
             variant="outline"

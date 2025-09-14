@@ -155,3 +155,22 @@ export const deleteAccountHandler = catchErrors(async (req: Request, res: Respon
 
   return res.status(200).json({ message: "Account deleted successfully" });
 });
+
+export const getAccountsDropDownHandler = catchErrors(async (req: Request, res: Response) => {
+  const accounts = await Account.findAll({
+    where: {
+      userId: req.userId,
+    },
+    include: [
+      { model: AccountType, as: "accountType", attributes: ["id", "name"] },
+      { model: Currency, as: "currency", attributes: ["id", "code", "symbol"] },
+    ],
+  });
+
+  const dropdownData = accounts.map((account) => ({
+    id: account.id,
+    value: `${account.name} (${account.accountType.name})`,
+  }));
+
+  return res.status(200).json(dropdownData);
+});

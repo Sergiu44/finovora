@@ -1,10 +1,14 @@
-import { EyeSlashIcon, EyeIcon } from "@heroicons/react/16/solid";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import Input from "../../components/reusable/inputs/Input";
 import InputCode from "../../components/reusable/inputs/InputCode";
 import { createEnhancedAxios } from "../../configs/axios";
 import { Button } from "../../components/ui/button";
+import { useValidation } from "../../utils/hooks/useValidation/useValidation";
+import Validator from "../../utils/hooks/useValidation/Validator";
+import VALIDATIONS from "../../utils/hooks/useValidation";
+import CustomInput from "../../components/reusable/inputs/CustomInput";
+import { ChevronLeft, EyeClosedIcon, EyeIcon } from "lucide-react";
+
 export const Route = createFileRoute("/auth/_auth/register")({
   component: RouteComponent,
 });
@@ -12,13 +16,23 @@ export const Route = createFileRoute("/auth/_auth/register")({
 function RouteComponent() {
   const [isRegistered, setIsRegistered] = useState(false);
   const [active, setIsActive] = useState(false);
-  const [activeConfirm, setIsActiveConfirm] = useState(false);
+  const [confirmPasswordActive, setConfirmPasswordActive] = useState(false);
 
   // Timer for resend code
   const [counter, setCounter] = useState(0);
   const timer = useRef<number | null>(null);
 
   const router = useRouter();
+
+  const { errors, onChangeInput, applyErrorsFromApi, setErrors } = useValidation(
+    new Validator()
+      .forProperty("email")
+      .check(VALIDATIONS.isEmail, "Invalid email")
+      .forProperty("password")
+      .check(VALIDATIONS.isRequired, "Password is required")
+      .forProperty("confirmPassword")
+      .check(VALIDATIONS.isRequired, "Confirm password is required")
+  );
 
   useEffect(() => {
     if (isRegistered) {
@@ -50,28 +64,34 @@ function RouteComponent() {
   }, [counter]);
 
   return (
-    <div className="w-3/4 mx-auto py-20 flex flex-col justify-between h-full">
+    <div className="mx-auto py-20 flex flex-col justify-between h-full">
+      <div className="absolute top-0 left-20">
+        <Button variant="link" className="text-primary" onClick={() => router.navigate({ to: "/auth/login" })}>
+          <ChevronLeft /> Back
+        </Button>
+      </div>
       {!isRegistered ? (
         <>
           <h1>Finovora</h1>
 
           <div className="">
-            <div className="mb-10 block">
-              <h3 className="block!">Sign in into your account</h3>
-              <p className="tracking-tight mt-2 mb-6 text-muted-foreground">
+            <div className="mb-4 block">
+              <h3 className="text-lg">Sign in into your account</h3>
+              <p className="text-sm text-muted-foreground font-bold">
                 Access your account in order to be able to start a budget plan
               </p>
             </div>
             <form
               className="block"
               onSubmit={(e) => {
+                setErrors({ ...errors, email: "", password: "", confirmPassword: "" });
                 e.preventDefault();
 
                 const formData = new FormData(e.currentTarget);
                 const email = formData.get("email");
                 const password = formData.get("password");
                 const confirmPassword = formData.get("confirmPassword");
-                createEnhancedAxios()
+                createEnhancedAxios(undefined, applyErrorsFromApi)
                   .post(`${import.meta.env.VITE_API_URL}/auth/register`, { email, password, confirmPassword })
                   .then(() => {
                     // set client details
@@ -79,53 +99,58 @@ function RouteComponent() {
                   });
               }}
             >
-              <Input
+              <CustomInput
                 name="email"
+                onChange={onChangeInput}
                 type="email"
-                className="border border-neutral-200 w-full"
+                className="mt-2 mb-1"
                 placeholder="Enter email..."
-              />
-              <Input
-                leftElement={
-                  active ? (
-                    <EyeSlashIcon
-                      onClick={() => setIsActive(false)}
-                      className="fill-neutral-400 cursor-pointer h-4 w-4"
-                    />
-                  ) : (
-                    <EyeIcon onClick={() => setIsActive(true)} className="fill-neutral-400 cursor-pointer h-4 w-4" />
-                  )
-                }
-                name="password"
-                type={active ? "text" : "password"}
-                className="border border-neutral-200 w-full pl-6!"
-                placeholder="Enter password..."
+                errorMessage={errors["email"]}
               />
 
-              <Input
+              <CustomInput
+                name="password"
+                type={active ? "text" : "password"}
+                placeholder="Enter password..."
+                onChange={onChangeInput}
+                className="mb-1"
+                errorMessage={errors["password"]}
                 leftElement={
-                  activeConfirm ? (
-                    <EyeSlashIcon
-                      onClick={() => setIsActiveConfirm(false)}
-                      className="fill-neutral-400 cursor-pointer h-4 w-4"
+                  active ? (
+                    <EyeIcon onClick={() => setIsActive(!active)} className="h-4 w-4 select-none" />
+                  ) : (
+                    <EyeClosedIcon onClick={() => setIsActive(!active)} className="h-4 w-4 select-none" />
+                  )
+                }
+              />
+
+              <CustomInput
+                name="confirmPassword"
+                type={confirmPasswordActive ? "text" : "password"}
+                placeholder="Confirm password..."
+                onChange={onChangeInput}
+                className="mb-1"
+                errorMessage={errors["confirmPassword"]}
+                leftElement={
+                  confirmPasswordActive ? (
+                    <EyeIcon
+                      onClick={() => setConfirmPasswordActive(!confirmPasswordActive)}
+                      className="h-4 w-4 select-none"
                     />
                   ) : (
-                    <EyeIcon
-                      onClick={() => setIsActiveConfirm(true)}
-                      className="fill-neutral-400 cursor-pointer h-4 w-4"
+                    <EyeClosedIcon
+                      onClick={() => setConfirmPasswordActive(!confirmPasswordActive)}
+                      className="h-4 w-4 select-none"
                     />
                   )
                 }
-                name="confirmPassword"
-                type={activeConfirm ? "text" : "password"}
-                className="border border-neutral-200 w-full pl-6!"
-                placeholder="Confirm password..."
               />
+
               <Button variant="secondary" className="w-full mt-2">
                 Submit
               </Button>
 
-              <div className="grid grid-cols-[1fr_30px_1fr] my-8">
+              <div className="grid grid-cols-[1fr_30px_1fr] my-4">
                 <div></div>
                 <span className="text-center">OR</span>
                 <div></div>
@@ -145,7 +170,7 @@ function RouteComponent() {
           </div>
 
           <div className="text-center">
-            <Link className="text-base text-muted-foreground" to="/auth/forgot-password">
+            <Link className="text-sm text-muted-foreground" to="/auth/forgot-password">
               Forgot your password?
             </Link>
           </div>

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createContext, useContext, useState, type PropsWithChildren } from "react";
-import { getUserAccount } from "../actions/accounts/userAccounts";
+import { getUserAccount } from "../utils/actions/accounts/userAccounts";
 
 interface UserMainAccountContextState {
   userMainAccountId?: number;

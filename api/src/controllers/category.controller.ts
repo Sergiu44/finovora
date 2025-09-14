@@ -3,7 +3,7 @@ import catchErrors from "../../utils/utilities/catchErrors";
 import { Category } from "../models/category";
 import { Op } from "sequelize";
 import appAssert from "../../utils/utilities/appAssert";
-import { NOT_FOUND } from "../../utils/constants/http";
+import { BAD_REQUEST, NOT_FOUND } from "../../utils/constants/http";
 
 export const getCategoriesAsync = catchErrors(async (req: Request, res: Response) => {
   const { type } = req.query;
@@ -49,4 +49,13 @@ export const editCategoryAsync = catchErrors(async (req: Request, res: Response)
   appAssert(!!categoryToUpdate, NOT_FOUND, "Category not found");
   await categoryToUpdate.update({ name });
   return res.status(200).json(categoryToUpdate);
+});
+
+export const getCategoriesDropdownAsync = catchErrors(async (req: Request, res: Response) => {
+  appAssert(!!req.query.transactionTypeId, BAD_REQUEST, "Transaction type ID is required");
+  const categories = await Category.findAll({
+    where: { userId: req.userId, transactionTypeId: req.query.transactionTypeId as string },
+    attributes: ["id", "name"],
+  });
+  return res.status(200).json(categories.map((c) => ({ id: c.id, value: c.name })));
 });
