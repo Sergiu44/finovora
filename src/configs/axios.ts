@@ -31,7 +31,10 @@ export function createEnhancedAxios(
   instance.interceptors.response.use(
     (response: AxiosResponse) => {
       if (response.data.message) {
-        toast.success("Success", { description: response.data.message });
+        toast.success("Success", {
+          description: response.data.message,
+          duration: 100000,
+        });
       }
       return response;
     },
@@ -46,12 +49,18 @@ export function createEnhancedAxios(
             applyErrorsFromApi?.(data.errors);
             toast.error("Bad Request", {
               description:
-                "Invalid fields: " + Array.from(new Set(data.errors.map((error: any) => error.path))).join(", "),
+                "Invalid fields: " +
+                Array.from(
+                  new Set(data.errors.map((error: any) => error.path))
+                ).join(", "),
               duration: 5000,
             });
             break;
           case 401:
-            toast.error("Unauthorized", { description: "Session expired. Redirecting to login...", duration: 5000 });
+            toast.error("Unauthorized", {
+              description: "Session expired. Redirecting to login...",
+              duration: 5000,
+            });
             if (typeof window !== "undefined") {
               setTimeout(() => {
                 window.location.href = "/auth/login";

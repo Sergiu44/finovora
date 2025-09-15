@@ -1,0 +1,56 @@
+module.exports = {
+  async up(queryInterface) {
+    await queryInterface.bulkInsert("default-gradients", [
+      {
+        id: 1,
+        name: "Shady Water",
+        slug: "shady-water",
+        color1: "#74ebd5",
+        color2: "#57dfea",
+        color3: "#5ed0f6",
+        color4: "#7ebff5",
+        color5: "#9face6",
+      },
+      {
+        id: 2,
+        name: "Big Mango",
+        slug: "big-mango",
+        color1: "#c71d6f",
+        color2: "#cd4771",
+        color3: "#d06478",
+        color4: "#d17e83",
+        color5: "#d09693",
+      },
+      {
+        id: 3,
+        name: "Forest Inei",
+        slug: "forest-inei",
+        color1: "#df89b5",
+        color2: "#d69ed3",
+        color3: "#cab3ea",
+        color4: "#c1c7f7",
+        color5: "#bfd9fe",
+      },
+      {
+        id: 4,
+        name: "Strong Stick",
+        slug: "strong-stick",
+        color1: "#a8caba",
+        color2: "#7daaae",
+        color3: "#66889e",
+        color4: "#626481",
+        color5: "#5d4157",
+      },
+      {
+        id: 5,
+        name: "Happy Memories",
+        slug: "happy-memories",
+        color1: "#ff5858",
+        color2: "#ff6748",
+        color3: "#fe7839",
+        color4: "#f88829",
+        color5: "#f09819",
+      },
+    ]);
+  },
+};

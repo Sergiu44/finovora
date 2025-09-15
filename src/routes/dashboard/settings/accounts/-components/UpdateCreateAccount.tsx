@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useValidation } from "../../../../../utils/hooks/useValidation/useValidation";
 import VALIDATIONS from "../../../../../utils/hooks/useValidation";
-import { useRouter } from "@tanstack/react-router";
+import { useLoaderData, useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
 import {
   createUserAccount,
@@ -13,14 +13,26 @@ import { toast } from "sonner";
 import { Button } from "../../../../../components/ui/button";
 import Validator from "../../../../../utils/hooks/useValidation/Validator";
 import { Input } from "../../../../../components/ui/input";
+import CustomInput from "../../../../../components/reusable/inputs/CustomInput";
+import GradientCard from "./GradientCard";
 
 interface IUpdateCreateAccountProps {
   id?: string;
   data?: CreateAccount;
 }
 export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
+  const defaultGradientData = useLoaderData({
+    from: "/dashboard/settings/accounts/create",
+  });
   const queryClient = useQueryClient();
-  const { errors, handleCheckFormErrors, onChangeInput, onChangeValue, setValues } = useValidation(
+  const {
+    errors,
+    handleCheckFormErrors,
+    onChangeInput,
+    onChangeValue,
+    values,
+    setValues,
+  } = useValidation(
     new Validator()
       .forProperty("name")
       .check(VALIDATIONS.isRequired, "At least one character is required.")
@@ -32,13 +44,17 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
       .check(VALIDATIONS.isRequired, "Currency is required.")
       .forProperty("description")
       .check(VALIDATIONS.isRequired, "At least one character is required.")
+      .forProperty("color", defaultGradientData.items.at(-1)?.id.toString())
+      .check(VALIDATIONS.isRequired, "Color is required")
       .applyCheckOnlyOnSubmit()
   );
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["accounts", props.id || "create"],
     mutationFn: (data: CreateAccount) => {
-      return props.id ? updateUserAccount(props.id, data) : createUserAccount(data);
+      return props.id
+        ? updateUserAccount(props.id, data)
+        : createUserAccount(data);
     },
   });
   const router = useRouter();
@@ -53,20 +69,28 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
 
     mutate(
       {
-        accountTypeId: (new FormData(ev.currentTarget).get("accountTypeId") || 0) as number,
+        accountTypeId: (new FormData(ev.currentTarget).get("accountTypeId") ||
+          0) as number,
         balance: (new FormData(ev.currentTarget).get("balance") || 0) as number,
-        color: (new FormData(ev.currentTarget).get("color") as string) || "#000000",
-        currencyId: (new FormData(ev.currentTarget).get("currencyId") || 0) as number,
+        color:
+          (new FormData(ev.currentTarget).get("color") as string) || "#000000",
+        currencyId: (new FormData(ev.currentTarget).get("currencyId") ||
+          0) as number,
         name: name,
-        description: new FormData(ev.currentTarget).get("description") as string | null,
+        description: new FormData(ev.currentTarget).get("description") as
+          | string
+          | null,
         userId: 1,
       },
       {
         onSuccess() {
-          toast(`Account ${name ? "updated" : "created"} successfully`, {
-            description: `Account '${name}' ${props.id ? "updated" : "created"} successfully`,
-            duration: 3000,
-          });
+          toast.success(
+            `Account ${name ? "updated" : "created"} successfully`,
+            {
+              description: `Account '${name}' ${props.id ? "updated" : "created"} successfully`,
+              duration: 3000,
+            }
+          );
           queryClient.invalidateQueries({ queryKey: ["accounts"] });
           router.navigate({ to: "/dashboard/settings/accounts" });
         },
@@ -93,18 +117,21 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
   }, [props.data, setValues]);
 
   return (
-    <div className="py-8 px-8">
-      <h3>Let's {props.data?.name ? "update your " : "create a new "} account</h3>
-      <p className="text-base text-main-washed">
-        This account will allow you to manage your transactions more efficiently.
+    <div className="py-4 px-2">
+      <h3 className="text-2xl font-bold ml-1">
+        Let's {props.data?.name ? "update your " : "create a new "} account
+      </h3>
+      <p className="text-sm text-muted-foreground mb-4! ml-1">
+        This account will allow you to manage your transactions more
+        efficiently.
       </p>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-0">
         <Input
           onChange={onChangeInput}
           defaultValue={props.data?.name || ""}
           name="name"
           className="w-full text-sm"
-          placeholder="Name: Vouchers"
+          placeholder="Account Name: Vouchers, Revolut, etc."
         />
         {errors["name"] && <p className="text-red-500">{errors["name"]}</p>}
 
@@ -126,24 +153,56 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
           placeholder="Select Currency"
         />
 
-        <Input
-          mode="textarea"
+        <CustomInput
           onChange={onChangeInput}
           defaultValue={props.data?.description || ""}
           name="description"
           className="w-full text-sm mt-2"
           placeholder="Description: Accounts for extra income"
         />
-        {errors["description"] && <p className="text-red-500">{errors["description"]}</p>}
+        {errors["description"] && (
+          <p className="text-red-500">{errors["description"]}</p>
+        )}
+
+        <h3 className="mt-6 mb-2! font-bold text-lg ml-2">
+          Select account card color
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {defaultGradientData.items.length > 0 &&
+            defaultGradientData.items.map((item) => (
+              <GradientCard
+                key={"default-gradient-" + item.id}
+                isSelected={values["color"] == item.id}
+                onSelect={() => {
+                  setValues({ ...values, color: item.id });
+                }}
+                card={{
+                  ...item,
+                  type: "default",
+                  colors: [
+                    item.color1,
+                    item.color2,
+                    item.color3,
+                    item.color4,
+                    item.color5,
+                  ],
+                }}
+              />
+            ))}
+        </div>
         <div className="flex gap-2 self-end">
           <Button
             variant="outline"
             type="button"
-            onClick={() => router.navigate({ to: "/dashboard/settings/accounts" })}
+            onClick={() =>
+              router.navigate({ to: "/dashboard/settings/accounts" })
+            }
           >
             Cancel
           </Button>
-          <Button type="submit">{isPending ? "Loading..." : props.data?.name ? "Edit" : "Create"}</Button>
+          <Button type="submit">
+            {isPending ? "Loading..." : props.data?.name ? "Edit" : "Create"}
+          </Button>
         </div>
       </form>
     </div>

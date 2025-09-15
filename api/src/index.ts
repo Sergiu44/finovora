@@ -15,6 +15,7 @@ import accountsRoutes from "./routes/accounts/accounts.routes";
 import currencyRoutes from "./routes/currency.routes";
 import categoryRoutes from "./routes/category.routes";
 import transactionRoutes from "./routes/transaction.routes";
+import nomenclaturesRoutes from "./routes/nomenclatures/index.routes";
 
 dotenv.config();
 
@@ -42,11 +43,13 @@ app.use("/accounts", accountsRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/currencies", currencyRoutes);
 app.use("/transactions", transactionRoutes);
+app.use("/nomenclatures", nomenclaturesRoutes);
 
 app.use(errorHandler);
 
 // Initialize database connection using factory
-const db: IDatabaseConnection = DatabaseFactory.createDatabaseConnection(NODE_ENV);
+const db: IDatabaseConnection =
+  DatabaseFactory.createDatabaseConnection(NODE_ENV);
 db.connectToDatabase()
   .then(() => {
     app.listen(PORT, () => {

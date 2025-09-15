@@ -1,4 +1,10 @@
-import { CheckCircle, Info, AlertTriangle, XCircle, Loader } from "lucide-react";
+import {
+  CheckCircle,
+  Info,
+  AlertTriangle,
+  XCircle,
+  Loader,
+} from "lucide-react";
 import { useTheme } from "next-themes";
 import { Toaster as Sonner, type ToasterProps } from "sonner";
 
@@ -22,6 +28,17 @@ const Toaster = ({ ...props }: ToasterProps) => {
         warning: <AlertTriangle className="h-4 w-4 text-amber-500" />,
         error: <XCircle className="h-4 w-4 text-red-500" />,
         loading: <Loader className="h-4 w-4 text-gray-500 animate-spin" />,
+      }}
+      toastOptions={{
+        classNames: {
+          success: "items-start! gap-0.5!",
+          warning: "items-start! gap-0.5!",
+          error: "items-start! gap-0.5!",
+          info: "items-start! gap-0.5!",
+          icon: "mt-1",
+          title: "font-bold!",
+          description: "text-muted-foreground!",
+        },
       }}
       {...props}
     />
