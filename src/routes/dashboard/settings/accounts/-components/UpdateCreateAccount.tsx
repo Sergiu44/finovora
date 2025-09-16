@@ -15,6 +15,15 @@ import Validator from "../../../../../utils/hooks/useValidation/Validator";
 import { Input } from "../../../../../components/ui/input";
 import CustomInput from "../../../../../components/reusable/inputs/CustomInput";
 import GradientCard from "./GradientCard";
+import { Eye } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../../../../../components/ui/dialog";
+import AccountPreviewCard from "./AccountPreviewCard";
 
 interface IUpdateCreateAccountProps {
   id?: string;
@@ -191,6 +200,51 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
             ))}
         </div>
         <div className="flex gap-2 self-end">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline" type="button">
+                <Eye className="w-4 h-4 mr-2" />
+                Preview
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-xl">
+              <DialogHeader>
+                <DialogTitle>Account Preview</DialogTitle>
+              </DialogHeader>
+              <AccountPreviewCard
+                name={values["name"]}
+                description={values["description"]}
+                accountType={
+                  document.querySelector(
+                    `select[name="accountTypeId"] option[value="${values["accountTypeId"]}"]`
+                  )?.textContent || undefined
+                }
+                currency={
+                  document.querySelector(
+                    `select[name="currencyId"] option[value="${values["currencyId"]}"]`
+                  )?.textContent || undefined
+                }
+                gradient={(() => {
+                  const selectedGradient = defaultGradientData.items.find(
+                    (item) => item.id.toString() === values["color"]
+                  );
+                  if (!selectedGradient) return undefined;
+
+                  return {
+                    ...selectedGradient,
+                    type: "default",
+                    colors: [
+                      selectedGradient.color1,
+                      selectedGradient.color2,
+                      selectedGradient.color3,
+                      selectedGradient.color4,
+                      selectedGradient.color5,
+                    ],
+                  };
+                })()}
+              />
+            </DialogContent>
+          </Dialog>
           <Button
             variant="outline"
             type="button"
