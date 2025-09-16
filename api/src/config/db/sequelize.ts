@@ -1,16 +1,16 @@
 import { IDatabaseConnection } from "./IDatabaseConnection";
 import { Sequelize as SequelizeType } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
-import User from "../../models/user";
-import { Session } from "../../models/session";
-import VerificationCode from "../../models/verification";
-import { AccountType } from "../../models/accountType";
-import { Account } from "../../models/account";
-import { Currency } from "../../models/currency";
-import { Category } from "../../models/category";
-import { TransactionType } from "../../models/transactionType";
-import { Transaction } from "../../models/transaction";
-import { DefaultGradient } from "../../models/nomenclatures/defaultGradient";
+import User from "../../features/users/user";
+import { Session } from "../../auth/sessions/session";
+import { VerificationCode } from "../../auth/verifications/verification";
+import { AccountType } from "../../features/accounts/accountTypes/accountType";
+import { Account } from "../../features/accounts/account";
+import { Currency } from "../../features/currencies/currency";
+import { Category } from "../../features/categories/category";
+import { TransactionType } from "../../features/transactions/transactionTypes/transactionType";
+import { Transaction } from "../../features/transactions/transaction";
+import { DefaultGradient } from "../../features/nomenclatures/defaultGradients/defaultGradient";
 
 export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
   private static instance: SequelizeDatabaseWrapper | null = null;

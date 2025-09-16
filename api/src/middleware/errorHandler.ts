@@ -1,8 +1,8 @@
 import { ErrorRequestHandler, NextFunction, Request, Response } from "express";
 import { z } from "zod";
-import { BAD_REQUEST, INTERNAL_SERVER_ERROR } from "../../utils/constants/http";
-import { clearAuthCookies } from "../../utils/utilities/cookies";
-import AppError from "../../utils/utilities/AppError";
+import { BAD_REQUEST, INTERNAL_SERVER_ERROR } from "../utils/constants/http";
+import { clearAuthCookies } from "../utils/utilities/cookies";
+import AppError from "../utils/utilities/AppError";
 
 const handleZodError = (res: Response, error: z.ZodError) => {
   const errors = error.issues.map((issue) => ({
@@ -19,7 +19,12 @@ const handleAppError = (res: Response, error: AppError) => {
   });
 };
 
-const errorHandler: ErrorRequestHandler = (error: any, req: Request, res: Response, next: NextFunction) => {
+const errorHandler: ErrorRequestHandler = (
+  error: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   console.log(`PATH: ${req.path} -> `, error);
 
   if (req.path === "/auth/refresh") clearAuthCookies(res);

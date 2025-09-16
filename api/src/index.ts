@@ -2,22 +2,23 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { CLIENT_APP_ORIGIN, NODE_ENV, PORT } from "../utils/constants/env";
-import { OK } from "../utils/constants/http";
+import { OK } from "./utils/constants/http";
 import { DatabaseFactory } from "./config/db/DatabaseFactory";
 import { IDatabaseConnection } from "./config/db/IDatabaseConnection";
 import errorHandler from "./middleware/errorHandler";
-import sessionRoutes from "./routes/session.routes";
-import authRoutes from "./routes/auth.routes";
-import userRoutes from "./routes/user.routes";
-import accountTypesRoutes from "./routes/accounts/accountTypes.routes";
-import accountsRoutes from "./routes/accounts/accounts.routes";
-import currencyRoutes from "./routes/currency.routes";
-import categoryRoutes from "./routes/category.routes";
-import transactionRoutes from "./routes/transaction.routes";
-import nomenclaturesRoutes from "./routes/nomenclatures/index.routes";
+import userRoutes from "./features/users/user.routes";
+import accountTypesRoutes from "./features/accounts/accountTypes/accountTypes.routes";
+import accountsRoutes from "./features/accounts/accounts.routes";
+import currencyRoutes from "./features/currencies/currency.routes";
+import categoryRoutes from "./features/categories/category.routes";
+import transactionRoutes from "./features/transactions/transaction.routes";
+import nomenclatureRoutes from "./features/nomenclatures";
+import authRoutes from "./auth/auth.routes";
+import sessionRoutes from "./auth/sessions/session.routes";
+import { CLIENT_APP_ORIGIN, NODE_ENV, PORT } from "./utils/constants/env";
+import path from "path";
 
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, ".env") });
 
 const app = express();
 
@@ -43,7 +44,7 @@ app.use("/accounts", accountsRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/currencies", currencyRoutes);
 app.use("/transactions", transactionRoutes);
-app.use("/nomenclatures", nomenclaturesRoutes);
+app.use("/nomenclatures", nomenclatureRoutes);
 
 app.use(errorHandler);
 

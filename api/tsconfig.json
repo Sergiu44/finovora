@@ -16,6 +16,12 @@
     "allowJs": true
   },
   "exclude": ["node_modules", "dist"],
-  "include": ["src/**/*", "index.d.ts", "src/models/session.ts", "src/models/user.ts", "src/models/verification.ts"],
+  "include": [
+    "src/**/*",
+    "index.d.ts",
+    "src/models/session.ts",
+    "src/features/users/user.ts",
+    "src/models/verification.ts"
+  ],
   "files": ["index.d.ts"]
 }

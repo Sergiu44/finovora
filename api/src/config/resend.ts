@@ -1,5 +1,5 @@
 import { Resend } from "resend";
-import { RESEND_API_KEY } from "../../utils/constants/env";
+import { RESEND_API_KEY } from "../utils/constants/env";
 
 const resend = new Resend(RESEND_API_KEY);
 
