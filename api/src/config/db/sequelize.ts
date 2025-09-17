@@ -11,6 +11,7 @@ import { Category } from "../../features/categories/category";
 import { TransactionType } from "../../features/transactions/transactionTypes/transactionType";
 import { Transaction } from "../../features/transactions/transaction";
 import { DefaultGradient } from "../../features/nomenclatures/defaultGradients/defaultGradient";
+import { UserGradient } from "../../features/users/userGradients/userGradient";
 
 export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
   private static instance: SequelizeDatabaseWrapper | null = null;
@@ -82,6 +83,7 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
             TransactionType,
             Transaction,
             DefaultGradient,
+            UserGradient,
           ],
         });
       default:
@@ -106,11 +108,13 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
     TransactionType.configInit(dbInstance);
     Transaction.configInit(dbInstance);
     DefaultGradient.configInit(dbInstance);
+    UserGradient.configInit(dbInstance);
 
     Account.associate();
     AccountType.associate();
     Category.associate();
     TransactionType.associate();
     Transaction.associate();
+    UserGradient.associate();
   }
 }

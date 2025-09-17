@@ -17,6 +17,7 @@ import authRoutes from "./auth/auth.routes";
 import sessionRoutes from "./auth/sessions/session.routes";
 import { CLIENT_APP_ORIGIN, NODE_ENV, PORT } from "./utils/constants/env";
 import path from "path";
+import userGradientRoutes from "./features/users/userGradients/userGradient.routes";
 
 dotenv.config({ path: path.join(__dirname, ".env") });
 
@@ -45,6 +46,7 @@ app.use("/categories", categoryRoutes);
 app.use("/currencies", currencyRoutes);
 app.use("/transactions", transactionRoutes);
 app.use("/nomenclatures", nomenclatureRoutes);
+app.use("/user-gradients", userGradientRoutes);
 
 app.use(errorHandler);
 

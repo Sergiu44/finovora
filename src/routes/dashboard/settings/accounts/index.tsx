@@ -1,4 +1,9 @@
-import { createFileRoute, Outlet, useLocation, useRouter } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Outlet,
+  useLocation,
+  useRouter,
+} from "@tanstack/react-router";
 import {
   useMutation,
   useQuery,
@@ -6,9 +11,14 @@ import {
   type InvalidateQueryFilters,
   type UseMutateFunction,
 } from "@tanstack/react-query";
-import { getUserAccountTypes, type DeleteAccountType } from "../../../../utils/actions/accounts/userAccountTypes";
+import { getUserAccountTypes } from "../../../../utils/actions/accounts/userAccountTypes";
 import { Separator } from "../../../../components/ui/separator";
-import { ArrowRightIcon, LockClosedIcon, PencilIcon, TrashIcon } from "@heroicons/react/16/solid";
+import {
+  ArrowRightIcon,
+  LockClosedIcon,
+  PencilIcon,
+  TrashIcon,
+} from "@heroicons/react/16/solid";
 import {
   deleteUserAccount,
   getUserAccountsGroupedByAccountTypes,
@@ -27,9 +37,11 @@ export const Route = createFileRoute("/dashboard/settings/accounts/")({
 
 function RouteComponent() {
   const [defaultAccountId, setDefaultAccountId] = useState<number | null>(null);
-  const [selectedAccount, setSelectedAccount] = useState<{ id: number; name: string; accountTypeName: string } | null>(
-    null
-  );
+  const [selectedAccount, setSelectedAccount] = useState<{
+    id: number;
+    name: string;
+    accountTypeName: string;
+  } | null>(null);
   const [openDeleteAccountModal, setOpenDeleteAccountModal] = useState(false);
 
   const location = useLocation();
@@ -39,7 +51,10 @@ function RouteComponent() {
   const { data, status } = useQuery({
     queryKey: ["accounts/accountTypes"],
     queryFn: async () => {
-      return Promise.all([getUserAccountTypes(), getUserAccountsGroupedByAccountTypes()]);
+      return Promise.all([
+        getUserAccountTypes(),
+        getUserAccountsGroupedByAccountTypes(),
+      ]);
     },
   });
 
@@ -74,17 +89,22 @@ function RouteComponent() {
   if (status === "pending") return <div>Loading...</div>;
   if (status === "error") return <div>Error loading account types</div>;
   return location.pathname.endsWith("accounts") ? (
-    <div className="mt-8 flex flex-col gap-y-6">
+    <div className="mt-2 flex flex-col gap-y-6">
       <div className="grid grid-cols-[minmax(250px,max(20%,250px))_1fr] p-4">
         <div className="flex items-baseline justify-between col-span-2">
           <p className="font-bold col-span-2">Accounts</p>
-          <Button size="sm" onClick={() => router.navigate({ to: "/dashboard/settings/accounts/create" })}>
+          <Button
+            size="sm"
+            onClick={() =>
+              router.navigate({ to: "/dashboard/settings/accounts/create" })
+            }
+          >
             Add new account
           </Button>
         </div>
         <Card className="w-full  mt-4 col-span-2 rounded-md p-8 relative border-muted bg-card">
           {Object.keys(data[1]).length > 0 ? (
-            <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto">
+            <div className="flex flex-col gap-2 h-[400px] overflow-y-auto">
               {Object.keys(data[1]).map((accountType) => (
                 <div key={data[1][accountType].accountTypeId}>
                   <div key={data[1][accountType].accountTypeId} className="p-4">
@@ -107,7 +127,9 @@ function RouteComponent() {
                                 />
                                 <div>
                                   <div className="text-xl">{account.name}</div>
-                                  <span className="text-main">{account.description}</span>
+                                  <span className="text-main">
+                                    {account.description}
+                                  </span>
                                 </div>
                               </div>
 
@@ -123,7 +145,9 @@ function RouteComponent() {
                               <PencilIcon
                                 className="w-6 h-6 cursor-pointer"
                                 onClick={() =>
-                                  router.navigate({ to: `/dashboard/settings/accounts/edit/${account.id}` })
+                                  router.navigate({
+                                    to: `/dashboard/settings/accounts/edit/${account.id}`,
+                                  })
                                 }
                               />
                               <TrashIcon
@@ -141,7 +165,9 @@ function RouteComponent() {
                           </div>
                         ))
                       ) : (
-                        <span className="text-center p-12 text-main">No accounts found for this group</span>
+                        <span className="text-center p-12 text-main">
+                          No accounts found for this group
+                        </span>
                       )}
                     </div>
                   </div>
@@ -174,7 +200,8 @@ function RouteComponent() {
         <div className="col-span-2">
           <p className="font-bold">Account Types</p>
           <span className="text-main-washed">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Delectus, nisi.
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Delectus,
+            nisi.
           </span>
         </div>
         <div className="flex flex-col">
@@ -183,13 +210,19 @@ function RouteComponent() {
               data[0].map((accountType) => (
                 <div className="bg-bg-main-light p-4 my-2 rounded-md text-main flex justify-between">
                   <div>{accountType.name}</div>
-                  {!accountType.userId && <LockClosedIcon className="h-4 w-4" />}
+                  {!accountType.userId && (
+                    <LockClosedIcon className="h-4 w-4" />
+                  )}
                 </div>
               ))}
           </div>
           <span
             className="cursor-pointer mt-6 self-end btn-underline btn-sm flex gap-1 hover:gap-2 transition-all ease-in-out duration-200 items-center"
-            onClick={() => router.navigate({ to: "/dashboard/settings/accounts/account-types" })}
+            onClick={() =>
+              router.navigate({
+                to: "/dashboard/settings/accounts/account-types",
+              })
+            }
           >
             Manage account types
             <ArrowRightIcon className="h-4 w-4" />
@@ -202,13 +235,22 @@ function RouteComponent() {
         <ConfirmationModal
           description={
             <span>
-              You are about to delete <span className="font-bold">{selectedAccount.name}</span> account from{" "}
-              <span>{selectedAccount.accountTypeName}</span> account type group
+              You are about to delete{" "}
+              <span className="font-bold">{selectedAccount.name}</span> account
+              from <span>{selectedAccount.accountTypeName}</span> account type
+              group
             </span>
           }
           loading={mutation.isPending}
           revalidateKeys={["accountTypes"] as InvalidateQueryFilters}
-          mutation={mutation.mutate as UseMutateFunction<boolean, Error, DeleteAccount, unknown>}
+          mutation={
+            mutation.mutate as UseMutateFunction<
+              boolean,
+              Error,
+              DeleteAccount,
+              unknown
+            >
+          }
           data={{ id: selectedAccount.id }}
           setOpen={setOpenDeleteAccountModal}
           open={openDeleteAccountModal}

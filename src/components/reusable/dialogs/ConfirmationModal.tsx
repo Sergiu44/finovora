@@ -9,7 +9,11 @@ import {
   DialogTitle,
 } from "../../../components/ui/dialog";
 import { TrashIcon } from "@heroicons/react/16/solid";
-import { useQueryClient, type InvalidateQueryFilters, type UseMutateFunction } from "@tanstack/react-query";
+import {
+  useQueryClient,
+  type InvalidateQueryFilters,
+  type UseMutateFunction,
+} from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "../../ui/button";
 
@@ -23,14 +27,18 @@ interface IConfirmationModalProps<T> {
   loading: boolean;
 }
 
-export default function ConfirmationModal<T>(props: IConfirmationModalProps<T>) {
+export default function ConfirmationModal<T>(
+  props: IConfirmationModalProps<T>
+) {
   const queryClient = useQueryClient();
   return (
     <Dialog open={props.open}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Are you sure?</DialogTitle>
-          <DialogDescription>{props.description || "You are about to delete something"}</DialogDescription>
+          <DialogDescription>
+            {props.description || "You are about to delete something"}
+          </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <DialogClose onClick={() => props.setOpen(false)} asChild>
@@ -40,7 +48,6 @@ export default function ConfirmationModal<T>(props: IConfirmationModalProps<T>) 
           </DialogClose>
           <form
             onSubmit={(e) => {
-              console.log(e);
               e.preventDefault();
               props.mutation(props.data, {
                 onSuccess: () => {
@@ -56,7 +63,7 @@ export default function ConfirmationModal<T>(props: IConfirmationModalProps<T>) 
               });
             }}
           >
-            <Button size="sm" onClick={() => console.log("test")} variant="destructive" type="submit">
+            <Button size="sm" variant="destructive" type="submit">
               {props.loading ? (
                 <div className="flex items-center gap-2 text-sm">
                   <svg

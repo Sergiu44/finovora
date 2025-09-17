@@ -32,12 +32,12 @@ export default function AccountPreviewCard({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full mx-auto">
       <div
-        className="rounded-lg p-6 text-white shadow-lg"
+        className="rounded-lg p-6 text-white shadow-lg h-[200px]"
         style={getGradientBgStyle()}
       >
-        <div className="space-y-4">
+        <div className="space-y-16">
           <div>
             <h3 className="text-2xl font-bold">{name || "- Card Name -"}</h3>
             <p className="text-sm opacity-90">

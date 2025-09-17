@@ -15,7 +15,7 @@ import Validator from "../../../../../utils/hooks/useValidation/Validator";
 import { Input } from "../../../../../components/ui/input";
 import CustomInput from "../../../../../components/reusable/inputs/CustomInput";
 import GradientCard from "./GradientCard";
-import { Eye } from "lucide-react";
+import { Eye, Plus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -24,15 +24,17 @@ import {
   DialogTrigger,
 } from "../../../../../components/ui/dialog";
 import AccountPreviewCard from "./AccountPreviewCard";
+import CreateNewUserGrandient from "./CreateNewUserGrandient";
 
 interface IUpdateCreateAccountProps {
   id?: string;
   data?: CreateAccount;
 }
 export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
-  const defaultGradientData = useLoaderData({
+  const [defaultGradientData, userGradientData] = useLoaderData({
     from: "/dashboard/settings/accounts/create",
   });
+
   const queryClient = useQueryClient();
   const {
     errors,
@@ -181,9 +183,11 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
             defaultGradientData.items.map((item) => (
               <GradientCard
                 key={"default-gradient-" + item.id}
-                isSelected={values["color"] == item.id}
+                isSelected={
+                  values["color"] == item.id && values["type"] == "default"
+                }
                 onSelect={() => {
-                  setValues({ ...values, color: item.id });
+                  setValues({ ...values, color: item.id, type: "default" });
                 }}
                 card={{
                   ...item,
@@ -198,8 +202,34 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
                 }}
               />
             ))}
+
+          {userGradientData.items.length > 0 &&
+            userGradientData.items.map((item) => (
+              <GradientCard
+                key={"user-gradient-" + item.id}
+                isSelected={
+                  values["color"] == item.id && values["type"] == "user"
+                }
+                onSelect={() => {
+                  setValues({ ...values, color: item.id, type: "user" });
+                }}
+                card={{
+                  colors: [item.to, item.from],
+                  type: "user",
+                  id: item.id,
+                  name: item.name,
+                  slug: item.slug,
+                }}
+              />
+            ))}
+
+          <CreateNewUserGrandient
+            onSuccess={() => {
+              queryClient.invalidateQueries({ queryKey: ["userGradients"] });
+            }}
+          />
         </div>
-        <div className="flex gap-2 self-end">
+        <div className="flex gap-2 self-end mt-4">
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="outline" type="button">
@@ -226,7 +256,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
                 }
                 gradient={(() => {
                   const selectedGradient = defaultGradientData.items.find(
-                    (item) => item.id.toString() === values["color"]
+                    (item) => item.id.toString() == values["color"]
                   );
                   if (!selectedGradient) return undefined;
 
