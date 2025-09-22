@@ -4,6 +4,7 @@ import {
   createAccountHandler,
   deleteAccountHandler,
   getAccountHandler,
+  getAccountsCardFormatHandler,
   getAccountsDropDownHandler,
   getAccountsForSwitchHandler,
   getAccountsGroupedByAccountTypeHandler,
@@ -12,7 +13,10 @@ import {
   updateAccountHandler,
 } from "./accounts.controller";
 import { validateDto } from "../../middleware/validate";
-import { updateDefaultAccountSchema } from "./accounts.schemas";
+import {
+  createAccountSchema,
+  updateDefaultAccountSchema,
+} from "./accounts.schemas";
 
 const accountsRoutes = Router();
 
@@ -22,8 +26,17 @@ accountsRoutes.put(
   setDefaultAccountHandler
 );
 accountsRoutes.get("/", [authenticate], getAccountsHandler);
+accountsRoutes.get(
+  "/card-format",
+  [authenticate],
+  getAccountsCardFormatHandler
+);
 accountsRoutes.get("/dropdown", [authenticate], getAccountsDropDownHandler);
-accountsRoutes.post("/", [authenticate], createAccountHandler);
+accountsRoutes.post(
+  "/",
+  [authenticate, validateDto(createAccountSchema)],
+  createAccountHandler
+);
 accountsRoutes.get("/switch", [authenticate], getAccountsForSwitchHandler);
 accountsRoutes.get(
   "/groupedByAccountTypes",

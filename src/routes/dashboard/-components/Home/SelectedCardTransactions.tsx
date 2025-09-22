@@ -1,13 +1,18 @@
 import { useState } from "react";
 import { Card, CardContent, CardTitle } from "../../../../components/ui/card";
-import { Popover, PopoverTrigger, PopoverContent } from "@radix-ui/react-popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@radix-ui/react-popover";
 import { format } from "date-fns";
 import { Button } from "../../../../components/ui/button";
-import { CalendarIcon, ArrowUpRight, ArrowDownLeft, X } from "lucide-react";
+import { CalendarIcon, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { Calendar } from "../../../../components/ui/calendar";
 import type { DateRange } from "react-day-picker";
 import { useQuery } from "@tanstack/react-query";
 import { getTransactionsForAccountAsync } from "../../../../utils/actions/transactions";
+import { useUserMainAccount } from "../../../../context/UserMainAccount";
 
 interface TransactionType {
   id: number;
@@ -42,18 +47,18 @@ interface Transaction {
   category: Category;
 }
 
-interface ISelectedCardTransactionsProps {
-  card: { name: string; id: number };
-}
-export default function SelectedCardTransactions(props: ISelectedCardTransactionsProps) {
+export default function SelectedCardTransactions() {
+  const { account } = useUserMainAccount();
   const [date, setDate] = useState<DateRange>();
 
   const { data: transactions, isLoading } = useQuery({
-    queryKey: ["transactions", props.card.id, date?.from, date?.to],
+    queryKey: ["transactions", account?.id, date?.from, date?.to],
     queryFn: () => {
-      const startDate = date?.from ? format(date.from, "yyyy-MM-dd") : undefined;
+      const startDate = date?.from
+        ? format(date.from, "yyyy-MM-dd")
+        : undefined;
       const endDate = date?.to ? format(date.to, "yyyy-MM-dd") : undefined;
-      return getTransactionsForAccountAsync(props.card.id, startDate, endDate);
+      return getTransactionsForAccountAsync(account!.id, startDate, endDate);
     },
   });
 
@@ -68,7 +73,9 @@ export default function SelectedCardTransactions(props: ISelectedCardTransaction
       maximumFractionDigits: 2,
     });
 
-    return transactionType === "Expense" ? `-${formattedAmount} RON` : `+${formattedAmount} RON`;
+    return transactionType === "Expense"
+      ? `-${formattedAmount} RON`
+      : `+${formattedAmount} RON`;
   };
 
   const getTransactionIcon = (transactionType: string) => {
@@ -104,7 +111,13 @@ export default function SelectedCardTransactions(props: ISelectedCardTransaction
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
-              <Calendar weekStartsOn={1} numberOfMonths={2} mode="range" selected={date} onSelect={setDate} />
+              <Calendar
+                weekStartsOn={1}
+                numberOfMonths={2}
+                mode="range"
+                selected={date}
+                onSelect={setDate}
+              />
             </PopoverContent>
           </Popover>
         </CardTitle>
@@ -136,23 +149,39 @@ export default function SelectedCardTransactions(props: ISelectedCardTransaction
                     {getTransactionIcon(transaction.transactionType.name)}
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-medium text-md text-gray-900">{transaction.description}</span>
+                    <span className="font-medium text-md text-gray-900">
+                      {transaction.description}
+                    </span>
                     <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <span className="bg-gray-200 px-2 py-1 rounded-full text-xs">{transaction.category.name}</span>
+                      <span className="bg-gray-200 px-2 py-1 rounded-full text-xs">
+                        {transaction.category.name}
+                      </span>
                       <span>•</span>
-                      <span>{format(new Date(transaction.transactionDate), "dd/MM/yyyy")}</span>
+                      <span>
+                        {format(
+                          new Date(transaction.transactionDate),
+                          "dd/MM/yyyy"
+                        )}
+                      </span>
                     </div>
                   </div>
                 </div>
                 <div className="text-right">
                   <div
                     className={`font-semibold ${
-                      transaction.transactionType.name === "Expense" ? "text-red-600" : "text-green-600"
+                      transaction.transactionType.name === "Expense"
+                        ? "text-red-600"
+                        : "text-green-600"
                     }`}
                   >
-                    {formatAmount(transaction.amount, transaction.transactionType.name)}
+                    {formatAmount(
+                      transaction.amount,
+                      transaction.transactionType.name
+                    )}
                   </div>
-                  <div className="text-xs text-gray-400">{transaction.transactionType.name}</div>
+                  <div className="text-xs text-gray-400">
+                    {transaction.transactionType.name}
+                  </div>
                 </div>
               </div>
             ))}

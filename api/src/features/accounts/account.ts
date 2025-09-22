@@ -3,6 +3,9 @@ import { Model, Table } from "sequelize-typescript";
 import { AccountType } from "./accountTypes/accountType";
 import User from "../users/user";
 import { Currency } from "../currencies/currency";
+import { DefaultGradient } from "../nomenclatures/defaultGradients/defaultGradient";
+import { UserGradient } from "../users/userGradients/userGradient";
+import { Transaction } from "../transactions/transaction";
 
 type AccountAttributes = {
   id: number;
@@ -11,7 +14,8 @@ type AccountAttributes = {
   name: string;
   description?: string;
   currencyId: number;
-  color?: string;
+  defaultGradientId?: number;
+  userGradientId?: number;
   createdAt: Date;
   updatedAt: Date;
   balance: number;
@@ -36,12 +40,16 @@ export class Account extends Model<
   declare currencyId: number;
   declare name: string;
   declare description?: string;
-  declare color?: string;
   declare balance: number;
   declare createdAt: Date;
   declare updatedAt: Date;
   declare accountTypeId: number;
   declare accountType: NonAttribute<AccountType>;
+  declare defaultGradientId?: number;
+  declare userGradientId?: number;
+  declare defaultGradient?: NonAttribute<DefaultGradient>;
+  declare userGradient?: NonAttribute<UserGradient>;
+  declare transactions?: NonAttribute<Transaction[]>;
 
   static associate() {
     Account.belongsTo(AccountType, {
@@ -54,6 +62,18 @@ export class Account extends Model<
     Account.belongsTo(Currency, {
       foreignKey: "currencyId",
       as: "currency",
+    });
+    Account.belongsTo(DefaultGradient, {
+      foreignKey: "defaultGradientId",
+      as: "defaultGradient",
+    });
+    Account.belongsTo(UserGradient, {
+      foreignKey: "userGradientId",
+      as: "userGradient",
+    });
+    Account.hasMany(Transaction, {
+      foreignKey: "accountId",
+      as: "transactions",
     });
   }
 
@@ -99,9 +119,25 @@ export class Account extends Model<
             key: "id",
           },
         },
-        color: {
-          type: DataTypes.STRING(20),
+        defaultGradientId: {
+          type: DataTypes.TINYINT,
           allowNull: true,
+          references: {
+            model: {
+              tableName: "default-gradients",
+            },
+            key: "id",
+          },
+        },
+        userGradientId: {
+          type: DataTypes.BIGINT,
+          allowNull: true,
+          references: {
+            model: {
+              tableName: "user-gradients",
+            },
+            key: "id",
+          },
         },
         createdAt: {
           type: DataTypes.DATE,

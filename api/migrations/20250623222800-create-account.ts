@@ -50,10 +50,6 @@ module.exports = {
           key: "id",
         },
       },
-      color: {
-        type: Sequelize.STRING(20),
-        allowNull: true,
-      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,

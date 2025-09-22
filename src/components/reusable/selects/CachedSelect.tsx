@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "../../ui/select";
 import { ExclamationTriangleIcon } from "@heroicons/react/16/solid";
+import ErrorMessage from "../errorMessages/errorMessage";
 
 interface ICachedSelectProps {
   entityName: string;
@@ -74,10 +75,7 @@ export default function CachedSelect({
         </SelectContent>
       </Select>
       {errorMessage && (
-        <div className="flex gap-1 items-center mt-1.5">
-          <ExclamationTriangleIcon className="h-3 w-3 text-error" />
-          <p className={`inputError`}>{errorMessage}</p>
-        </div>
+        <ErrorMessage wrapperClassName="ml-2" errorMessage={errorMessage} />
       )}
     </div>
   );

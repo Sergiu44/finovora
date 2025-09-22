@@ -4,6 +4,14 @@ import { Account } from "./account";
 import { AccountType } from "./accountTypes/accountType";
 import { Currency } from "../currencies/currency";
 import User from "../users/user";
+import { getColorGradient, isDefaultGradient } from "./accounts.service";
+import { BAD_REQUEST } from "../../utils/constants/http";
+import appAssert from "../../utils/utilities/appAssert";
+import { DefaultGradient } from "../nomenclatures/defaultGradients/defaultGradient";
+import { UserGradient } from "../users/userGradients/userGradient";
+import { Transaction } from "../transactions/transaction";
+import { Category } from "../categories/category";
+import { TransactionType } from "../transactions/transactionTypes/transactionType";
 
 export const getAccountsHandler = catchErrors(
   async (req: Request, res: Response) => {
@@ -11,6 +19,40 @@ export const getAccountsHandler = catchErrors(
       where: {
         userId: req.userId,
       },
+    });
+
+    return res.status(200).json(accounts);
+  }
+);
+
+export const getAccountsCardFormatHandler = catchErrors(
+  async (req: Request, res: Response) => {
+    const accounts = await Account.findAll({
+      where: {
+        userId: req.userId,
+      },
+      include: [
+        {
+          model: DefaultGradient,
+          foreignKey: "defaultGradientId",
+          as: "defaultGradient",
+        },
+        {
+          model: UserGradient,
+          as: "userGradient",
+          foreignKey: "userGradientId",
+        },
+        {
+          model: AccountType,
+          as: "accountType",
+          foreignKey: "accountTypeId",
+        },
+        {
+          model: Currency,
+          as: "currency",
+          foreignKey: "currencyId",
+        },
+      ],
     });
 
     return res.status(200).json(accounts);
@@ -45,12 +87,40 @@ export const getAccountHandler = catchErrors(
         userId: req.userId,
       },
       include: [
+        { model: AccountType, as: "accountType", attributes: ["id", "name"] },
+        {
+          model: DefaultGradient,
+          foreignKey: "defaultGradientId",
+          as: "defaultGradient",
+        },
+        {
+          model: UserGradient,
+          as: "userGradient",
+          foreignKey: "userGradientId",
+        },
         {
           model: Currency,
           as: "currency",
           attributes: ["id", "code", "symbol"],
         },
+        {
+          model: Transaction,
+          as: "transactions",
+          foreignKey: "accountId",
+          attributes: ["id", "amount", "transactionDate", "description"],
+          include: [
+            {
+              model: TransactionType,
+              as: "transactionType",
+              attributes: ["id", "name"],
+            },
+            { model: Category, as: "category", attributes: ["id", "name"] },
+          ],
+        },
       ],
+      order: [
+        [{ model: Transaction, as: "transactions" }, "transactionDate", "ASC"],
+      ], // Order by most recent first
     });
 
     return res.status(200).json(account);
@@ -59,8 +129,18 @@ export const getAccountHandler = catchErrors(
 
 export const createAccountHandler = catchErrors(
   async (req: Request, res: Response) => {
-    const { name, accountTypeId, description, currencyId, color, balance } =
-      req.body;
+    const {
+      name,
+      accountTypeId,
+      description,
+      currencyId,
+      gradientId,
+      balance,
+      type,
+    } = req.body;
+
+    const gradient = await getColorGradient(gradientId, type);
+    appAssert(gradient, BAD_REQUEST, "Invalid color or type");
 
     const newAccount = await Account.create({
       userId: req.userId,
@@ -68,8 +148,10 @@ export const createAccountHandler = catchErrors(
       accountTypeId,
       description,
       currencyId,
-      color,
       balance,
+      ...(isDefaultGradient(gradient)
+        ? { defaultGradientId: gradient.id }
+        : { userGradientId: gradient.id }),
     });
 
     return res.status(201).json(newAccount);
@@ -88,7 +170,6 @@ export const updateAccountHandler = catchErrors(
         accountTypeId,
         description,
         currencyId,
-        color,
         balance,
       },
       {

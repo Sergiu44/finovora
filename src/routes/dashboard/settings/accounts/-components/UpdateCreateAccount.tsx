@@ -1,8 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useValidation } from "../../../../../utils/hooks/useValidation/useValidation";
 import VALIDATIONS from "../../../../../utils/hooks/useValidation";
 import { useLoaderData, useRouter } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   createUserAccount,
   updateUserAccount,
@@ -25,19 +25,33 @@ import {
 } from "../../../../../components/ui/dialog";
 import AccountPreviewCard from "./AccountPreviewCard";
 import CreateNewUserGrandient from "./CreateNewUserGrandient";
+import { getUserGradientsAsync } from "../../../../../utils/actions/users/userGradients";
+import {
+  getDefaultGradientsAsync,
+  isDefaultGradientItem,
+  type DefaultGradientItem,
+} from "../../../../../utils/actions/nomenclatures/defaultGradient";
+import ErrorMessage from "../../../../../components/reusable/errorMessages/errorMessage";
 
 interface IUpdateCreateAccountProps {
   id?: string;
   data?: CreateAccount;
 }
 export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
-  const [defaultGradientData, userGradientData] = useLoaderData({
-    from: "/dashboard/settings/accounts/create",
+  const { data: defaultGradientData } = useQuery({
+    queryKey: ["defaultGradients"],
+    queryFn: () => getDefaultGradientsAsync(),
+  });
+
+  const { data: userGradientData } = useQuery({
+    queryKey: ["userGradients"],
+    queryFn: () => getUserGradientsAsync(),
   });
 
   const queryClient = useQueryClient();
   const {
     errors,
+    setErrors,
     handleCheckFormErrors,
     onChangeInput,
     onChangeValue,
@@ -55,7 +69,9 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
       .check(VALIDATIONS.isRequired, "Currency is required.")
       .forProperty("description")
       .check(VALIDATIONS.isRequired, "At least one character is required.")
-      .forProperty("color", defaultGradientData.items.at(-1)?.id.toString())
+      .forProperty("gradientId")
+      .check(VALIDATIONS.isRequired, "Color is required")
+      .forProperty("type")
       .check(VALIDATIONS.isRequired, "Color is required")
       .applyCheckOnlyOnSubmit()
   );
@@ -83,8 +99,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
         accountTypeId: (new FormData(ev.currentTarget).get("accountTypeId") ||
           0) as number,
         balance: (new FormData(ev.currentTarget).get("balance") || 0) as number,
-        color:
-          (new FormData(ev.currentTarget).get("color") as string) || "#000000",
+        gradientId: values.gradientId,
         currencyId: (new FormData(ev.currentTarget).get("currencyId") ||
           0) as number,
         name: name,
@@ -92,6 +107,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
           | string
           | null,
         userId: 1,
+        type: values.type,
       },
       {
         onSuccess() {
@@ -144,7 +160,9 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
           className="w-full text-sm"
           placeholder="Account Name: Vouchers, Revolut, etc."
         />
-        {errors["name"] && <p className="text-red-500">{errors["name"]}</p>}
+        {errors["name"] && (
+          <ErrorMessage wrapperClassName="ml-1" errorMessage={errors["name"]} />
+        )}
 
         <CachedSelect
           onChange={(value) => onChangeValue("accountTypeId", value)}
@@ -172,22 +190,42 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
           placeholder="Description: Accounts for extra income"
         />
         {errors["description"] && (
-          <p className="text-red-500">{errors["description"]}</p>
+          <ErrorMessage
+            wrapperClassName="ml-1"
+            errorMessage={errors["description"]}
+          />
         )}
 
         <h3 className="mt-6 mb-2! font-bold text-lg ml-2">
           Select account card color
         </h3>
+        {(errors["gradientId"] || errors["type"]) && (
+          <ErrorMessage
+            wrapperClassName="ml-1"
+            errorMessage={errors["gradientId"] || errors["type"]}
+          />
+        )}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {defaultGradientData.items.length > 0 &&
+          {defaultGradientData &&
+            defaultGradientData.items.length > 0 &&
             defaultGradientData.items.map((item) => (
               <GradientCard
                 key={"default-gradient-" + item.id}
                 isSelected={
-                  values["color"] == item.id && values["type"] == "default"
+                  values["gradientId"] == item.id && values["type"] == "default"
                 }
                 onSelect={() => {
-                  setValues({ ...values, color: item.id, type: "default" });
+                  console.log(item);
+                  setErrors({
+                    ...errors,
+                    gradientId: undefined,
+                    type: undefined,
+                  });
+                  setValues({
+                    ...values,
+                    gradientId: item.id,
+                    type: "default",
+                  });
                 }}
                 card={{
                   ...item,
@@ -203,15 +241,35 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
               />
             ))}
 
-          {userGradientData.items.length > 0 &&
+          {userGradientData &&
+            userGradientData.items.length > 0 &&
             userGradientData.items.map((item) => (
               <GradientCard
+                onDelete={(cardId) => {
+                  queryClient.setQueryData(
+                    ["userGradients"],
+                    (oldData: any) => {
+                      return {
+                        ...oldData,
+                        items: oldData.items.filter(
+                          (item: any) => item.id !== cardId
+                        ),
+                      };
+                    }
+                  );
+                }}
                 key={"user-gradient-" + item.id}
                 isSelected={
-                  values["color"] == item.id && values["type"] == "user"
+                  values["gradientId"] == item.id && values["type"] == "user"
                 }
                 onSelect={() => {
-                  setValues({ ...values, color: item.id, type: "user" });
+                  console.log(item);
+                  setErrors({
+                    ...errors,
+                    gradientId: undefined,
+                    type: undefined,
+                  });
+                  setValues({ ...values, gradientId: item.id, type: "user" });
                 }}
                 card={{
                   colors: [item.to, item.from],
@@ -237,7 +295,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
                 Preview
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-xl">
+            <DialogContent className="sm:max-w-md">
               <DialogHeader>
                 <DialogTitle>Account Preview</DialogTitle>
               </DialogHeader>
@@ -255,21 +313,28 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
                   )?.textContent || undefined
                 }
                 gradient={(() => {
-                  const selectedGradient = defaultGradientData.items.find(
-                    (item) => item.id.toString() == values["color"]
-                  );
+                  const selectedGradient =
+                    values.type === "default"
+                      ? defaultGradientData?.items.find(
+                          (item) => item.id.toString() == values["gradientId"]
+                        )
+                      : userGradientData?.items.find(
+                          (item) => item.id.toString() == values["gradientId"]
+                        );
                   if (!selectedGradient) return undefined;
 
                   return {
                     ...selectedGradient,
                     type: "default",
-                    colors: [
-                      selectedGradient.color1,
-                      selectedGradient.color2,
-                      selectedGradient.color3,
-                      selectedGradient.color4,
-                      selectedGradient.color5,
-                    ],
+                    colors: isDefaultGradientItem(selectedGradient)
+                      ? [
+                          selectedGradient.color1,
+                          selectedGradient.color2,
+                          selectedGradient.color3,
+                          selectedGradient.color4,
+                          selectedGradient.color5,
+                        ]
+                      : [selectedGradient.to, selectedGradient.from],
                   };
                 })()}
               />

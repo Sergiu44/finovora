@@ -19,6 +19,7 @@ import {
   createUserGradientAsync,
   type UserGradientItem,
 } from "../../../../../utils/actions/users/userGradients";
+import { useState } from "react";
 
 interface ICreateNewUserGrandientProps {
   onSuccess: (data: UserGradientItem) => void;
@@ -27,6 +28,7 @@ interface ICreateNewUserGrandientProps {
 export default function CreateNewUserGrandient(
   props: ICreateNewUserGrandientProps
 ) {
+  const [open, setOpen] = useState(false);
   const { values, errors, onChangeInput, handleCheckFormErrors } =
     useValidation(
       new Validator()
@@ -50,6 +52,7 @@ export default function CreateNewUserGrandient(
     },
     onSuccess: (data) => {
       props.onSuccess(data.item);
+      setOpen(false);
     },
     onError: (error) => {
       toast.error(error.message);
@@ -77,7 +80,7 @@ export default function CreateNewUserGrandient(
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <div
           className={`group relative cursor-pointer rounded-lg p-4 transition-all duration-200`}

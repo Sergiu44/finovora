@@ -10,25 +10,27 @@ interface IGradientCardProps {
   card: CardGradientItem;
   isSelected: boolean;
   onSelect: () => void;
+  onDelete?: (id: number) => void;
 }
 
 export default function GradientCard({
   card,
   isSelected,
   onSelect,
+  onDelete,
 }: IGradientCardProps) {
   const [openDeleteGradientModal, setOpenDeleteGradientModal] = useState(false);
 
-  const queryClient = useQueryClient();
   const { mutate: deleteGradient, isPending } = useMutation({
     mutationKey: ["deleteUserGradient", card.id],
     mutationFn: async (id: number) => {
       const res = await deleteUserGradientAsync(id);
       return res.status;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log(data);
+      onDelete?.(card.id);
       toast.success("Gradient deleted successfully");
-      queryClient.invalidateQueries({ queryKey: ["userGradients"] });
     },
     onError: (error) => {
       toast.error("Failed to delete gradient");
@@ -74,6 +76,7 @@ export default function GradientCard({
       {card.type === "user" && (
         <>
           <button
+            type="button"
             onClick={(e) => {
               e.stopPropagation();
               setOpenDeleteGradientModal(true);

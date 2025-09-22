@@ -33,7 +33,7 @@ export function createEnhancedAxios(
       if (response.data.message) {
         toast.success("Success", {
           description: response.data.message,
-          duration: 100000,
+          duration: 5000,
         });
       }
       return response;

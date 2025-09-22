@@ -1,23 +1,33 @@
 import { useQuery } from "@tanstack/react-query";
-import { createContext, useContext, useState, type PropsWithChildren } from "react";
-import { getUserAccount } from "../utils/actions/accounts/userAccounts";
+import {
+  createContext,
+  useContext,
+  useState,
+  type PropsWithChildren,
+} from "react";
+import {
+  getUserAccount,
+  type AccountCardFormat,
+} from "../utils/actions/accounts/userAccounts";
 
 interface UserMainAccountContextState {
   userMainAccountId?: number;
-  setUserMainAccountId: (id: number) => void;
-  account: any;
+  setUserMainAccountId: (id?: number) => void;
+  account: AccountCardFormat | undefined;
   status: "pending" | "error" | "success";
 }
 
 const UserMainAccountContext = createContext<UserMainAccountContextState>({
   userMainAccountId: undefined,
   setUserMainAccountId: () => {},
-  account: null,
+  account: undefined,
   status: "pending",
 });
 
 export const UserMainAccountProvider = (props: PropsWithChildren) => {
-  const [userMainAccountId, setUserMainAccountId] = useState<number | undefined>(undefined);
+  const [userMainAccountId, setUserMainAccountId] = useState<
+    number | undefined
+  >(undefined);
 
   const { data, status } = useQuery({
     queryKey: ["userMainAccount", userMainAccountId],
@@ -28,7 +38,9 @@ export const UserMainAccountProvider = (props: PropsWithChildren) => {
     },
   });
   return (
-    <UserMainAccountContext.Provider value={{ account: data, status, userMainAccountId, setUserMainAccountId }}>
+    <UserMainAccountContext.Provider
+      value={{ account: data, status, userMainAccountId, setUserMainAccountId }}
+    >
       {props.children}
     </UserMainAccountContext.Provider>
   );

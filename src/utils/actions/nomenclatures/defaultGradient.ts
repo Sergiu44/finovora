@@ -1,4 +1,5 @@
 import { createEnhancedAxios } from "../../../configs/axios";
+import type { UserGradientItem } from "../users/userGradients";
 
 export interface CardGradientItem {
   id: number;
@@ -8,7 +9,7 @@ export interface CardGradientItem {
   type: "user" | "default";
 }
 
-export type DefaultGradientItem = {
+export interface DefaultGradientItem {
   id: number;
   name: string;
   slug: string;
@@ -17,6 +18,20 @@ export type DefaultGradientItem = {
   color3: string;
   color4: string;
   color5: string;
+}
+
+export const isDefaultGradientItem = (
+  item: DefaultGradientItem | UserGradientItem
+): item is DefaultGradientItem => {
+  return (
+    item &&
+    typeof item === "object" &&
+    "color1" in item &&
+    "color2" in item &&
+    "color3" in item &&
+    "color4" in item &&
+    "color5" in item
+  );
 };
 
 type GET_DEFAULT_GRADIENT_RESPONSE = {

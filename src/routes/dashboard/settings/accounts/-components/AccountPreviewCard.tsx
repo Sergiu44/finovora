@@ -1,5 +1,5 @@
-import React from "react";
 import { type CardGradientItem } from "../../../../../utils/actions/nomenclatures/defaultGradient";
+import { motion } from "framer-motion";
 
 interface IAccountPreviewCardProps {
   name?: string;
@@ -7,6 +7,9 @@ interface IAccountPreviewCardProps {
   accountType?: string;
   currency?: string;
   gradient?: CardGradientItem;
+  wrapperClassName?: string;
+  onClick?: () => void;
+  isRemoving?: boolean;
 }
 
 export default function AccountPreviewCard({
@@ -15,6 +18,9 @@ export default function AccountPreviewCard({
   accountType,
   currency,
   gradient,
+  wrapperClassName,
+  onClick,
+  isRemoving = false,
 }: IAccountPreviewCardProps) {
   const getGradientBgStyle = () => {
     if (!gradient) return { background: "#f3f4f6" };
@@ -32,12 +38,20 @@ export default function AccountPreviewCard({
   };
 
   return (
-    <div className="w-full mx-auto">
-      <div
+    <motion.div
+      onClick={onClick}
+      className={`w-full mx-auto ${wrapperClassName}`}
+      animate={
+        isRemoving ? { opacity: 0, scale: 0.8 } : { opacity: 1, scale: 1 }
+      }
+      exit={{ opacity: 0, scale: 0.8 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+    >
+      <motion.div
         className="rounded-lg p-6 text-white shadow-lg h-[200px]"
         style={getGradientBgStyle()}
       >
-        <div className="space-y-16">
+        <div className="flex flex-col justify-between h-full">
           <div>
             <h3 className="text-2xl font-bold">{name || "- Card Name -"}</h3>
             <p className="text-sm opacity-90">
@@ -55,7 +69,7 @@ export default function AccountPreviewCard({
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

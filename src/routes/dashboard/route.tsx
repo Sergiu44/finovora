@@ -20,6 +20,7 @@ import { useUserMainAccount } from "../../context/UserMainAccount";
 import { PlusIcon, TypeIcon } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import AddTransactionForCurrentAccount from "./-components/AddTransactionForCurrentAccount";
+import { useUserDetails } from "../../context/UserDetails";
 
 export const Route = createFileRoute("/dashboard")({
   component: RouteComponent,
@@ -30,6 +31,7 @@ function RouteComponent() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [walletOpen, setWalletOpen] = useState(false);
   const { account, setUserMainAccountId } = useUserMainAccount();
+  const { user } = useUserDetails();
   const router = useRouter();
 
   const { data, status } = useQuery({
@@ -55,13 +57,29 @@ function RouteComponent() {
         <div className="flex flex-col mt-12 gap-2">
           <IconLink href="/dashboard" icon={<HomeIcon />} text="Home" />
 
-          <IconLink href="/dashboard/reports" icon={<DocumentIcon />} text="Reports"></IconLink>
+          <IconLink
+            href="/dashboard/reports"
+            icon={<DocumentIcon />}
+            text="Reports"
+          ></IconLink>
 
-          <IconLink href="/dashboard/billing" icon={<CreditCardIcon />} text="Billing" />
+          <IconLink
+            href="/dashboard/billing"
+            icon={<CreditCardIcon />}
+            text="Billing"
+          />
 
-          <IconLink href="/dashboard/categories" icon={<TypeIcon />} text="Categories" />
+          <IconLink
+            href="/dashboard/categories"
+            icon={<TypeIcon />}
+            text="Categories"
+          />
 
-          <IconLink href="/dashboard/settings/profile" icon={<Cog6ToothIcon />} text="Settings" />
+          <IconLink
+            href="/dashboard/settings/profile"
+            icon={<Cog6ToothIcon />}
+            text="Settings"
+          />
         </div>
 
         {/* Add user session */}
@@ -69,7 +87,7 @@ function RouteComponent() {
           <div className="mt-auto">
             <AnimateChangeInHeight className="mb-2">
               {walletOpen && (
-                <div className="py-3 rounded-md bg-bg-main-light text-white ">
+                <div className="py-3 rounded-md bg-muted text-muted-foreground!">
                   {data && data.length > 0 ? (
                     data?.map((account) => (
                       <div
@@ -77,17 +95,19 @@ function RouteComponent() {
                           setWalletOpen(false);
                           setUserMainAccountId(account.id);
                         }}
-                        className="mx-2 px-4 rounded-3xl py-3 flex justify-between items-start cursor-pointer hover:bg-bg-main-hover"
+                        className="mx-2 px-4 rounded-3xl py-3 flex justify-between items-start cursor-pointer hover:bg-white"
                         key={account.id}
                       >
-                        <div className="text-gray-500">{account.name}</div>
-                        <div className="text-gray-500">
+                        <div className="text-black text-sm">{account.name}</div>
+                        <div className="text-black font-bold">
                           {account.balance} {account.currency.symbol}
                         </div>
                       </div>
                     ))
                   ) : (
-                    <div className="px-6 py-3 text-sm text-center text-gray-500">No accounts found</div>
+                    <div className="px-6 py-3 text-sm text-center text-gray-500">
+                      No accounts found
+                    </div>
                   )}
                 </div>
               )}
@@ -95,7 +115,7 @@ function RouteComponent() {
             {!walletOpen && (
               <Button
                 onClick={() => setAddTransactionModalOpen(true)}
-                className="flex items-center w-[85%] rounded-3xl mx-auto"
+                className="flex items-center rounded-3xl w-full"
                 variant="default"
               >
                 <PlusIcon />
@@ -104,16 +124,17 @@ function RouteComponent() {
             )}
             <div
               onClick={() => setWalletOpen(!walletOpen)}
-              className="hover:bg-bg-main-light cursor-pointer pl-4 pr-2 py-4 mt-1 rounded-md  flex items-center justify-between"
+              className="hover:bg-muted cursor-pointer px-4 py-2 mt-1 rounded-md  flex items-center justify-between"
             >
-              <p className="text-sm text-light-gray text-ellipsis overflow-hidden whitespace-nowrap">
+              <p className="text-sm text-light-gray">
                 {account && account.name}
               </p>
               <div className="flex items-center gap-1">
+                <span className="font-bold">{account && account.balance} </span>
                 <span className="font-bold">
-                  {account && account.balance} {account && account.currency.symbol}
+                  {account && account.currency.symbol}
                 </span>
-                <ChevronUpDownIcon className="icon" />
+                <ChevronUpDownIcon className="h-4 w-4" />
               </div>
             </div>
           </div>
@@ -136,7 +157,7 @@ function RouteComponent() {
                     onClick={() => setMenuOpen(!menuOpen)}
                     className="hover:bg-bg-main-light cursor-pointer px-4 py-2 rounded-md  flex items-center justify-between"
                   >
-                    <p className="text-sm">stanciusergiu988@gmail.com</p>
+                    <p className="text-sm">{user?.email}</p>
                     <ChevronUpDownIcon className="icon" />
                   </div>
 
@@ -170,7 +191,10 @@ function RouteComponent() {
         </div>
       </div>
 
-      <AddTransactionForCurrentAccount open={addTransactionModalOpen} setOpen={setAddTransactionModalOpen} />
+      <AddTransactionForCurrentAccount
+        open={addTransactionModalOpen}
+        setOpen={setAddTransactionModalOpen}
+      />
     </div>
   );
 }

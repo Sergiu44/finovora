@@ -42,6 +42,12 @@ export const deleteUserGradientHandler = catchErrors(
     const userGradient = await UserGradient.findByPk(req.params.id);
     appAssert(userGradient, NOT_FOUND, "User gradient not found");
     await userGradient.destroy();
-    return res.status(200).json({ status: true, message: "User gradient deleted successfully" });
+    return res
+      .status(200)
+      .json({
+        status: true,
+        message: "User gradient deleted successfully",
+        id: req.params.id,
+      });
   }
 );
