@@ -12,6 +12,8 @@ import { TransactionType } from "../../features/transactions/transactionTypes/tr
 import { Transaction } from "../../features/transactions/transaction";
 import { DefaultGradient } from "../../features/nomenclatures/defaultGradients/defaultGradient";
 import { UserGradient } from "../../features/users/userGradients/userGradient";
+import { HistoryCurrencyRate } from "../../features/historyCurrencyRates/historyCurrencyRate";
+import { UserHistoryCurrencyRate } from "../../features/historyCurrencyRates/user/userHistoryCurrencyRate";
 
 export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
   private static instance: SequelizeDatabaseWrapper | null = null;
@@ -109,6 +111,8 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
     Transaction.configInit(dbInstance);
     DefaultGradient.configInit(dbInstance);
     UserGradient.configInit(dbInstance);
+    HistoryCurrencyRate.configInit(dbInstance);
+    UserHistoryCurrencyRate.configInit(dbInstance);
 
     Account.associate();
     AccountType.associate();
@@ -116,5 +120,7 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
     TransactionType.associate();
     Transaction.associate();
     UserGradient.associate();
+    UserHistoryCurrencyRate.associate();
+    HistoryCurrencyRate.associate();
   }
 }
