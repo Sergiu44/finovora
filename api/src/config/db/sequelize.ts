@@ -86,6 +86,8 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
             Transaction,
             DefaultGradient,
             UserGradient,
+            HistoryCurrencyRate,
+            UserHistoryCurrencyRate,
           ],
         });
       default:

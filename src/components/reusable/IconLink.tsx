@@ -11,7 +11,14 @@ interface IconLinkProps extends PropsWithChildren<BaseProps> {
   text: string;
 }
 
-export default function IconLink({ icon, className, href, size, text, children }: IconLinkProps) {
+export default function IconLink({
+  icon,
+  className,
+  href,
+  size,
+  text,
+  children,
+}: IconLinkProps) {
   const [active, setActive] = useState(false);
   return (
     <Link
@@ -20,17 +27,25 @@ export default function IconLink({ icon, className, href, size, text, children }
         exact: href === "/dashboard",
       }}
       activeProps={{
-        className: "bg-primary hover:bg-primary/90 text-white transition-all ease-in-out duration-500",
+        className:
+          "bg-primary hover:bg-primary/90 text-white transition-all ease-in-out duration-500",
       }}
       className={`group select-none py-3 px-4 rounded-[32px] cursor-pointer items-center gap-2 w-full ${className || ""}`}
     >
       {({ isActive }) => (
         <>
-          <div onClick={() => setActive(!active)} className="flex flex-wrap gap-2 w-full flex-[100%] ">
-            <span className={`h-5 w-5 text-bg-main-hover ${isActive && "text-white"}`}>{icon}</span>
+          <div
+            onClick={() => setActive(!active)}
+            className="flex flex-wrap gap-2 w-full flex-[100%] items-center"
+          >
+            <span className={`text-bg-main-hover ${isActive && "text-white"}`}>
+              {icon}
+            </span>
             <div className={size ? `text-${size}` : "text-base"}>{text}</div>
             {children && (
-              <ChevronRightIcon className={` ml-auto transition-discrete ${active ? "rotate-z-[90deg]" : ""}`} />
+              <ChevronRightIcon
+                className={` ml-auto transition-discrete ${active ? "rotate-z-[90deg]" : ""}`}
+              />
             )}
           </div>
           {children && (

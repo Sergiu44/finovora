@@ -55,29 +55,38 @@ function RouteComponent() {
         <h3>Finovora</h3>
 
         <div className="flex flex-col mt-12 gap-2">
-          <IconLink href="/dashboard" icon={<HomeIcon />} text="Home" />
+          <IconLink
+            href="/dashboard"
+            icon={<HomeIcon className="h-4 w-4" />}
+            text="Home"
+            size="sm"
+          />
 
           <IconLink
             href="/dashboard/reports"
-            icon={<DocumentIcon />}
+            icon={<DocumentIcon className="h-4 w-4" />}
             text="Reports"
-          ></IconLink>
+            size="sm"
+          />
 
           <IconLink
+            size="sm"
             href="/dashboard/billing"
-            icon={<CreditCardIcon />}
+            icon={<CreditCardIcon className="h-4 w-4" />}
             text="Billing"
           />
 
           <IconLink
+            size="sm"
             href="/dashboard/categories"
-            icon={<TypeIcon />}
+            icon={<TypeIcon className="h-4 w-4" />}
             text="Categories"
           />
 
           <IconLink
+            size="sm"
             href="/dashboard/settings/profile"
-            icon={<Cog6ToothIcon />}
+            icon={<Cog6ToothIcon className="h-4 w-4" />}
             text="Settings"
           />
         </div>
