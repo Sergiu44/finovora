@@ -16,14 +16,29 @@ function RouteComponent() {
       <h1 className="text-2xl font-bold">Settings</h1>
       <Tabs defaultValue="profile" className="w-[400px] my-2">
         <TabsList>
-          <TabsTrigger onClick={() => handleTabChange("profile")} value="profile">
+          <TabsTrigger
+            onClick={() => handleTabChange("profile")}
+            value="profile"
+          >
             Profile
           </TabsTrigger>
-          <TabsTrigger onClick={() => handleTabChange("accounts")} value="account">
+          <TabsTrigger
+            onClick={() => handleTabChange("accounts")}
+            value="account"
+          >
             Accounts
           </TabsTrigger>
-          <TabsTrigger onClick={() => handleTabChange("security")} value="security">
+          <TabsTrigger
+            onClick={() => handleTabChange("security")}
+            value="security"
+          >
             Security
+          </TabsTrigger>
+          <TabsTrigger
+            onClick={() => handleTabChange("currencies")}
+            value="currencies"
+          >
+            Currencies
           </TabsTrigger>
         </TabsList>
       </Tabs>

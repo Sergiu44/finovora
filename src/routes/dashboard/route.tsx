@@ -17,7 +17,7 @@ import { createEnhancedAxios } from "../../configs/axios";
 import { useQuery } from "@tanstack/react-query";
 import { getAccountsForSwitch } from "../../utils/actions/accounts/userAccounts";
 import { useUserMainAccount } from "../../context/UserMainAccount";
-import { PlusIcon, TypeIcon } from "lucide-react";
+import { PlusIcon, TypeIcon, Wallet2Icon } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import AddTransactionForCurrentAccount from "./-components/AddTransactionForCurrentAccount";
 import { useUserDetails } from "../../context/UserDetails";
@@ -81,6 +81,13 @@ function RouteComponent() {
             href="/dashboard/categories"
             icon={<TypeIcon className="h-4 w-4" />}
             text="Categories"
+          />
+
+          <IconLink
+            size="sm"
+            href="/dashboard/budget-planner"
+            icon={<Wallet2Icon className="h-4 w-4" />}
+            text="Budget Planner"
           />
 
           <IconLink

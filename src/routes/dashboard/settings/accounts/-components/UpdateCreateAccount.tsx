@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useValidation } from "../../../../../utils/hooks/useValidation/useValidation";
 import VALIDATIONS from "../../../../../utils/hooks/useValidation";
-import { useLoaderData, useRouter } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useRouter } from "@tanstack/react-router";
+import { useEffect } from "react";
 import {
   createUserAccount,
   updateUserAccount,
@@ -15,7 +15,7 @@ import Validator from "../../../../../utils/hooks/useValidation/Validator";
 import { Input } from "../../../../../components/ui/input";
 import CustomInput from "../../../../../components/reusable/inputs/CustomInput";
 import GradientCard from "./GradientCard";
-import { Eye, Plus } from "lucide-react";
+import { Eye } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -29,7 +29,6 @@ import { getUserGradientsAsync } from "../../../../../utils/actions/users/userGr
 import {
   getDefaultGradientsAsync,
   isDefaultGradientItem,
-  type DefaultGradientItem,
 } from "../../../../../utils/actions/nomenclatures/defaultGradient";
 import ErrorMessage from "../../../../../components/reusable/errorMessages/errorMessage";
 
