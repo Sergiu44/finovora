@@ -7,7 +7,12 @@ import {
 } from "@radix-ui/react-popover";
 import { format } from "date-fns";
 import { Button } from "../../../../components/ui/button";
-import { CalendarIcon, ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import {
+  CalendarIcon,
+  ArrowUpRight,
+  ArrowDownLeft,
+  ArrowUpDown,
+} from "lucide-react";
 import { Calendar } from "../../../../components/ui/calendar";
 import type { DateRange } from "react-day-picker";
 import { useQuery } from "@tanstack/react-query";
@@ -44,7 +49,7 @@ interface Transaction {
   updatedAt: string;
   deletedAt: string | null;
   transactionType: TransactionType;
-  category: Category;
+  category?: Category;
 }
 
 export default function SelectedCardTransactions() {
@@ -66,19 +71,22 @@ export default function SelectedCardTransactions() {
     setDate(undefined);
   };
 
-  const formatAmount = (amount: string, transactionType: string) => {
+  const formatAmount = (amount: string) => {
     const numAmount = parseFloat(amount);
     const formattedAmount = numAmount.toLocaleString("ro-RO", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
 
-    return transactionType === "Expense"
-      ? `-${formattedAmount} RON`
-      : `+${formattedAmount} RON`;
+    return numAmount >= 0
+      ? `+${formattedAmount} ${account?.currency.code}`
+      : `${formattedAmount} ${account?.currency.code}`;
   };
 
   const getTransactionIcon = (transactionType: string) => {
+    if (transactionType === "Transfer") {
+      return <ArrowUpDown className="h-4 w-4 text-gray-500" />;
+    }
     return transactionType === "Expense" ? (
       <ArrowDownLeft className="h-4 w-4 text-red-500" />
     ) : (
@@ -153,10 +161,14 @@ export default function SelectedCardTransactions() {
                       {transaction.description}
                     </span>
                     <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <span className="bg-gray-200 px-2 py-1 rounded-full text-xs">
-                        {transaction.category.name}
-                      </span>
-                      <span>•</span>
+                      {transaction.category && (
+                        <>
+                          <span className="bg-gray-200 px-2 py-1 rounded-full text-xs">
+                            {transaction.category.name}
+                          </span>
+                          <span>•</span>
+                        </>
+                      )}
                       <span>
                         {format(
                           new Date(transaction.transactionDate),
@@ -169,15 +181,12 @@ export default function SelectedCardTransactions() {
                 <div className="text-right">
                   <div
                     className={`font-semibold ${
-                      transaction.transactionType.name === "Expense"
-                        ? "text-red-600"
-                        : "text-green-600"
+                      parseFloat(transaction.amount) >= 0
+                        ? "text-green-600"
+                        : "text-red-600"
                     }`}
                   >
-                    {formatAmount(
-                      transaction.amount,
-                      transaction.transactionType.name
-                    )}
+                    {formatAmount(transaction.amount)}
                   </div>
                   <div className="text-xs text-gray-400">
                     {transaction.transactionType.name}

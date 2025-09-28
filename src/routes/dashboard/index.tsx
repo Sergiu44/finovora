@@ -106,7 +106,9 @@ function RouteComponent() {
               )}
             </AnimatePresence>
             {userAccounts && (
-              <div className={`absolute inset-0 left-0 top-full my-4 space-y-4 z-10`}>
+              <div
+                className={`absolute inset-0 left-0 top-full my-4 space-y-4 ${openAccountsDialog ? "z-10" : "-z-10"}`}
+              >
                 {userAccounts
                   .filter((acc) => acc.id !== account?.id)
                   .map((account, index) => (
@@ -115,7 +117,7 @@ function RouteComponent() {
                         setUserMainAccountId(account.id);
                         setOpenAccountsDialog(false);
                       }}
-                      wrapperClassName={`cursor-pointer z-[20] transition-all duration-500 delay-[${index * 100}ms] ${openAccountsDialog ? "opacity-100 scale-105" : "opacity-0! scale-100"}`}
+                      wrapperClassName={`cursor-pointer transition-all duration-500 delay-[${index * 100}ms] ${openAccountsDialog ? "opacity-100 scale-105" : "opacity-0! scale-100"}`}
                       key={account.id}
                       name={account.name}
                       description={account.description || ""}

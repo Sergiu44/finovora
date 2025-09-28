@@ -14,9 +14,11 @@ export const createTransactionHandler = catchErrors(
       transactionDate,
       transactionTypeId,
       categoryId,
+      destinationAccountId,
     } = req.body;
     const transaction = await createTransaction({
       accountId,
+      destinationAccountId,
       amount,
       description,
       transactionDate,

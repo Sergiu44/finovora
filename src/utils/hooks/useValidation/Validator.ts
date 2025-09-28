@@ -28,7 +28,9 @@ export default class Validator {
     return this;
   };
 
-  check = (callbackFn: Function, message: string) => {
+  check = (callbackFn: Function, message: string, isInactive = false) => {
+    if (isInactive) return this;
+
     for (const keyIndex in this.currentKey) {
       this.configuration = {
         ...this.configuration,

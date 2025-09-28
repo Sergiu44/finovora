@@ -9,8 +9,9 @@ type TransactionAttributes = {
   id: number;
   userId: number;
   accountId: number;
+  destinationAccountId?: number;
   transactionTypeId: number;
-  categoryId: number;
+  categoryId?: number;
   amount: number;
   description?: string;
   transactionDate: Date;
@@ -35,13 +36,15 @@ export class Transaction extends Model<
   declare id: number;
   declare userId: number;
   declare accountId: number;
+  declare destinationAccountId: number;
   declare transactionTypeId: number;
-  declare categoryId: number;
+  declare categoryId?: number;
   declare amount: number;
   declare description: string | null;
   declare transactionDate: Date;
   declare user: NonAttribute<User>;
   declare account: NonAttribute<Account>;
+  declare destinationAccount: NonAttribute<Account>;
   declare transactionType: NonAttribute<TransactionType>;
   declare category: NonAttribute<Category>;
 
@@ -61,6 +64,10 @@ export class Transaction extends Model<
     Transaction.belongsTo(Category, {
       foreignKey: "categoryId",
       as: "category",
+    });
+    Transaction.belongsTo(Account, {
+      foreignKey: "destinationAccountId",
+      as: "destinationAccount",
     });
   }
 
@@ -88,6 +95,18 @@ export class Transaction extends Model<
         accountId: {
           type: DataTypes.BIGINT,
           allowNull: false,
+          references: {
+            model: {
+              tableName: "accounts",
+            },
+            key: "id",
+          },
+          onUpdate: "CASCADE",
+          onDelete: "CASCADE",
+        },
+        destinationAccountId: {
+          type: DataTypes.BIGINT,
+          allowNull: true,
           references: {
             model: {
               tableName: "accounts",

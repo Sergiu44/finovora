@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import type { CardGradientItem } from "../../../../../utils/actions/nomenclatures/defaultGradient";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { deleteUserGradientAsync } from "../../../../../utils/actions/users/userGradients";
 import { toast } from "sonner";
 import ConfirmationModal from "../../../../../components/reusable/dialogs/ConfirmationModal";

@@ -1,4 +1,4 @@
-import { ExclamationTriangleIcon } from "@heroicons/react/16/solid";
+import { AlertCircle } from "lucide-react";
 
 export default function ErrorMessage({
   errorMessage,
@@ -9,7 +9,7 @@ export default function ErrorMessage({
 }) {
   return (
     <div className={`flex gap-1 items-center mt-1.5 ${wrapperClassName}`}>
-      <ExclamationTriangleIcon className="h-3 w-3 text-destructive" />
+      <AlertCircle className="h-3 w-3 text-destructive" />
       <p className="text-destructive">{errorMessage}</p>
     </div>
   );

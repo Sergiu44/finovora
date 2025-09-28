@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../../../components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "../../../components/ui/dialog";
 import { Button } from "../../../components/ui/button";
 import { Label } from "../../../components/ui/label";
 import { RadioGroup, RadioGroupItem } from "../../../components/ui/radio-group";
@@ -9,10 +14,12 @@ import { useValidation } from "../../../utils/hooks/useValidation/useValidation"
 import Validator from "../../../utils/hooks/useValidation/Validator";
 import VALIDATIONS from "../../../utils/hooks/useValidation/index";
 import { useMutation } from "@tanstack/react-query";
-import { Input } from "../../../components/ui/input";
 import { getEnumValues } from "../../../utils/arrays";
 import CustomInput from "../../../components/reusable/inputs/CustomInput";
-import { TransactionTypes, CategoryType } from "../../../types/enums/TransactionTypes";
+import {
+  TransactionTypes,
+  CategoryType,
+} from "../../../types/enums/TransactionTypes";
 import { createTransactionAsync } from "../../../utils/actions/transactions";
 
 interface IAddTransactionForCurrentAccount {
@@ -20,30 +27,71 @@ interface IAddTransactionForCurrentAccount {
   setOpen: (open: boolean) => void;
 }
 
-export default function AddTransactionForCurrentAccount(props: IAddTransactionForCurrentAccount) {
+export default function AddTransactionForCurrentAccount(
+  props: IAddTransactionForCurrentAccount
+) {
   const { account } = useUserMainAccount();
-  const [transactionType, setTransactionType] = useState<TransactionTypes>(TransactionTypes.Expense);
+  const [transactionType, setTransactionType] = useState<TransactionTypes>(
+    TransactionTypes.Expense
+  );
   const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   // Form validation
-  const { values, errors, onChangeInput, onChangeValue, handleCheckFormErrors } = useValidation(
+  const {
+    values,
+    errors,
+    setValues,
+    onChangeInput,
+    onChangeValue,
+    handleCheckFormErrors,
+  } = useValidation(
     new Validator()
       .forProperty("amount")
       .check(VALIDATIONS.isRequired, "Amount is required.")
-      .check((value: string) => !isNaN(Number(value)) && Number(value) > 0, "Amount must be a positive number.")
+      .check(
+        (value: string) => !isNaN(Number(value)) && Number(value) > 0,
+        "Amount must be a positive number."
+      )
       .forProperty("description")
       .check(VALIDATIONS.isRequired, "Description is required.")
-      .check(VALIDATIONS.minLength(3), "Description must be at least 3 characters.")
+      .check(
+        VALIDATIONS.minLength(3),
+        "Description must be at least 3 characters."
+      )
       .forProperty("categoryId")
-      .check(VALIDATIONS.isRequired, "Category is required.")
+      .check(
+        VALIDATIONS.isRequired,
+        "Category is required.",
+        transactionType === TransactionTypes.Transfer
+      )
       .forProperty("date")
       .check(VALIDATIONS.isRequired, "Date is required.")
-      .forProperty("accountId")
+      .forProperty("accountId", account?.id.toString())
       .check(VALIDATIONS.isRequired, "Account is required.")
       .forProperty("currencyId")
       .check(VALIDATIONS.isRequired, "Currency is required.")
       .applyCheckOnlyOnSubmit()
+      .forProperty("destinationAccountId")
+      .check(
+        (val: string) => val !== values.accountId,
+        "Destination account must be different from the source account.",
+        transactionType !== TransactionTypes.Transfer
+      )
+      .check(
+        VALIDATIONS.isRequired,
+        "Destination account is required.",
+        transactionType !== TransactionTypes.Transfer
+      )
   );
+
+  useEffect(() => {
+    if (account) {
+      setValues({
+        ...values,
+        accountId: account.id.toString(),
+      });
+    }
+  }, [account]);
 
   const { mutate: createTransaction } = useMutation({
     mutationKey: ["createTransaction"],
@@ -64,11 +112,18 @@ export default function AddTransactionForCurrentAccount(props: IAddTransactionFo
       transactionTypeId: transactionType,
       amount: Number(formData.get("amount")),
       description: formData.get("description") as string,
-      categoryId: Number(formData.get("categoryId")),
       transactionDate: new Date(formData.get("date") as string),
       userId: 1,
       currencyId: Number(formData.get("currencyId")),
-    };
+    } as any;
+
+    if (transactionType !== TransactionTypes.Transfer) {
+      transactionData.categoryId = Number(formData.get("categoryId"));
+    } else {
+      transactionData.destinationAccountId = Number(
+        formData.get("destinationAccountId")
+      );
+    }
 
     createTransaction(transactionData, {
       onSuccess: () => {
@@ -90,133 +145,116 @@ export default function AddTransactionForCurrentAccount(props: IAddTransactionFo
 
   return (
     <Dialog open={props.open} onOpenChange={props.setOpen}>
-      <DialogContent className="max-w-[calc(100vw-20px)]! h-[calc(100%-20px)] p-12 overflow-y-auto">
+      <DialogContent className="max-w-[900px] sm:max-w-[800px] p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Two Column Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_3%_max(500px,67.5%)]">
-            {/* Left Column - Header and Transaction Type */}
-            <div className="space-y-6">
-              {/* Header */}
-              <div className="space-y-3">
-                <DialogTitle className="text-2xl font-bold">Add Transaction</DialogTitle>
-                <DialogDescription className="text-muted-foreground">
-                  Add a new transaction to {account?.name || "your account"}
-                </DialogDescription>
-              </div>
+          {/* Header */}
+          <div className="space-y-2">
+            <DialogTitle className="text-xl font-semibold">
+              Add Transaction
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              Add a new transaction to {account?.name || "your account"}
+            </DialogDescription>
+          </div>
 
-              {/* Transaction Type Selection */}
-              <RadioGroup
-                value={transactionType.toString()}
-                onValueChange={(value) => {
-                  console.log(Number(value) as TransactionTypes);
-                  setTransactionType(Number(value) as TransactionTypes);
-                  setSelectedCategory("");
-                }}
-                className="flex gap-0 relative"
+          {/* Transaction Type - Top Row */}
+          <RadioGroup
+            value={transactionType.toString()}
+            onValueChange={(value) => {
+              setTransactionType(Number(value) as TransactionTypes);
+              setSelectedCategory("");
+            }}
+            className="flex justify-start border-b pb-4"
+          >
+            {getEnumValues(CategoryType).map((key) => (
+              <div
+                className="relative flex items-center gap-2 pb-2 px-3"
+                key={"add-transaction-for-current-account-" + key}
               >
-                {getEnumValues(CategoryType).map((key) => (
-                  <div className="relative flex items-center gap-2" key={"add-transaction-for-current-account-" + key}>
-                    <RadioGroupItem
-                      value={CategoryType[key as keyof typeof CategoryType].toString()}
-                      id={"add-transaction-for-current-account-" + key}
+                <RadioGroupItem
+                  value={CategoryType[
+                    key as keyof typeof CategoryType
+                  ].toString()}
+                  id={"add-transaction-for-current-account-" + key}
+                />
+                <Label
+                  className="text-sm"
+                  htmlFor={"add-transaction-for-current-account-" + key}
+                >
+                  {key}
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
+
+          {/* Grid Layout for Form Fields */}
+          <div className="grid grid-cols-4 gap-2">
+            {/* Amount - 3 columns */}
+            <div className="col-span-3 space-y-2">
+              <Label htmlFor="amount" className="text-sm font-medium">
+                Amount *
+              </Label>
+              <div className="relative">
+                <CustomInput
+                  name="amount"
+                  value={values.amount}
+                  onChange={onChangeInput}
+                  errorMessage={errors.amount || errors.currencyId}
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="0.00"
+                  leftElementClassName="left-0! max-w-[110px]"
+                  leftElement={
+                    <CachedSelect
+                      className={`shadow-none mt-0! border-0! border-transparent! h-[35px]! ml-1! text-muted-foreground! max-w-[110px] ${errors.currencyId && "border-error! focus-visible:ring-error-600! focus-visible:border-error!"}`}
+                      entityName="currencies"
+                      placeholder="Currency"
+                      name="currencyId"
+                      onChange={(value) => onChangeValue("currencyId", value)}
                     />
-                    <Label className="p-4" htmlFor={"add-transaction-for-current-account-" + key}>
-                      {key}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
+                  }
+                  className="pl-26! h-[50px]!"
+                />
+              </div>
             </div>
 
-            <div></div>
+            {/* Date - 1 column */}
+            <div className="col-span-1 space-y-2">
+              <Label htmlFor="date" className="text-sm font-medium">
+                Date *
+              </Label>
+              <CustomInput
+                errorMessage={errors.date}
+                id="date"
+                name="date"
+                type="date"
+                onChange={onChangeInput}
+                className="w-full h-[50px]! text-[14px]! place-content-center!"
+              />
+            </div>
 
-            {/* Right Column - All Form Fields */}
-            <div className="space-y-4">
-              {/* Amount */}
-              <div className="space-y-2">
-                <Label htmlFor="amount" className="text-sm font-medium">
-                  Amount *
-                </Label>
-                <div className="relative">
-                  <CustomInput
-                    name="amount"
-                    value={values.amount}
-                    onChange={onChangeInput}
-                    errorMessage={errors.amount}
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    placeholder="0.00"
-                    leftElementClassName="left-0! max-w-[110px]"
-                    leftElement={
-                      <CachedSelect
-                        className="shadow-none mt-0! text-muted-foreground! max-w-[110px]"
-                        entityName="currencies"
-                        placeholder="Select a currency"
-                        name="currencyId"
-                        onChange={function (value: string): void {
-                          onChangeValue("currencyId", value);
-                        }}
-                      />
-                    }
-                    className="pl-26!"
-                  />
-                </div>
-                {errors.amount && <p className="text-sm text-red-500 mt-1">{errors.amount}</p>}
-              </div>
+            {/* Description - 3 columns */}
+            <div className="col-span-2 space-y-2">
+              <Label htmlFor="description" className="text-sm font-medium">
+                Description *
+              </Label>
+              <CustomInput
+                errorMessage={errors.description}
+                id="description"
+                name="description"
+                onChange={onChangeInput}
+                placeholder="What is this transaction for?"
+                className="w-full h-[50px]!"
+              />
+            </div>
 
-              {/* Description */}
-              <div className="space-y-2">
-                <Label htmlFor="description" className="text-sm font-medium">
-                  Description *
-                </Label>
-                <Input
-                  id="description"
-                  name="description"
-                  value={values.description}
-                  onChange={onChangeInput}
-                  placeholder="What is this transaction for?"
-                  className="w-full"
-                />
-                {errors.description && <p className="text-sm text-red-500 mt-1">{errors.description}</p>}
-              </div>
-
-              {/* Date */}
-              <div className="space-y-2">
-                <Label htmlFor="date" className="text-sm font-medium">
-                  Date *
-                </Label>
-                <Input
-                  id="date"
-                  name="date"
-                  type="date"
-                  value={values.date || new Date().toISOString().split("T")[0]}
-                  onChange={onChangeInput}
-                  className="w-full"
-                />
-                {errors.date && <p className="text-sm text-red-500 mt-1">{errors.date}</p>}
-              </div>
-
-              {/* Account Selection */}
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Account *</Label>
-                <CachedSelect
-                  entityName="accounts"
-                  placeholder="Select an account"
-                  name="accountId"
-                  errorMessage={errors.accountId}
-                  onChange={(value) => {
-                    onChangeValue("accountId", value);
-                  }}
-                  params={{ transactionTypeId: transactionType?.toString() ?? "" }}
-                />
-                {errors.accountId && <p className="text-sm text-red-500 mt-1">{errors.accountId}</p>}
-              </div>
-
-              {/* Category Selection */}
-              <div className="space-y-2">
+            {/* Category - 2 columns */}
+            {transactionType !== TransactionTypes.Transfer && (
+              <div className="col-span-2 space-y-2">
                 <Label className="text-sm font-medium">Category *</Label>
                 <CachedSelect
+                  className="h-[50px]!"
                   entityName="categories"
                   name="categoryId"
                   errorMessage={errors.categoryId}
@@ -227,18 +265,61 @@ export default function AddTransactionForCurrentAccount(props: IAddTransactionFo
                   defaultValue={selectedCategory}
                   params={{ transactionTypeId: transactionType.toString() }}
                 />
-                {errors.categoryId && <p className="text-sm text-red-500 mt-1">{errors.categoryId}</p>}
               </div>
+            )}
+
+            {/* Account Selection - 2 columns */}
+            <div className="col-span-2 space-y-2">
+              <Label className="text-sm font-medium">Account *</Label>
+              <CachedSelect
+                className="h-[50px]!"
+                defaultValue={account?.id.toString()}
+                entityName="accounts"
+                placeholder="Select an account"
+                name="accountId"
+                errorMessage={errors.accountId}
+                onChange={(value) => onChangeValue("accountId", value)}
+                params={{
+                  transactionTypeId: transactionType?.toString() ?? "",
+                }}
+              />
             </div>
+
+            {/* Destination Account for Transfers - 2 columns */}
+            {transactionType === TransactionTypes.Transfer && (
+              <div className="col-span-2 space-y-2">
+                <Label className="text-sm font-medium">
+                  Destination Account *
+                </Label>
+                <CachedSelect
+                  omitIds={account ? [account.id.toString()] : []}
+                  entityName="accounts"
+                  placeholder="Select a transfer account"
+                  name="destinationAccountId"
+                  errorMessage={errors.destinationAccountId}
+                  onChange={(value) =>
+                    onChangeValue("destinationAccountId", value)
+                  }
+                  params={{
+                    transactionTypeId: transactionType?.toString() ?? "",
+                  }}
+                  className="h-[50px]!"
+                />
+              </div>
+            )}
           </div>
 
-          {/* Form Actions - Full Width */}
-          <div className="flex gap-3 justify-end pt-6 border-t border-border">
-            <Button type="button" variant="outline" onClick={() => props.setOpen(false)}>
-              Cancel
+          {/* Form Actions */}
+          <div className="flex gap-3 justify-end pt-4 border-t">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => props.setOpen(false)}
+            >
+              Discard changes
             </Button>
-            <Button type="submit" className="min-w-[120px]">
-              Add Transaction
+            <Button type="submit" className="min-w-[100px]">
+              Add
             </Button>
           </div>
         </form>

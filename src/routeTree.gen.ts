@@ -8,349 +8,352 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as DashboardRouteImport } from './routes/dashboard/route'
-import { Route as IndexImport } from './routes/index'
-import { Route as DashboardIndexImport } from './routes/dashboard/index'
-import { Route as DashboardReportsImport } from './routes/dashboard/reports'
-import { Route as DashboardProfileImport } from './routes/dashboard/profile'
-import { Route as DashboardBillingImport } from './routes/dashboard/billing'
-import { Route as AuthAuthImport } from './routes/auth/_auth'
-import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings/route'
-import { Route as DashboardCategoriesIndexImport } from './routes/dashboard/categories/index'
-import { Route as AuthAuthRegisterImport } from './routes/auth/_auth.register'
-import { Route as AuthAuthLoginImport } from './routes/auth/_auth.login'
-import { Route as AuthAuthForgotPasswordImport } from './routes/auth/_auth.forgot-password'
-import { Route as DashboardSettingsProfileIndexImport } from './routes/dashboard/settings/profile/index'
-import { Route as DashboardSettingsAccountsIndexImport } from './routes/dashboard/settings/accounts/index'
-import { Route as DashboardSettingsAccountsCreateImport } from './routes/dashboard/settings/accounts/create'
-import { Route as DashboardSettingsAccountsAccountTypesIndexImport } from './routes/dashboard/settings/accounts/account-types/index'
-import { Route as DashboardSettingsAccountsAccountTypesCreateImport } from './routes/dashboard/settings/accounts/account-types/create'
-import { Route as DashboardSettingsAccountsAccountTypesAccountTypeIdImport } from './routes/dashboard/settings/accounts/account-types/$accountTypeId'
-import { Route as DashboardSettingsAccountsEditAccountIdRouteImport } from './routes/dashboard/settings/accounts/edit/$accountId/route'
+import { Route as rootRoute } from "./routes/__root";
+import { Route as DashboardRouteImport } from "./routes/dashboard/route";
+import { Route as IndexImport } from "./routes/index";
+import { Route as DashboardIndexImport } from "./routes/dashboard/index";
+import { Route as DashboardReportsImport } from "./routes/dashboard/reports";
+import { Route as DashboardProfileImport } from "./routes/dashboard/profile";
+import { Route as DashboardBillingImport } from "./routes/dashboard/billing";
+import { Route as AuthAuthImport } from "./routes/auth/_auth";
+import { Route as DashboardSettingsRouteImport } from "./routes/dashboard/settings/route";
+import { Route as DashboardCategoriesIndexImport } from "./routes/dashboard/categories/index";
+import { Route as DashboardBudgetPlannerIndexImport } from "./routes/dashboard/budget-planner/index";
+import { Route as AuthAuthRegisterImport } from "./routes/auth/_auth.register";
+import { Route as AuthAuthLoginImport } from "./routes/auth/_auth.login";
+import { Route as AuthAuthForgotPasswordImport } from "./routes/auth/_auth.forgot-password";
+import { Route as DashboardSettingsCurrenciesIndexImport } from "./routes/dashboard/settings/currencies/index";
+import { Route as DashboardSettingsAccountsIndexImport } from "./routes/dashboard/settings/accounts/index";
+import { Route as DashboardSettingsAccountsCreateImport } from "./routes/dashboard/settings/accounts/create";
+import { Route as DashboardSettingsAccountsAccountTypesIndexImport } from "./routes/dashboard/settings/accounts/account-types/index";
+import { Route as DashboardSettingsAccountsAccountTypesCreateImport } from "./routes/dashboard/settings/accounts/account-types/create";
+import { Route as DashboardSettingsAccountsAccountTypesAccountTypeIdImport } from "./routes/dashboard/settings/accounts/account-types/$accountTypeId";
+import { Route as DashboardSettingsAccountsEditAccountIdRouteImport } from "./routes/dashboard/settings/accounts/edit/$accountId/route";
 
 // Create Virtual Routes
 
-const AuthImport = createFileRoute('/auth')()
+const AuthImport = createFileRoute("/auth")();
 
 // Create/Update Routes
 
 const AuthRoute = AuthImport.update({
-  id: '/auth',
-  path: '/auth',
+  id: "/auth",
+  path: "/auth",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const DashboardRouteRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+  id: "/dashboard",
+  path: "/dashboard",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const IndexRoute = IndexImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const DashboardIndexRoute = DashboardIndexImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => DashboardRouteRoute,
-} as any)
+} as any);
 
 const DashboardReportsRoute = DashboardReportsImport.update({
-  id: '/reports',
-  path: '/reports',
+  id: "/reports",
+  path: "/reports",
   getParentRoute: () => DashboardRouteRoute,
-} as any)
+} as any);
 
 const DashboardProfileRoute = DashboardProfileImport.update({
-  id: '/profile',
-  path: '/profile',
+  id: "/profile",
+  path: "/profile",
   getParentRoute: () => DashboardRouteRoute,
-} as any)
+} as any);
 
 const DashboardBillingRoute = DashboardBillingImport.update({
-  id: '/billing',
-  path: '/billing',
+  id: "/billing",
+  path: "/billing",
   getParentRoute: () => DashboardRouteRoute,
-} as any)
+} as any);
 
 const AuthAuthRoute = AuthAuthImport.update({
-  id: '/_auth',
+  id: "/_auth",
   getParentRoute: () => AuthRoute,
-} as any)
+} as any);
 
 const DashboardSettingsRouteRoute = DashboardSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
+  id: "/settings",
+  path: "/settings",
   getParentRoute: () => DashboardRouteRoute,
-} as any)
+} as any);
 
 const DashboardCategoriesIndexRoute = DashboardCategoriesIndexImport.update({
-  id: '/categories/',
-  path: '/categories/',
+  id: "/categories/",
+  path: "/categories/",
   getParentRoute: () => DashboardRouteRoute,
-} as any)
+} as any);
+
+const DashboardBudgetPlannerIndexRoute = DashboardBudgetPlannerIndexImport.update({
+  id: "/budget-planner/",
+  path: "/budget-planner/",
+  getParentRoute: () => DashboardRouteRoute,
+} as any);
 
 const AuthAuthRegisterRoute = AuthAuthRegisterImport.update({
-  id: '/register',
-  path: '/register',
+  id: "/register",
+  path: "/register",
   getParentRoute: () => AuthAuthRoute,
-} as any)
+} as any);
 
 const AuthAuthLoginRoute = AuthAuthLoginImport.update({
-  id: '/login',
-  path: '/login',
+  id: "/login",
+  path: "/login",
   getParentRoute: () => AuthAuthRoute,
-} as any)
+} as any);
 
 const AuthAuthForgotPasswordRoute = AuthAuthForgotPasswordImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
+  id: "/forgot-password",
+  path: "/forgot-password",
   getParentRoute: () => AuthAuthRoute,
-} as any)
+} as any);
 
-const DashboardSettingsProfileIndexRoute =
-  DashboardSettingsProfileIndexImport.update({
-    id: '/profile/',
-    path: '/profile/',
-    getParentRoute: () => DashboardSettingsRouteRoute,
-  } as any)
+const DashboardSettingsCurrenciesIndexRoute = DashboardSettingsCurrenciesIndexImport.update({
+  id: "/currencies/",
+  path: "/currencies/",
+  getParentRoute: () => DashboardSettingsRouteRoute,
+} as any);
 
-const DashboardSettingsAccountsIndexRoute =
-  DashboardSettingsAccountsIndexImport.update({
-    id: '/accounts/',
-    path: '/accounts/',
-    getParentRoute: () => DashboardSettingsRouteRoute,
-  } as any)
+const DashboardSettingsAccountsIndexRoute = DashboardSettingsAccountsIndexImport.update({
+  id: "/accounts/",
+  path: "/accounts/",
+  getParentRoute: () => DashboardSettingsRouteRoute,
+} as any);
 
-const DashboardSettingsAccountsCreateRoute =
-  DashboardSettingsAccountsCreateImport.update({
-    id: '/accounts/create',
-    path: '/accounts/create',
-    getParentRoute: () => DashboardSettingsRouteRoute,
-  } as any)
+const DashboardSettingsAccountsCreateRoute = DashboardSettingsAccountsCreateImport.update({
+  id: "/accounts/create",
+  path: "/accounts/create",
+  getParentRoute: () => DashboardSettingsRouteRoute,
+} as any);
 
-const DashboardSettingsAccountsAccountTypesIndexRoute =
-  DashboardSettingsAccountsAccountTypesIndexImport.update({
-    id: '/accounts/account-types/',
-    path: '/accounts/account-types/',
-    getParentRoute: () => DashboardSettingsRouteRoute,
-  } as any)
+const DashboardSettingsAccountsAccountTypesIndexRoute = DashboardSettingsAccountsAccountTypesIndexImport.update({
+  id: "/accounts/account-types/",
+  path: "/accounts/account-types/",
+  getParentRoute: () => DashboardSettingsRouteRoute,
+} as any);
 
-const DashboardSettingsAccountsAccountTypesCreateRoute =
-  DashboardSettingsAccountsAccountTypesCreateImport.update({
-    id: '/accounts/account-types/create',
-    path: '/accounts/account-types/create',
-    getParentRoute: () => DashboardSettingsRouteRoute,
-  } as any)
+const DashboardSettingsAccountsAccountTypesCreateRoute = DashboardSettingsAccountsAccountTypesCreateImport.update({
+  id: "/accounts/account-types/create",
+  path: "/accounts/account-types/create",
+  getParentRoute: () => DashboardSettingsRouteRoute,
+} as any);
 
 const DashboardSettingsAccountsAccountTypesAccountTypeIdRoute =
   DashboardSettingsAccountsAccountTypesAccountTypeIdImport.update({
-    id: '/accounts/account-types/$accountTypeId',
-    path: '/accounts/account-types/$accountTypeId',
+    id: "/accounts/account-types/$accountTypeId",
+    path: "/accounts/account-types/$accountTypeId",
     getParentRoute: () => DashboardSettingsRouteRoute,
-  } as any)
+  } as any);
 
-const DashboardSettingsAccountsEditAccountIdRouteRoute =
-  DashboardSettingsAccountsEditAccountIdRouteImport.update({
-    id: '/accounts/edit/$accountId',
-    path: '/accounts/edit/$accountId',
-    getParentRoute: () => DashboardSettingsRouteRoute,
-  } as any)
+const DashboardSettingsAccountsEditAccountIdRouteRoute = DashboardSettingsAccountsEditAccountIdRouteImport.update({
+  id: "/accounts/edit/$accountId",
+  path: "/accounts/edit/$accountId",
+  getParentRoute: () => DashboardSettingsRouteRoute,
+} as any);
 
 // Populate the FileRoutesByPath interface
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRoute
-    }
-    '/dashboard/settings': {
-      id: '/dashboard/settings'
-      path: '/settings'
-      fullPath: '/dashboard/settings'
-      preLoaderRoute: typeof DashboardSettingsRouteImport
-      parentRoute: typeof DashboardRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthImport
-      parentRoute: typeof rootRoute
-    }
-    '/auth/_auth': {
-      id: '/auth/_auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthAuthImport
-      parentRoute: typeof AuthRoute
-    }
-    '/dashboard/billing': {
-      id: '/dashboard/billing'
-      path: '/billing'
-      fullPath: '/dashboard/billing'
-      preLoaderRoute: typeof DashboardBillingImport
-      parentRoute: typeof DashboardRouteImport
-    }
-    '/dashboard/profile': {
-      id: '/dashboard/profile'
-      path: '/profile'
-      fullPath: '/dashboard/profile'
-      preLoaderRoute: typeof DashboardProfileImport
-      parentRoute: typeof DashboardRouteImport
-    }
-    '/dashboard/reports': {
-      id: '/dashboard/reports'
-      path: '/reports'
-      fullPath: '/dashboard/reports'
-      preLoaderRoute: typeof DashboardReportsImport
-      parentRoute: typeof DashboardRouteImport
-    }
-    '/dashboard/': {
-      id: '/dashboard/'
-      path: '/'
-      fullPath: '/dashboard/'
-      preLoaderRoute: typeof DashboardIndexImport
-      parentRoute: typeof DashboardRouteImport
-    }
-    '/auth/_auth/forgot-password': {
-      id: '/auth/_auth/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/auth/forgot-password'
-      preLoaderRoute: typeof AuthAuthForgotPasswordImport
-      parentRoute: typeof AuthAuthImport
-    }
-    '/auth/_auth/login': {
-      id: '/auth/_auth/login'
-      path: '/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthAuthLoginImport
-      parentRoute: typeof AuthAuthImport
-    }
-    '/auth/_auth/register': {
-      id: '/auth/_auth/register'
-      path: '/register'
-      fullPath: '/auth/register'
-      preLoaderRoute: typeof AuthAuthRegisterImport
-      parentRoute: typeof AuthAuthImport
-    }
-    '/dashboard/categories/': {
-      id: '/dashboard/categories/'
-      path: '/categories'
-      fullPath: '/dashboard/categories'
-      preLoaderRoute: typeof DashboardCategoriesIndexImport
-      parentRoute: typeof DashboardRouteImport
-    }
-    '/dashboard/settings/accounts/create': {
-      id: '/dashboard/settings/accounts/create'
-      path: '/accounts/create'
-      fullPath: '/dashboard/settings/accounts/create'
-      preLoaderRoute: typeof DashboardSettingsAccountsCreateImport
-      parentRoute: typeof DashboardSettingsRouteImport
-    }
-    '/dashboard/settings/accounts/': {
-      id: '/dashboard/settings/accounts/'
-      path: '/accounts'
-      fullPath: '/dashboard/settings/accounts'
-      preLoaderRoute: typeof DashboardSettingsAccountsIndexImport
-      parentRoute: typeof DashboardSettingsRouteImport
-    }
-    '/dashboard/settings/profile/': {
-      id: '/dashboard/settings/profile/'
-      path: '/profile'
-      fullPath: '/dashboard/settings/profile'
-      preLoaderRoute: typeof DashboardSettingsProfileIndexImport
-      parentRoute: typeof DashboardSettingsRouteImport
-    }
-    '/dashboard/settings/accounts/edit/$accountId': {
-      id: '/dashboard/settings/accounts/edit/$accountId'
-      path: '/accounts/edit/$accountId'
-      fullPath: '/dashboard/settings/accounts/edit/$accountId'
-      preLoaderRoute: typeof DashboardSettingsAccountsEditAccountIdRouteImport
-      parentRoute: typeof DashboardSettingsRouteImport
-    }
-    '/dashboard/settings/accounts/account-types/$accountTypeId': {
-      id: '/dashboard/settings/accounts/account-types/$accountTypeId'
-      path: '/accounts/account-types/$accountTypeId'
-      fullPath: '/dashboard/settings/accounts/account-types/$accountTypeId'
-      preLoaderRoute: typeof DashboardSettingsAccountsAccountTypesAccountTypeIdImport
-      parentRoute: typeof DashboardSettingsRouteImport
-    }
-    '/dashboard/settings/accounts/account-types/create': {
-      id: '/dashboard/settings/accounts/account-types/create'
-      path: '/accounts/account-types/create'
-      fullPath: '/dashboard/settings/accounts/account-types/create'
-      preLoaderRoute: typeof DashboardSettingsAccountsAccountTypesCreateImport
-      parentRoute: typeof DashboardSettingsRouteImport
-    }
-    '/dashboard/settings/accounts/account-types/': {
-      id: '/dashboard/settings/accounts/account-types/'
-      path: '/accounts/account-types'
-      fullPath: '/dashboard/settings/accounts/account-types'
-      preLoaderRoute: typeof DashboardSettingsAccountsAccountTypesIndexImport
-      parentRoute: typeof DashboardSettingsRouteImport
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/dashboard": {
+      id: "/dashboard";
+      path: "/dashboard";
+      fullPath: "/dashboard";
+      preLoaderRoute: typeof DashboardRouteImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/dashboard/settings": {
+      id: "/dashboard/settings";
+      path: "/settings";
+      fullPath: "/dashboard/settings";
+      preLoaderRoute: typeof DashboardSettingsRouteImport;
+      parentRoute: typeof DashboardRouteImport;
+    };
+    "/auth": {
+      id: "/auth";
+      path: "/auth";
+      fullPath: "/auth";
+      preLoaderRoute: typeof AuthImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/auth/_auth": {
+      id: "/auth/_auth";
+      path: "/auth";
+      fullPath: "/auth";
+      preLoaderRoute: typeof AuthAuthImport;
+      parentRoute: typeof AuthRoute;
+    };
+    "/dashboard/billing": {
+      id: "/dashboard/billing";
+      path: "/billing";
+      fullPath: "/dashboard/billing";
+      preLoaderRoute: typeof DashboardBillingImport;
+      parentRoute: typeof DashboardRouteImport;
+    };
+    "/dashboard/profile": {
+      id: "/dashboard/profile";
+      path: "/profile";
+      fullPath: "/dashboard/profile";
+      preLoaderRoute: typeof DashboardProfileImport;
+      parentRoute: typeof DashboardRouteImport;
+    };
+    "/dashboard/reports": {
+      id: "/dashboard/reports";
+      path: "/reports";
+      fullPath: "/dashboard/reports";
+      preLoaderRoute: typeof DashboardReportsImport;
+      parentRoute: typeof DashboardRouteImport;
+    };
+    "/dashboard/": {
+      id: "/dashboard/";
+      path: "/";
+      fullPath: "/dashboard/";
+      preLoaderRoute: typeof DashboardIndexImport;
+      parentRoute: typeof DashboardRouteImport;
+    };
+    "/auth/_auth/forgot-password": {
+      id: "/auth/_auth/forgot-password";
+      path: "/forgot-password";
+      fullPath: "/auth/forgot-password";
+      preLoaderRoute: typeof AuthAuthForgotPasswordImport;
+      parentRoute: typeof AuthAuthImport;
+    };
+    "/auth/_auth/login": {
+      id: "/auth/_auth/login";
+      path: "/login";
+      fullPath: "/auth/login";
+      preLoaderRoute: typeof AuthAuthLoginImport;
+      parentRoute: typeof AuthAuthImport;
+    };
+    "/auth/_auth/register": {
+      id: "/auth/_auth/register";
+      path: "/register";
+      fullPath: "/auth/register";
+      preLoaderRoute: typeof AuthAuthRegisterImport;
+      parentRoute: typeof AuthAuthImport;
+    };
+    "/dashboard/budget-planner/": {
+      id: "/dashboard/budget-planner/";
+      path: "/budget-planner";
+      fullPath: "/dashboard/budget-planner";
+      preLoaderRoute: typeof DashboardBudgetPlannerIndexImport;
+      parentRoute: typeof DashboardRouteImport;
+    };
+    "/dashboard/categories/": {
+      id: "/dashboard/categories/";
+      path: "/categories";
+      fullPath: "/dashboard/categories";
+      preLoaderRoute: typeof DashboardCategoriesIndexImport;
+      parentRoute: typeof DashboardRouteImport;
+    };
+    "/dashboard/settings/accounts/create": {
+      id: "/dashboard/settings/accounts/create";
+      path: "/accounts/create";
+      fullPath: "/dashboard/settings/accounts/create";
+      preLoaderRoute: typeof DashboardSettingsAccountsCreateImport;
+      parentRoute: typeof DashboardSettingsRouteImport;
+    };
+    "/dashboard/settings/accounts/": {
+      id: "/dashboard/settings/accounts/";
+      path: "/accounts";
+      fullPath: "/dashboard/settings/accounts";
+      preLoaderRoute: typeof DashboardSettingsAccountsIndexImport;
+      parentRoute: typeof DashboardSettingsRouteImport;
+    };
+    "/dashboard/settings/currencies/": {
+      id: "/dashboard/settings/currencies/";
+      path: "/currencies";
+      fullPath: "/dashboard/settings/currencies";
+      preLoaderRoute: typeof DashboardSettingsCurrenciesIndexImport;
+      parentRoute: typeof DashboardSettingsRouteImport;
+    };
+    "/dashboard/settings/accounts/edit/$accountId": {
+      id: "/dashboard/settings/accounts/edit/$accountId";
+      path: "/accounts/edit/$accountId";
+      fullPath: "/dashboard/settings/accounts/edit/$accountId";
+      preLoaderRoute: typeof DashboardSettingsAccountsEditAccountIdRouteImport;
+      parentRoute: typeof DashboardSettingsRouteImport;
+    };
+    "/dashboard/settings/accounts/account-types/$accountTypeId": {
+      id: "/dashboard/settings/accounts/account-types/$accountTypeId";
+      path: "/accounts/account-types/$accountTypeId";
+      fullPath: "/dashboard/settings/accounts/account-types/$accountTypeId";
+      preLoaderRoute: typeof DashboardSettingsAccountsAccountTypesAccountTypeIdImport;
+      parentRoute: typeof DashboardSettingsRouteImport;
+    };
+    "/dashboard/settings/accounts/account-types/create": {
+      id: "/dashboard/settings/accounts/account-types/create";
+      path: "/accounts/account-types/create";
+      fullPath: "/dashboard/settings/accounts/account-types/create";
+      preLoaderRoute: typeof DashboardSettingsAccountsAccountTypesCreateImport;
+      parentRoute: typeof DashboardSettingsRouteImport;
+    };
+    "/dashboard/settings/accounts/account-types/": {
+      id: "/dashboard/settings/accounts/account-types/";
+      path: "/accounts/account-types";
+      fullPath: "/dashboard/settings/accounts/account-types";
+      preLoaderRoute: typeof DashboardSettingsAccountsAccountTypesIndexImport;
+      parentRoute: typeof DashboardSettingsRouteImport;
+    };
   }
 }
 
 // Create and export the route tree
 
 interface DashboardSettingsRouteRouteChildren {
-  DashboardSettingsAccountsCreateRoute: typeof DashboardSettingsAccountsCreateRoute
-  DashboardSettingsAccountsIndexRoute: typeof DashboardSettingsAccountsIndexRoute
-  DashboardSettingsProfileIndexRoute: typeof DashboardSettingsProfileIndexRoute
-  DashboardSettingsAccountsEditAccountIdRouteRoute: typeof DashboardSettingsAccountsEditAccountIdRouteRoute
-  DashboardSettingsAccountsAccountTypesAccountTypeIdRoute: typeof DashboardSettingsAccountsAccountTypesAccountTypeIdRoute
-  DashboardSettingsAccountsAccountTypesCreateRoute: typeof DashboardSettingsAccountsAccountTypesCreateRoute
-  DashboardSettingsAccountsAccountTypesIndexRoute: typeof DashboardSettingsAccountsAccountTypesIndexRoute
+  DashboardSettingsAccountsCreateRoute: typeof DashboardSettingsAccountsCreateRoute;
+  DashboardSettingsAccountsIndexRoute: typeof DashboardSettingsAccountsIndexRoute;
+  DashboardSettingsCurrenciesIndexRoute: typeof DashboardSettingsCurrenciesIndexRoute;
+  DashboardSettingsAccountsEditAccountIdRouteRoute: typeof DashboardSettingsAccountsEditAccountIdRouteRoute;
+  DashboardSettingsAccountsAccountTypesAccountTypeIdRoute: typeof DashboardSettingsAccountsAccountTypesAccountTypeIdRoute;
+  DashboardSettingsAccountsAccountTypesCreateRoute: typeof DashboardSettingsAccountsAccountTypesCreateRoute;
+  DashboardSettingsAccountsAccountTypesIndexRoute: typeof DashboardSettingsAccountsAccountTypesIndexRoute;
 }
 
-const DashboardSettingsRouteRouteChildren: DashboardSettingsRouteRouteChildren =
-  {
-    DashboardSettingsAccountsCreateRoute: DashboardSettingsAccountsCreateRoute,
-    DashboardSettingsAccountsIndexRoute: DashboardSettingsAccountsIndexRoute,
-    DashboardSettingsProfileIndexRoute: DashboardSettingsProfileIndexRoute,
-    DashboardSettingsAccountsEditAccountIdRouteRoute:
-      DashboardSettingsAccountsEditAccountIdRouteRoute,
-    DashboardSettingsAccountsAccountTypesAccountTypeIdRoute:
-      DashboardSettingsAccountsAccountTypesAccountTypeIdRoute,
-    DashboardSettingsAccountsAccountTypesCreateRoute:
-      DashboardSettingsAccountsAccountTypesCreateRoute,
-    DashboardSettingsAccountsAccountTypesIndexRoute:
-      DashboardSettingsAccountsAccountTypesIndexRoute,
-  }
+const DashboardSettingsRouteRouteChildren: DashboardSettingsRouteRouteChildren = {
+  DashboardSettingsAccountsCreateRoute: DashboardSettingsAccountsCreateRoute,
+  DashboardSettingsAccountsIndexRoute: DashboardSettingsAccountsIndexRoute,
+  DashboardSettingsCurrenciesIndexRoute: DashboardSettingsCurrenciesIndexRoute,
+  DashboardSettingsAccountsEditAccountIdRouteRoute: DashboardSettingsAccountsEditAccountIdRouteRoute,
+  DashboardSettingsAccountsAccountTypesAccountTypeIdRoute: DashboardSettingsAccountsAccountTypesAccountTypeIdRoute,
+  DashboardSettingsAccountsAccountTypesCreateRoute: DashboardSettingsAccountsAccountTypesCreateRoute,
+  DashboardSettingsAccountsAccountTypesIndexRoute: DashboardSettingsAccountsAccountTypesIndexRoute,
+};
 
-const DashboardSettingsRouteRouteWithChildren =
-  DashboardSettingsRouteRoute._addFileChildren(
-    DashboardSettingsRouteRouteChildren,
-  )
+const DashboardSettingsRouteRouteWithChildren = DashboardSettingsRouteRoute._addFileChildren(
+  DashboardSettingsRouteRouteChildren
+);
 
 interface DashboardRouteRouteChildren {
-  DashboardSettingsRouteRoute: typeof DashboardSettingsRouteRouteWithChildren
-  DashboardBillingRoute: typeof DashboardBillingRoute
-  DashboardProfileRoute: typeof DashboardProfileRoute
-  DashboardReportsRoute: typeof DashboardReportsRoute
-  DashboardIndexRoute: typeof DashboardIndexRoute
-  DashboardCategoriesIndexRoute: typeof DashboardCategoriesIndexRoute
+  DashboardSettingsRouteRoute: typeof DashboardSettingsRouteRouteWithChildren;
+  DashboardBillingRoute: typeof DashboardBillingRoute;
+  DashboardProfileRoute: typeof DashboardProfileRoute;
+  DashboardReportsRoute: typeof DashboardReportsRoute;
+  DashboardIndexRoute: typeof DashboardIndexRoute;
+  DashboardBudgetPlannerIndexRoute: typeof DashboardBudgetPlannerIndexRoute;
+  DashboardCategoriesIndexRoute: typeof DashboardCategoriesIndexRoute;
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
@@ -359,188 +362,189 @@ const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardProfileRoute: DashboardProfileRoute,
   DashboardReportsRoute: DashboardReportsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardBudgetPlannerIndexRoute: DashboardBudgetPlannerIndexRoute,
   DashboardCategoriesIndexRoute: DashboardCategoriesIndexRoute,
-}
+};
 
-const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
-  DashboardRouteRouteChildren,
-)
+const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(DashboardRouteRouteChildren);
 
 interface AuthAuthRouteChildren {
-  AuthAuthForgotPasswordRoute: typeof AuthAuthForgotPasswordRoute
-  AuthAuthLoginRoute: typeof AuthAuthLoginRoute
-  AuthAuthRegisterRoute: typeof AuthAuthRegisterRoute
+  AuthAuthForgotPasswordRoute: typeof AuthAuthForgotPasswordRoute;
+  AuthAuthLoginRoute: typeof AuthAuthLoginRoute;
+  AuthAuthRegisterRoute: typeof AuthAuthRegisterRoute;
 }
 
 const AuthAuthRouteChildren: AuthAuthRouteChildren = {
   AuthAuthForgotPasswordRoute: AuthAuthForgotPasswordRoute,
   AuthAuthLoginRoute: AuthAuthLoginRoute,
   AuthAuthRegisterRoute: AuthAuthRegisterRoute,
-}
+};
 
-const AuthAuthRouteWithChildren = AuthAuthRoute._addFileChildren(
-  AuthAuthRouteChildren,
-)
+const AuthAuthRouteWithChildren = AuthAuthRoute._addFileChildren(AuthAuthRouteChildren);
 
 interface AuthRouteChildren {
-  AuthAuthRoute: typeof AuthAuthRouteWithChildren
+  AuthAuthRoute: typeof AuthAuthRouteWithChildren;
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthAuthRoute: AuthAuthRouteWithChildren,
-}
+};
 
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren);
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRouteWithChildren
-  '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
-  '/auth': typeof AuthAuthRouteWithChildren
-  '/dashboard/billing': typeof DashboardBillingRoute
-  '/dashboard/profile': typeof DashboardProfileRoute
-  '/dashboard/reports': typeof DashboardReportsRoute
-  '/dashboard/': typeof DashboardIndexRoute
-  '/auth/forgot-password': typeof AuthAuthForgotPasswordRoute
-  '/auth/login': typeof AuthAuthLoginRoute
-  '/auth/register': typeof AuthAuthRegisterRoute
-  '/dashboard/categories': typeof DashboardCategoriesIndexRoute
-  '/dashboard/settings/accounts/create': typeof DashboardSettingsAccountsCreateRoute
-  '/dashboard/settings/accounts': typeof DashboardSettingsAccountsIndexRoute
-  '/dashboard/settings/profile': typeof DashboardSettingsProfileIndexRoute
-  '/dashboard/settings/accounts/edit/$accountId': typeof DashboardSettingsAccountsEditAccountIdRouteRoute
-  '/dashboard/settings/accounts/account-types/$accountTypeId': typeof DashboardSettingsAccountsAccountTypesAccountTypeIdRoute
-  '/dashboard/settings/accounts/account-types/create': typeof DashboardSettingsAccountsAccountTypesCreateRoute
-  '/dashboard/settings/accounts/account-types': typeof DashboardSettingsAccountsAccountTypesIndexRoute
+  "/": typeof IndexRoute;
+  "/dashboard": typeof DashboardRouteRouteWithChildren;
+  "/dashboard/settings": typeof DashboardSettingsRouteRouteWithChildren;
+  "/auth": typeof AuthAuthRouteWithChildren;
+  "/dashboard/billing": typeof DashboardBillingRoute;
+  "/dashboard/profile": typeof DashboardProfileRoute;
+  "/dashboard/reports": typeof DashboardReportsRoute;
+  "/dashboard/": typeof DashboardIndexRoute;
+  "/auth/forgot-password": typeof AuthAuthForgotPasswordRoute;
+  "/auth/login": typeof AuthAuthLoginRoute;
+  "/auth/register": typeof AuthAuthRegisterRoute;
+  "/dashboard/budget-planner": typeof DashboardBudgetPlannerIndexRoute;
+  "/dashboard/categories": typeof DashboardCategoriesIndexRoute;
+  "/dashboard/settings/accounts/create": typeof DashboardSettingsAccountsCreateRoute;
+  "/dashboard/settings/accounts": typeof DashboardSettingsAccountsIndexRoute;
+  "/dashboard/settings/currencies": typeof DashboardSettingsCurrenciesIndexRoute;
+  "/dashboard/settings/accounts/edit/$accountId": typeof DashboardSettingsAccountsEditAccountIdRouteRoute;
+  "/dashboard/settings/accounts/account-types/$accountTypeId": typeof DashboardSettingsAccountsAccountTypesAccountTypeIdRoute;
+  "/dashboard/settings/accounts/account-types/create": typeof DashboardSettingsAccountsAccountTypesCreateRoute;
+  "/dashboard/settings/accounts/account-types": typeof DashboardSettingsAccountsAccountTypesIndexRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
-  '/auth': typeof AuthAuthRouteWithChildren
-  '/dashboard/billing': typeof DashboardBillingRoute
-  '/dashboard/profile': typeof DashboardProfileRoute
-  '/dashboard/reports': typeof DashboardReportsRoute
-  '/dashboard': typeof DashboardIndexRoute
-  '/auth/forgot-password': typeof AuthAuthForgotPasswordRoute
-  '/auth/login': typeof AuthAuthLoginRoute
-  '/auth/register': typeof AuthAuthRegisterRoute
-  '/dashboard/categories': typeof DashboardCategoriesIndexRoute
-  '/dashboard/settings/accounts/create': typeof DashboardSettingsAccountsCreateRoute
-  '/dashboard/settings/accounts': typeof DashboardSettingsAccountsIndexRoute
-  '/dashboard/settings/profile': typeof DashboardSettingsProfileIndexRoute
-  '/dashboard/settings/accounts/edit/$accountId': typeof DashboardSettingsAccountsEditAccountIdRouteRoute
-  '/dashboard/settings/accounts/account-types/$accountTypeId': typeof DashboardSettingsAccountsAccountTypesAccountTypeIdRoute
-  '/dashboard/settings/accounts/account-types/create': typeof DashboardSettingsAccountsAccountTypesCreateRoute
-  '/dashboard/settings/accounts/account-types': typeof DashboardSettingsAccountsAccountTypesIndexRoute
+  "/": typeof IndexRoute;
+  "/dashboard/settings": typeof DashboardSettingsRouteRouteWithChildren;
+  "/auth": typeof AuthAuthRouteWithChildren;
+  "/dashboard/billing": typeof DashboardBillingRoute;
+  "/dashboard/profile": typeof DashboardProfileRoute;
+  "/dashboard/reports": typeof DashboardReportsRoute;
+  "/dashboard": typeof DashboardIndexRoute;
+  "/auth/forgot-password": typeof AuthAuthForgotPasswordRoute;
+  "/auth/login": typeof AuthAuthLoginRoute;
+  "/auth/register": typeof AuthAuthRegisterRoute;
+  "/dashboard/budget-planner": typeof DashboardBudgetPlannerIndexRoute;
+  "/dashboard/categories": typeof DashboardCategoriesIndexRoute;
+  "/dashboard/settings/accounts/create": typeof DashboardSettingsAccountsCreateRoute;
+  "/dashboard/settings/accounts": typeof DashboardSettingsAccountsIndexRoute;
+  "/dashboard/settings/currencies": typeof DashboardSettingsCurrenciesIndexRoute;
+  "/dashboard/settings/accounts/edit/$accountId": typeof DashboardSettingsAccountsEditAccountIdRouteRoute;
+  "/dashboard/settings/accounts/account-types/$accountTypeId": typeof DashboardSettingsAccountsAccountTypesAccountTypeIdRoute;
+  "/dashboard/settings/accounts/account-types/create": typeof DashboardSettingsAccountsAccountTypesCreateRoute;
+  "/dashboard/settings/accounts/account-types": typeof DashboardSettingsAccountsAccountTypesIndexRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteRouteWithChildren
-  '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
-  '/auth': typeof AuthRouteWithChildren
-  '/auth/_auth': typeof AuthAuthRouteWithChildren
-  '/dashboard/billing': typeof DashboardBillingRoute
-  '/dashboard/profile': typeof DashboardProfileRoute
-  '/dashboard/reports': typeof DashboardReportsRoute
-  '/dashboard/': typeof DashboardIndexRoute
-  '/auth/_auth/forgot-password': typeof AuthAuthForgotPasswordRoute
-  '/auth/_auth/login': typeof AuthAuthLoginRoute
-  '/auth/_auth/register': typeof AuthAuthRegisterRoute
-  '/dashboard/categories/': typeof DashboardCategoriesIndexRoute
-  '/dashboard/settings/accounts/create': typeof DashboardSettingsAccountsCreateRoute
-  '/dashboard/settings/accounts/': typeof DashboardSettingsAccountsIndexRoute
-  '/dashboard/settings/profile/': typeof DashboardSettingsProfileIndexRoute
-  '/dashboard/settings/accounts/edit/$accountId': typeof DashboardSettingsAccountsEditAccountIdRouteRoute
-  '/dashboard/settings/accounts/account-types/$accountTypeId': typeof DashboardSettingsAccountsAccountTypesAccountTypeIdRoute
-  '/dashboard/settings/accounts/account-types/create': typeof DashboardSettingsAccountsAccountTypesCreateRoute
-  '/dashboard/settings/accounts/account-types/': typeof DashboardSettingsAccountsAccountTypesIndexRoute
+  __root__: typeof rootRoute;
+  "/": typeof IndexRoute;
+  "/dashboard": typeof DashboardRouteRouteWithChildren;
+  "/dashboard/settings": typeof DashboardSettingsRouteRouteWithChildren;
+  "/auth": typeof AuthRouteWithChildren;
+  "/auth/_auth": typeof AuthAuthRouteWithChildren;
+  "/dashboard/billing": typeof DashboardBillingRoute;
+  "/dashboard/profile": typeof DashboardProfileRoute;
+  "/dashboard/reports": typeof DashboardReportsRoute;
+  "/dashboard/": typeof DashboardIndexRoute;
+  "/auth/_auth/forgot-password": typeof AuthAuthForgotPasswordRoute;
+  "/auth/_auth/login": typeof AuthAuthLoginRoute;
+  "/auth/_auth/register": typeof AuthAuthRegisterRoute;
+  "/dashboard/budget-planner/": typeof DashboardBudgetPlannerIndexRoute;
+  "/dashboard/categories/": typeof DashboardCategoriesIndexRoute;
+  "/dashboard/settings/accounts/create": typeof DashboardSettingsAccountsCreateRoute;
+  "/dashboard/settings/accounts/": typeof DashboardSettingsAccountsIndexRoute;
+  "/dashboard/settings/currencies/": typeof DashboardSettingsCurrenciesIndexRoute;
+  "/dashboard/settings/accounts/edit/$accountId": typeof DashboardSettingsAccountsEditAccountIdRouteRoute;
+  "/dashboard/settings/accounts/account-types/$accountTypeId": typeof DashboardSettingsAccountsAccountTypesAccountTypeIdRoute;
+  "/dashboard/settings/accounts/account-types/create": typeof DashboardSettingsAccountsAccountTypesCreateRoute;
+  "/dashboard/settings/accounts/account-types/": typeof DashboardSettingsAccountsAccountTypesIndexRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | '/dashboard'
-    | '/dashboard/settings'
-    | '/auth'
-    | '/dashboard/billing'
-    | '/dashboard/profile'
-    | '/dashboard/reports'
-    | '/dashboard/'
-    | '/auth/forgot-password'
-    | '/auth/login'
-    | '/auth/register'
-    | '/dashboard/categories'
-    | '/dashboard/settings/accounts/create'
-    | '/dashboard/settings/accounts'
-    | '/dashboard/settings/profile'
-    | '/dashboard/settings/accounts/edit/$accountId'
-    | '/dashboard/settings/accounts/account-types/$accountTypeId'
-    | '/dashboard/settings/accounts/account-types/create'
-    | '/dashboard/settings/accounts/account-types'
-  fileRoutesByTo: FileRoutesByTo
+    | "/"
+    | "/dashboard"
+    | "/dashboard/settings"
+    | "/auth"
+    | "/dashboard/billing"
+    | "/dashboard/profile"
+    | "/dashboard/reports"
+    | "/dashboard/"
+    | "/auth/forgot-password"
+    | "/auth/login"
+    | "/auth/register"
+    | "/dashboard/budget-planner"
+    | "/dashboard/categories"
+    | "/dashboard/settings/accounts/create"
+    | "/dashboard/settings/accounts"
+    | "/dashboard/settings/currencies"
+    | "/dashboard/settings/accounts/edit/$accountId"
+    | "/dashboard/settings/accounts/account-types/$accountTypeId"
+    | "/dashboard/settings/accounts/account-types/create"
+    | "/dashboard/settings/accounts/account-types";
+  fileRoutesByTo: FileRoutesByTo;
   to:
-    | '/'
-    | '/dashboard/settings'
-    | '/auth'
-    | '/dashboard/billing'
-    | '/dashboard/profile'
-    | '/dashboard/reports'
-    | '/dashboard'
-    | '/auth/forgot-password'
-    | '/auth/login'
-    | '/auth/register'
-    | '/dashboard/categories'
-    | '/dashboard/settings/accounts/create'
-    | '/dashboard/settings/accounts'
-    | '/dashboard/settings/profile'
-    | '/dashboard/settings/accounts/edit/$accountId'
-    | '/dashboard/settings/accounts/account-types/$accountTypeId'
-    | '/dashboard/settings/accounts/account-types/create'
-    | '/dashboard/settings/accounts/account-types'
+    | "/"
+    | "/dashboard/settings"
+    | "/auth"
+    | "/dashboard/billing"
+    | "/dashboard/profile"
+    | "/dashboard/reports"
+    | "/dashboard"
+    | "/auth/forgot-password"
+    | "/auth/login"
+    | "/auth/register"
+    | "/dashboard/budget-planner"
+    | "/dashboard/categories"
+    | "/dashboard/settings/accounts/create"
+    | "/dashboard/settings/accounts"
+    | "/dashboard/settings/currencies"
+    | "/dashboard/settings/accounts/edit/$accountId"
+    | "/dashboard/settings/accounts/account-types/$accountTypeId"
+    | "/dashboard/settings/accounts/account-types/create"
+    | "/dashboard/settings/accounts/account-types";
   id:
-    | '__root__'
-    | '/'
-    | '/dashboard'
-    | '/dashboard/settings'
-    | '/auth'
-    | '/auth/_auth'
-    | '/dashboard/billing'
-    | '/dashboard/profile'
-    | '/dashboard/reports'
-    | '/dashboard/'
-    | '/auth/_auth/forgot-password'
-    | '/auth/_auth/login'
-    | '/auth/_auth/register'
-    | '/dashboard/categories/'
-    | '/dashboard/settings/accounts/create'
-    | '/dashboard/settings/accounts/'
-    | '/dashboard/settings/profile/'
-    | '/dashboard/settings/accounts/edit/$accountId'
-    | '/dashboard/settings/accounts/account-types/$accountTypeId'
-    | '/dashboard/settings/accounts/account-types/create'
-    | '/dashboard/settings/accounts/account-types/'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/"
+    | "/dashboard"
+    | "/dashboard/settings"
+    | "/auth"
+    | "/auth/_auth"
+    | "/dashboard/billing"
+    | "/dashboard/profile"
+    | "/dashboard/reports"
+    | "/dashboard/"
+    | "/auth/_auth/forgot-password"
+    | "/auth/_auth/login"
+    | "/auth/_auth/register"
+    | "/dashboard/budget-planner/"
+    | "/dashboard/categories/"
+    | "/dashboard/settings/accounts/create"
+    | "/dashboard/settings/accounts/"
+    | "/dashboard/settings/currencies/"
+    | "/dashboard/settings/accounts/edit/$accountId"
+    | "/dashboard/settings/accounts/account-types/$accountTypeId"
+    | "/dashboard/settings/accounts/account-types/create"
+    | "/dashboard/settings/accounts/account-types/";
+  fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
-  AuthRoute: typeof AuthRouteWithChildren
+  IndexRoute: typeof IndexRoute;
+  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren;
+  AuthRoute: typeof AuthRouteWithChildren;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
-}
+};
 
-export const routeTree = rootRoute
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>();
 
 /* ROUTE_MANIFEST_START
 {
@@ -564,6 +568,7 @@ export const routeTree = rootRoute
         "/dashboard/profile",
         "/dashboard/reports",
         "/dashboard/",
+        "/dashboard/budget-planner/",
         "/dashboard/categories/"
       ]
     },
@@ -573,7 +578,7 @@ export const routeTree = rootRoute
       "children": [
         "/dashboard/settings/accounts/create",
         "/dashboard/settings/accounts/",
-        "/dashboard/settings/profile/",
+        "/dashboard/settings/currencies/",
         "/dashboard/settings/accounts/edit/$accountId",
         "/dashboard/settings/accounts/account-types/$accountTypeId",
         "/dashboard/settings/accounts/account-types/create",
@@ -623,6 +628,10 @@ export const routeTree = rootRoute
       "filePath": "auth/_auth.register.tsx",
       "parent": "/auth/_auth"
     },
+    "/dashboard/budget-planner/": {
+      "filePath": "dashboard/budget-planner/index.tsx",
+      "parent": "/dashboard"
+    },
     "/dashboard/categories/": {
       "filePath": "dashboard/categories/index.tsx",
       "parent": "/dashboard"
@@ -635,8 +644,8 @@ export const routeTree = rootRoute
       "filePath": "dashboard/settings/accounts/index.tsx",
       "parent": "/dashboard/settings"
     },
-    "/dashboard/settings/profile/": {
-      "filePath": "dashboard/settings/profile/index.tsx",
+    "/dashboard/settings/currencies/": {
+      "filePath": "dashboard/settings/currencies/index.tsx",
       "parent": "/dashboard/settings"
     },
     "/dashboard/settings/accounts/edit/$accountId": {
