@@ -4,11 +4,7 @@ import SelectedCardDetails from "./-components/Home/SelectedCardDetails";
 import { Button } from "../../components/ui/button";
 import { InformationCircleIcon } from "@heroicons/react/16/solid";
 import SelectedCardTransactions from "./-components/Home/SelectedCardTransactions";
-import {
-  deleteUserAccount,
-  getUserCardAccounts,
-  type DeleteAccount,
-} from "../../utils/actions/accounts/userAccounts";
+import { deleteUserAccount, getUserCardAccounts, type DeleteAccount } from "../../utils/actions/accounts/userAccounts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AccountPreviewCard from "./settings/accounts/-components/AccountPreviewCard";
 import EmptyAccountCard from "./settings/accounts/-components/EmptyAccountCard";
@@ -18,6 +14,7 @@ import { AnimatePresence } from "framer-motion";
 
 import { useUserMainAccount } from "../../context/UserMainAccount";
 import ConfirmationModal from "../../components/reusable/dialogs/ConfirmationModal";
+import BaseWrapper from "../../components/reusable/layouts/BaseWrapper";
 
 export const Route = createFileRoute("/dashboard/")({
   component: RouteComponent,
@@ -66,11 +63,9 @@ function RouteComponent() {
   }, [account?.id]);
 
   return (
-    <>
+    <BaseWrapper>
       <h1 className="text-3xl font-bold">Dashboard</h1>
-      <p className="text-sm text-muted-foreground">
-        Easy way to manage your finances
-      </p>
+      <p className="text-sm text-muted-foreground">Easy way to manage your finances</p>
       <div className="grid grid-cols-[350px_1fr] gap-4 mt-4">
         <div>
           <div className={`rounded-xl mb-4 shadow-lg relative`}>
@@ -87,22 +82,11 @@ function RouteComponent() {
                   gradient={(() => {
                     return {
                       type: "default",
-                      id:
-                        account.defaultGradient?.id ||
-                        account.userGradient?.id ||
-                        0,
-                      name:
-                        account.defaultGradient?.name ||
-                        account.userGradient?.name ||
-                        "",
-                      slug:
-                        account.defaultGradient?.slug ||
-                        account.userGradient?.slug ||
-                        "",
+                      id: account.defaultGradient?.id || account.userGradient?.id || 0,
+                      name: account.defaultGradient?.name || account.userGradient?.name || "",
+                      slug: account.defaultGradient?.slug || account.userGradient?.slug || "",
 
-                      colors: isDefaultGradientItem(
-                        account.defaultGradient || account.userGradient
-                      )
+                      colors: isDefaultGradientItem(account.defaultGradient || account.userGradient)
                         ? [
                             account.defaultGradient.color1,
                             account.defaultGradient.color2,
@@ -122,9 +106,7 @@ function RouteComponent() {
               )}
             </AnimatePresence>
             {userAccounts && (
-              <div
-                className={`absolute inset-0 left-0 top-full my-4 space-y-4 z-10`}
-              >
+              <div className={`absolute inset-0 left-0 top-full my-4 space-y-4 z-10`}>
                 {userAccounts
                   .filter((acc) => acc.id !== account?.id)
                   .map((account, index) => (
@@ -142,21 +124,10 @@ function RouteComponent() {
                       gradient={(() => {
                         return {
                           type: "default",
-                          id:
-                            account.defaultGradient?.id ||
-                            account.userGradient?.id ||
-                            0,
-                          name:
-                            account.defaultGradient?.name ||
-                            account.userGradient?.name ||
-                            "",
-                          slug:
-                            account.defaultGradient?.slug ||
-                            account.userGradient?.slug ||
-                            "",
-                          colors: isDefaultGradientItem(
-                            account.defaultGradient || account.userGradient
-                          )
+                          id: account.defaultGradient?.id || account.userGradient?.id || 0,
+                          name: account.defaultGradient?.name || account.userGradient?.name || "",
+                          slug: account.defaultGradient?.slug || account.userGradient?.slug || "",
+                          colors: isDefaultGradientItem(account.defaultGradient || account.userGradient)
                             ? [
                                 account.defaultGradient.color1,
                                 account.defaultGradient.color2,
@@ -164,10 +135,7 @@ function RouteComponent() {
                                 account.defaultGradient.color4,
                                 account.defaultGradient.color5,
                               ]
-                            : [
-                                account.userGradient.to,
-                                account.userGradient.from,
-                              ],
+                            : [account.userGradient.to, account.userGradient.from],
                         };
                       })()}
                     />
@@ -182,34 +150,20 @@ function RouteComponent() {
               <p className="text-xs">Lorem ipsum dolor sit amet con</p>
 
               <div className="mt-4 grid grid-cols-[1fr_1fr] gap-1">
-                <span className="text-sm font-bold text-muted-foreground">
-                  Account name
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {account?.name}
-                </span>
+                <span className="text-sm font-bold text-muted-foreground">Account name</span>
+                <span className="text-sm text-muted-foreground">{account?.name}</span>
 
-                <span className="text-sm font-bold text-muted-foreground">
-                  Account type
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {account?.accountType.name}
-                </span>
+                <span className="text-sm font-bold text-muted-foreground">Account type</span>
+                <span className="text-sm text-muted-foreground">{account?.accountType.name}</span>
 
-                <span className="text-sm font-bold text-muted-foreground">
-                  Currency
-                </span>
+                <span className="text-sm font-bold text-muted-foreground">Currency</span>
                 <span className="text-sm text-muted-foreground">
                   {account?.currency.code} ({account?.currency.symbol})
                 </span>
 
-                <span className="text-sm font-bold text-muted-foreground">
-                  Created at
-                </span>
+                <span className="text-sm font-bold text-muted-foreground">Created at</span>
                 <span className="text-sm text-muted-foreground">
-                  {account?.createdAt
-                    ? new Date(account.createdAt).toLocaleDateString()
-                    : ""}
+                  {account?.createdAt ? new Date(account.createdAt).toLocaleDateString() : ""}
                 </span>
               </div>
             </CardContent>
@@ -218,31 +172,31 @@ function RouteComponent() {
           <Card className="border-0! shadow-none! border-b! border-border">
             <CardContent>
               <h3 className="font-bold mb-2 block">Billing details</h3>
-              <p className="text-xs">
-                The percentages are relative to last month
-              </p>
+              <p className="text-xs">The percentages are relative to last month</p>
 
               <div className="grid grid-cols-2 gap-4 mt-6">
                 <div className="flex flex-col items-center">
                   <div className="flex gap-2">
-                    <h3 className="text-xl font-bold text-green-500">
-                      {income?.toFixed(2)}
-                    </h3>
-                    <span className="grid items-center h-full rounded-md px-1.5 text-xs text-green-800 bg-green-300">
-                      +12%
-                    </span>
+                    <h3 className="text-xl font-bold text-green-500">{income?.toFixed(2)}</h3>
+                    {!!account?.incomePercentage && (
+                      <span className="grid items-center h-full rounded-md px-1.5 text-xs text-green-800 bg-green-300">
+                        {account?.incomePercentage > 0 && "+"}
+                        {account?.incomePercentage?.toFixed(2)}%
+                      </span>
+                    )}
                   </div>
                   <p className="text-sm text-muted-foreground mt-4">Income</p>
                 </div>
 
                 <div className="flex flex-col items-center">
                   <div className="flex gap-2">
-                    <h3 className="text-xl font-bold text-error-600">
-                      {expenses?.toFixed(2)}
-                    </h3>
-                    <span className="grid items-center h-full rounded-md px-1.5 text-xs text-error-300 bg-error-700">
-                      -12%
-                    </span>
+                    <h3 className="text-xl font-bold text-error-600">{expenses?.toFixed(2)}</h3>
+                    {!!account?.expensePercentage && (
+                      <span className="grid items-center h-full rounded-md px-1.5 text-xs text-error-300 bg-error-700">
+                        {account?.expensePercentage > 0 && "+"}
+                        {account?.expensePercentage.toFixed(2)}%
+                      </span>
+                    )}
                   </div>
                   <p className="text-sm text-muted-foreground mt-4">Expenses</p>
                 </div>
@@ -275,10 +229,7 @@ function RouteComponent() {
       </div>
 
       {openAccountsDialog && (
-        <div
-          onClick={() => setOpenAccountsDialog(false)}
-          className="absolute inset-0 z-5 bg-black/50"
-        ></div>
+        <div onClick={() => setOpenAccountsDialog(false)} className="absolute inset-0 z-5 bg-black/50"></div>
       )}
 
       {openDeleteAccountModal && account && (
@@ -295,6 +246,6 @@ function RouteComponent() {
           loading={false}
         />
       )}
-    </>
+    </BaseWrapper>
   );
 }

@@ -9,6 +9,7 @@ import {
   DocumentIcon,
   HomeIcon,
   Cog6ToothIcon,
+  TagIcon,
 } from "@heroicons/react/20/solid";
 import moment from "moment";
 import { useState } from "react";
@@ -57,29 +58,13 @@ function RouteComponent() {
         <div className="flex flex-col mt-12 gap-2">
           <IconLink href="/dashboard" icon={<HomeIcon />} text="Home" />
 
-          <IconLink
-            href="/dashboard/reports"
-            icon={<DocumentIcon />}
-            text="Reports"
-          ></IconLink>
+          <IconLink href="/dashboard/reports" icon={<DocumentIcon />} text="Reports"></IconLink>
 
-          <IconLink
-            href="/dashboard/billing"
-            icon={<CreditCardIcon />}
-            text="Billing"
-          />
+          <IconLink href="/dashboard/billing" icon={<CreditCardIcon />} text="Billing" />
 
-          <IconLink
-            href="/dashboard/categories"
-            icon={<TypeIcon />}
-            text="Categories"
-          />
+          <IconLink href="/dashboard/categories" icon={<TagIcon />} text="Categories" />
 
-          <IconLink
-            href="/dashboard/settings/profile"
-            icon={<Cog6ToothIcon />}
-            text="Settings"
-          />
+          <IconLink href="/dashboard/settings/profile" icon={<Cog6ToothIcon />} text="Settings" />
         </div>
 
         {/* Add user session */}
@@ -105,9 +90,7 @@ function RouteComponent() {
                       </div>
                     ))
                   ) : (
-                    <div className="px-6 py-3 text-sm text-center text-gray-500">
-                      No accounts found
-                    </div>
+                    <div className="px-6 py-3 text-sm text-center text-gray-500">No accounts found</div>
                   )}
                 </div>
               )}
@@ -126,14 +109,10 @@ function RouteComponent() {
               onClick={() => setWalletOpen(!walletOpen)}
               className="hover:bg-muted cursor-pointer px-4 py-2 mt-1 rounded-md  flex items-center justify-between"
             >
-              <p className="text-sm text-light-gray">
-                {account && account.name}
-              </p>
+              <p className="text-sm text-light-gray">{account && account.name}</p>
               <div className="flex items-center gap-1">
                 <span className="font-bold">{account && account.balance} </span>
-                <span className="font-bold">
-                  {account && account.currency.symbol}
-                </span>
+                <span className="font-bold">{account && account.currency.symbol}</span>
                 <ChevronUpDownIcon className="h-4 w-4" />
               </div>
             </div>
@@ -143,7 +122,7 @@ function RouteComponent() {
         )}
       </div>
 
-      <div className="grow-1 bg-sidebar">
+      <div className="grow-1 bg-white">
         <div className="bg-white border-b border-sidebar-border px-6 py-3">
           <div className="flex items-center justify-between">
             <span className="font-bold">{moment().format("DD MMM YYYY")}</span>
@@ -186,15 +165,10 @@ function RouteComponent() {
             </div>
           </div>
         </div>
-        <div className="px-20 py-10">
-          <Outlet />
-        </div>
+        <Outlet />
       </div>
 
-      <AddTransactionForCurrentAccount
-        open={addTransactionModalOpen}
-        setOpen={setAddTransactionModalOpen}
-      />
+      <AddTransactionForCurrentAccount open={addTransactionModalOpen} setOpen={setAddTransactionModalOpen} />
     </div>
   );
 }

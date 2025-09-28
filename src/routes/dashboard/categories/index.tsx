@@ -9,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from "../../../components/ui/radio-group";
 import { Label } from "../../../components/ui/label";
 import { CategoryType } from "../../../types/enums/TransactionTypes";
 import { getEnumValues } from "../../../utils/arrays";
+import BaseWrapper from "../../../components/reusable/layouts/BaseWrapper";
 
 export const Route = createFileRoute("/dashboard/categories/")({
   component: RouteComponent,
@@ -32,7 +33,7 @@ function RouteComponent() {
   });
 
   return (
-    <>
+    <BaseWrapper>
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Categories</h1>
         <Button
@@ -82,6 +83,6 @@ function RouteComponent() {
       ) : (
         <span>No categories found</span>
       )}
-    </>
+    </BaseWrapper>
   );
 }

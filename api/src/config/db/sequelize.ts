@@ -22,22 +22,16 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
     this.environment = environment;
   }
 
-  public static getInstance(
-    environment: string = "development"
-  ): SequelizeDatabaseWrapper {
+  public static getInstance(environment: string = "development"): SequelizeDatabaseWrapper {
     if (!SequelizeDatabaseWrapper.instance) {
-      SequelizeDatabaseWrapper.instance = new SequelizeDatabaseWrapper(
-        environment
-      );
+      SequelizeDatabaseWrapper.instance = new SequelizeDatabaseWrapper(environment);
     }
     return SequelizeDatabaseWrapper.instance;
   }
 
   public getDatabaseInstance(): SequelizeType {
     if (!SequelizeDatabaseWrapper.dbInstance) {
-      throw new Error(
-        "Database not initialized. Call connectToDatabase first."
-      );
+      throw new Error("Database not initialized. Call connectToDatabase first.");
     }
     return SequelizeDatabaseWrapper.dbInstance;
   }
@@ -50,15 +44,10 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
         await sequelize.authenticate();
         SequelizeDatabaseWrapper.dbInstance = sequelize;
         this.initializeModels();
-        console.log(
-          `Database connection established successfully for ${this.environment} environment.`
-        );
+        console.log(`Database connection established successfully for ${this.environment} environment.`);
       }
     } catch (err) {
-      console.error(
-        `Error initializing the API server for ${this.environment} environment:`,
-        err
-      );
+      console.error(`Error initializing the API server for ${this.environment} environment:`, err);
       throw err;
     }
   };
@@ -67,7 +56,7 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
     // Add environment-specific configuration here
     switch (this.environment) {
       case "development":
-        return new Sequelize("finovora", "root", "Copernic@1234", {
+        return new Sequelize("finovora", "root", "Sergiu123!@_", {
           port: 3306,
           host: "localhost",
           dialect: "mysql",

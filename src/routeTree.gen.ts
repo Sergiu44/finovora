@@ -25,6 +25,7 @@ import { Route as DashboardCategoriesIndexImport } from './routes/dashboard/cate
 import { Route as AuthAuthRegisterImport } from './routes/auth/_auth.register'
 import { Route as AuthAuthLoginImport } from './routes/auth/_auth.login'
 import { Route as AuthAuthForgotPasswordImport } from './routes/auth/_auth.forgot-password'
+import { Route as DashboardSettingsProfileIndexImport } from './routes/dashboard/settings/profile/index'
 import { Route as DashboardSettingsAccountsIndexImport } from './routes/dashboard/settings/accounts/index'
 import { Route as DashboardSettingsAccountsCreateImport } from './routes/dashboard/settings/accounts/create'
 import { Route as DashboardSettingsAccountsAccountTypesIndexImport } from './routes/dashboard/settings/accounts/account-types/index'
@@ -114,6 +115,13 @@ const AuthAuthForgotPasswordRoute = AuthAuthForgotPasswordImport.update({
   path: '/forgot-password',
   getParentRoute: () => AuthAuthRoute,
 } as any)
+
+const DashboardSettingsProfileIndexRoute =
+  DashboardSettingsProfileIndexImport.update({
+    id: '/profile/',
+    path: '/profile/',
+    getParentRoute: () => DashboardSettingsRouteRoute,
+  } as any)
 
 const DashboardSettingsAccountsIndexRoute =
   DashboardSettingsAccountsIndexImport.update({
@@ -266,6 +274,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsAccountsIndexImport
       parentRoute: typeof DashboardSettingsRouteImport
     }
+    '/dashboard/settings/profile/': {
+      id: '/dashboard/settings/profile/'
+      path: '/profile'
+      fullPath: '/dashboard/settings/profile'
+      preLoaderRoute: typeof DashboardSettingsProfileIndexImport
+      parentRoute: typeof DashboardSettingsRouteImport
+    }
     '/dashboard/settings/accounts/edit/$accountId': {
       id: '/dashboard/settings/accounts/edit/$accountId'
       path: '/accounts/edit/$accountId'
@@ -302,6 +317,7 @@ declare module '@tanstack/react-router' {
 interface DashboardSettingsRouteRouteChildren {
   DashboardSettingsAccountsCreateRoute: typeof DashboardSettingsAccountsCreateRoute
   DashboardSettingsAccountsIndexRoute: typeof DashboardSettingsAccountsIndexRoute
+  DashboardSettingsProfileIndexRoute: typeof DashboardSettingsProfileIndexRoute
   DashboardSettingsAccountsEditAccountIdRouteRoute: typeof DashboardSettingsAccountsEditAccountIdRouteRoute
   DashboardSettingsAccountsAccountTypesAccountTypeIdRoute: typeof DashboardSettingsAccountsAccountTypesAccountTypeIdRoute
   DashboardSettingsAccountsAccountTypesCreateRoute: typeof DashboardSettingsAccountsAccountTypesCreateRoute
@@ -312,6 +328,7 @@ const DashboardSettingsRouteRouteChildren: DashboardSettingsRouteRouteChildren =
   {
     DashboardSettingsAccountsCreateRoute: DashboardSettingsAccountsCreateRoute,
     DashboardSettingsAccountsIndexRoute: DashboardSettingsAccountsIndexRoute,
+    DashboardSettingsProfileIndexRoute: DashboardSettingsProfileIndexRoute,
     DashboardSettingsAccountsEditAccountIdRouteRoute:
       DashboardSettingsAccountsEditAccountIdRouteRoute,
     DashboardSettingsAccountsAccountTypesAccountTypeIdRoute:
@@ -390,6 +407,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/categories': typeof DashboardCategoriesIndexRoute
   '/dashboard/settings/accounts/create': typeof DashboardSettingsAccountsCreateRoute
   '/dashboard/settings/accounts': typeof DashboardSettingsAccountsIndexRoute
+  '/dashboard/settings/profile': typeof DashboardSettingsProfileIndexRoute
   '/dashboard/settings/accounts/edit/$accountId': typeof DashboardSettingsAccountsEditAccountIdRouteRoute
   '/dashboard/settings/accounts/account-types/$accountTypeId': typeof DashboardSettingsAccountsAccountTypesAccountTypeIdRoute
   '/dashboard/settings/accounts/account-types/create': typeof DashboardSettingsAccountsAccountTypesCreateRoute
@@ -410,6 +428,7 @@ export interface FileRoutesByTo {
   '/dashboard/categories': typeof DashboardCategoriesIndexRoute
   '/dashboard/settings/accounts/create': typeof DashboardSettingsAccountsCreateRoute
   '/dashboard/settings/accounts': typeof DashboardSettingsAccountsIndexRoute
+  '/dashboard/settings/profile': typeof DashboardSettingsProfileIndexRoute
   '/dashboard/settings/accounts/edit/$accountId': typeof DashboardSettingsAccountsEditAccountIdRouteRoute
   '/dashboard/settings/accounts/account-types/$accountTypeId': typeof DashboardSettingsAccountsAccountTypesAccountTypeIdRoute
   '/dashboard/settings/accounts/account-types/create': typeof DashboardSettingsAccountsAccountTypesCreateRoute
@@ -433,6 +452,7 @@ export interface FileRoutesById {
   '/dashboard/categories/': typeof DashboardCategoriesIndexRoute
   '/dashboard/settings/accounts/create': typeof DashboardSettingsAccountsCreateRoute
   '/dashboard/settings/accounts/': typeof DashboardSettingsAccountsIndexRoute
+  '/dashboard/settings/profile/': typeof DashboardSettingsProfileIndexRoute
   '/dashboard/settings/accounts/edit/$accountId': typeof DashboardSettingsAccountsEditAccountIdRouteRoute
   '/dashboard/settings/accounts/account-types/$accountTypeId': typeof DashboardSettingsAccountsAccountTypesAccountTypeIdRoute
   '/dashboard/settings/accounts/account-types/create': typeof DashboardSettingsAccountsAccountTypesCreateRoute
@@ -456,6 +476,7 @@ export interface FileRouteTypes {
     | '/dashboard/categories'
     | '/dashboard/settings/accounts/create'
     | '/dashboard/settings/accounts'
+    | '/dashboard/settings/profile'
     | '/dashboard/settings/accounts/edit/$accountId'
     | '/dashboard/settings/accounts/account-types/$accountTypeId'
     | '/dashboard/settings/accounts/account-types/create'
@@ -475,6 +496,7 @@ export interface FileRouteTypes {
     | '/dashboard/categories'
     | '/dashboard/settings/accounts/create'
     | '/dashboard/settings/accounts'
+    | '/dashboard/settings/profile'
     | '/dashboard/settings/accounts/edit/$accountId'
     | '/dashboard/settings/accounts/account-types/$accountTypeId'
     | '/dashboard/settings/accounts/account-types/create'
@@ -496,6 +518,7 @@ export interface FileRouteTypes {
     | '/dashboard/categories/'
     | '/dashboard/settings/accounts/create'
     | '/dashboard/settings/accounts/'
+    | '/dashboard/settings/profile/'
     | '/dashboard/settings/accounts/edit/$accountId'
     | '/dashboard/settings/accounts/account-types/$accountTypeId'
     | '/dashboard/settings/accounts/account-types/create'
@@ -550,6 +573,7 @@ export const routeTree = rootRoute
       "children": [
         "/dashboard/settings/accounts/create",
         "/dashboard/settings/accounts/",
+        "/dashboard/settings/profile/",
         "/dashboard/settings/accounts/edit/$accountId",
         "/dashboard/settings/accounts/account-types/$accountTypeId",
         "/dashboard/settings/accounts/account-types/create",
@@ -609,6 +633,10 @@ export const routeTree = rootRoute
     },
     "/dashboard/settings/accounts/": {
       "filePath": "dashboard/settings/accounts/index.tsx",
+      "parent": "/dashboard/settings"
+    },
+    "/dashboard/settings/profile/": {
+      "filePath": "dashboard/settings/profile/index.tsx",
       "parent": "/dashboard/settings"
     },
     "/dashboard/settings/accounts/edit/$accountId": {

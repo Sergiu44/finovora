@@ -7,6 +7,7 @@ import { Transaction } from "./transaction";
 import { TransactionType } from "./transactionTypes/transactionType";
 import User from "../users/user";
 import { Op, WhereOptions } from "sequelize";
+import { getFirstDayOfMonth, getLastDayOfMonth } from "../../utils/utilities/date";
 
 type CreateTransactionAttributes = {
   accountId: number;
@@ -17,21 +18,13 @@ type CreateTransactionAttributes = {
   categoryId: number;
   userId: number;
 };
-export const createTransaction = async (
-  transaction: CreateTransactionAttributes
-) => {
+export const createTransaction = async (transaction: CreateTransactionAttributes) => {
   const existingUser = await User.findByPk(transaction.userId);
   appAssert(existingUser, NOT_FOUND, "User does not exist");
   const existingAccount = await Account.findByPk(transaction.accountId);
   appAssert(existingAccount, NOT_FOUND, "Account does not exist");
-  const existingTransactionType = await TransactionType.findByPk(
-    transaction.transactionTypeId
-  );
-  appAssert(
-    existingTransactionType,
-    NOT_FOUND,
-    "Transaction type does not exist"
-  );
+  const existingTransactionType = await TransactionType.findByPk(transaction.transactionTypeId);
+  appAssert(existingTransactionType, NOT_FOUND, "Transaction type does not exist");
   const existingCategory = await Category.findByPk(transaction.categoryId);
   appAssert(existingCategory, NOT_FOUND, "Category does not exist");
 
@@ -60,14 +53,14 @@ export const getTransactionsForAccount = async (
 ) => {
   const existingAccount = await Account.findByPk(accountId);
   appAssert(existingAccount, NOT_FOUND, "Account does not exist");
-  appAssert(
-    existingAccount.userId === userId,
-    NOT_FOUND,
-    "Account does not belong to user"
-  );
+  appAssert(existingAccount.userId === userId, NOT_FOUND, "Account does not belong to user");
 
   // Build where clause for date filtering
-  const whereClause: WhereOptions = { accountId, userId };
+  const whereClause: WhereOptions = {
+    accountId,
+    userId,
+    transactionDate: { [Op.between]: [getFirstDayOfMonth(), getLastDayOfMonth()] },
+  };
 
   if (startDate && endDate) {
     whereClause.transactionDate = {

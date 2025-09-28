@@ -1,21 +1,21 @@
 {
   "development": {
     "username": "root",
-    "password": "Copernic@1234",
+    "password": "Sergiu123!@_",
     "database": "finovora",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "test": {
     "username": "root",
-    "password": "Sergiu@123_",
+    "password": "Sergiu123!@_",
     "database": "database_test",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
   "production": {
     "username": "root",
-    "password": "Sergiu@123_",
+    "password": "Sergiu123!@_",
     "database": "database_production",
     "host": "127.0.0.1",
     "dialect": "mysql"
