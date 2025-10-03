@@ -1,6 +1,6 @@
 import { DataTypes, Optional, Sequelize } from "sequelize";
 import { Model, Table } from "sequelize-typescript";
-import { thirtyDaysFromNow } from "../../utils/utilities/date";
+import { DateUtils } from "../../utils/utilities/DateUtils";
 
 type SessionAttributes = {
   id: number;
@@ -54,7 +54,7 @@ export class Session extends Model<SessionAttributes, SessionCreationAttributes>
         expiresAt: {
           type: DataTypes.DATE,
           allowNull: false,
-          defaultValue: thirtyDaysFromNow(),
+          defaultValue: DateUtils.thirtyDaysFromNow(),
         },
       },
       {

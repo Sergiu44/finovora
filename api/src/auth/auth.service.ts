@@ -9,18 +9,14 @@ import {
 import VerificationCodeTypes from "../utils/constants/verificationCodeTypes";
 import appAssert from "../utils/utilities/appAssert";
 import {
-  fiveMinutesAgo,
-  fiveMinutesFromNow,
-  ONE_DAYS_MS,
-  oneHourFromNow,
-  thirtyDaysFromNow,
-} from "../utils/utilities/date";
+  DateUtils
+} from "../utils/utilities/DateUtils";
 import User from "../features/users/user";
 import { VerificationCode } from "./verifications/verification";
 import { sendEmail } from "../utils/emails/sendEmail";
 import {
-  getPasswordResetTemplate,
-  getVerifyEmailTemplate,
+  createPasswordResetTemplate,
+  createVerifyEmailTemplate,
 } from "../utils/emails/templates";
 import { Session } from "./sessions/session";
 import {
@@ -54,12 +50,12 @@ export const createAccount = async (data: CreateAccountParams) => {
     userId: newUser.id,
     code: generateOTP(),
     type: VerificationCodeTypes.EmailVerification,
-    expiresAt: fiveMinutesFromNow(),
+    expiresAt: DateUtils.fiveMinutesFromNow(),
   });
 
   const { error: errorEmail } = await sendEmail({
     to: newUser.email,
-    ...getVerifyEmailTemplate(verificationCode.code),
+    ...createVerifyEmailTemplate(verificationCode.code),
   });
 
   if (errorEmail)
@@ -135,9 +131,9 @@ export const refreshUserAccessToken = async (refreshToken: string) => {
   );
 
   const sessionNeedsRefresh =
-    session.dataValues.expiresAt.getTime() - now <= ONE_DAYS_MS;
+    session.dataValues.expiresAt.getTime() - now <= DateUtils.ONE_DAY_MS;
   if (sessionNeedsRefresh) {
-    session.dataValues.expiresAt = thirtyDaysFromNow();
+    session.dataValues.expiresAt = DateUtils.thirtyDaysFromNow();
     await session.save();
   }
 
@@ -184,12 +180,12 @@ export const sendPasswordResetEmail = async (email: string) => {
   const user = await User.findOne({ where: { email } });
   appAssert(user, NOT_FOUND, "User not found");
 
-  const fiveMinAgo = fiveMinutesAgo();
+  const fiveMinAgo = DateUtils.fiveMinutesAgo();
   const count = await VerificationCode.count({
     where: {
       userId: user.id,
       type: VerificationCodeTypes.PasswordReset,
-      createdAt: { [Op.gt]: fiveMinAgo },
+      createdAt: { [Op.gt]: DateUtils.fiveMinutesAgo() },
     },
   });
 
@@ -199,7 +195,7 @@ export const sendPasswordResetEmail = async (email: string) => {
     "Too many requests, please try again later"
   );
 
-  const expiresAt = oneHourFromNow();
+  const expiresAt = DateUtils.oneHourFromNow();
   const verificationCode = await VerificationCode.create({
     userId: user.id,
     code: generateOTP(),
@@ -211,7 +207,7 @@ export const sendPasswordResetEmail = async (email: string) => {
 
   const { data, error } = await sendEmail({
     to: user.dataValues.email,
-    ...getPasswordResetTemplate(url),
+    ...createPasswordResetTemplate(url),
   });
 
   appAssert(

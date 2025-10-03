@@ -1,18 +1,31 @@
-import { NODE_ENV, EMAIL_SENDER } from "../constants/env";
+import { z } from "zod";
 import resend from "../../config/resend";
+import { emailConfig } from "./config";
 
-const getFromEmail = () =>
-  NODE_ENV === "development" ? "onboarding@resend.dev" : EMAIL_SENDER;
-const getToEmail = (to: string) => (NODE_ENV === "development" && to ? to : "");
-
-type Params = {
+type EmailParams = {
   to: string;
   subject: string;
   text: string;
   html: string;
 };
 
-export const sendEmail = async ({ to, subject, text, html }: Params) => {
+const emailParamsSchema = z.object({
+  to: z.string().email(),
+  html: z.string(),
+  subject: z.string(),
+  text: z.string(),
+})
+
+const getFromEmail = () => emailConfig.sender
+const getToEmail = (to: string) => to;
+
+const validateEmailParams = (params: EmailParams) => {
+  emailParamsSchema.parse(params);
+}
+
+export const sendEmail = async ({ to, subject, text, html }: EmailParams) => {
+  validateEmailParams({ to, subject, text, html });
+
   return await resend.emails.send({
     from: getFromEmail(),
     to: getToEmail(to),

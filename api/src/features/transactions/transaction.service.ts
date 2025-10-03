@@ -8,7 +8,7 @@ import { TransactionType } from "./transactionTypes/transactionType";
 import User from "../users/user";
 import { Op, Sequelize, WhereOptions } from "sequelize";
 import SequelizeDatabaseWrapper from "../../config/db/sequelize";
-import { getFirstDayOfMonth, getLastDayOfMonth } from "../../utils/utilities/date";
+import { DateUtils } from "../../utils/utilities/DateUtils";
 
 type CreateTransactionAttributes = {
   accountId: number;
@@ -178,7 +178,7 @@ export const getTransactionsForAccount = async (
   const whereClause: WhereOptions = {
     accountId,
     userId,
-    transactionDate: { [Op.between]: [getFirstDayOfMonth(), getLastDayOfMonth()] },
+    transactionDate: { [Op.between]: [DateUtils.getFirstDayOfMonth(), DateUtils.getLastDayOfMonth()] },
   };
 
   if (startDate && endDate) {

@@ -13,7 +13,7 @@ import { Transaction } from "../transactions/transaction";
 import { Category } from "../categories/category";
 import { TransactionType } from "../transactions/transactionTypes/transactionType";
 import { Op } from "sequelize";
-import { getFirstDayOfLastMonth, getFirstDayOfMonth, getLastDayOfMonth } from "../../utils/utilities/date";
+import { DateUtils } from "../../utils/utilities/DateUtils";
 
 export const getAccountsHandler = catchErrors(async (req: Request, res: Response) => {
   const accounts = await Account.findAll({
@@ -104,7 +104,7 @@ export const getAccountHandler = catchErrors(async (req: Request, res: Response)
         foreignKey: "accountId",
         attributes: ["id", "amount", "transactionDate", "description"],
         where: {
-          transactionDate: { [Op.between]: [getFirstDayOfLastMonth(), getLastDayOfMonth()] },
+          transactionDate: { [Op.between]: [DateUtils.getFirstDayOfLastMonth(), DateUtils.getLastDayOfMonth()] },
         },
         required: false,
         include: [
@@ -122,11 +122,11 @@ export const getAccountHandler = catchErrors(async (req: Request, res: Response)
 
   const lastMonthTransactions = account?.transactions?.filter(
     (transaction) =>
-      transaction.transactionDate >= getFirstDayOfLastMonth() && transaction.transactionDate <= getFirstDayOfMonth()
+      transaction.transactionDate >= DateUtils.getFirstDayOfLastMonth() && transaction.transactionDate <= DateUtils.getFirstDayOfMonth()
   );
   const currentMonthTransactions = account?.transactions?.filter(
     (transaction) =>
-      transaction.transactionDate >= getFirstDayOfMonth() && transaction.transactionDate <= getLastDayOfMonth()
+      transaction.transactionDate >= DateUtils.getFirstDayOfMonth() && transaction.transactionDate <= DateUtils.getLastDayOfMonth()
   );
 
   const incomeLastMonth =

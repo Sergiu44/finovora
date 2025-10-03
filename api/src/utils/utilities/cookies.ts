@@ -1,6 +1,6 @@
 import { NODE_ENV } from "../constants/env";
 import { CookieOptions, Response } from "express";
-import { thirtyDaysFromNow } from "./date";
+import { DateUtils } from "./DateUtils";
 
 const secure = NODE_ENV !== "development";
 
@@ -13,12 +13,12 @@ const defaults: CookieOptions = {
 const getAccessTokenCookieOptions = (): CookieOptions => ({
   ...defaults,
   // to be changed to 15 minutes from now
-  expires: thirtyDaysFromNow(),
+  expires: DateUtils.thirtyDaysFromNow(),
 });
 
 const getRefreshTokenCookieOptions = (): CookieOptions => ({
   ...defaults,
-  expires: thirtyDaysFromNow(),
+  expires: DateUtils.thirtyDaysFromNow(),
   path: "/auth/refresh",
 });
 
