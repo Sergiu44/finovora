@@ -1,8 +1,8 @@
 function Logo() {
   return (
-    <div>
-      <h1 className="text-3xl tracking-widest font-bold">Finovora</h1>
-    </div>
+    <h1 className="text-3xl tracking-widest font-bold text-black dark:text-card-foreground z-10">
+      Finovora
+    </h1>
   );
 }
 

@@ -8,9 +8,7 @@ import {
 } from "../utils/constants/http";
 import VerificationCodeTypes from "../utils/constants/verificationCodeTypes";
 import appAssert from "../utils/utilities/appAssert";
-import {
-  DateUtils
-} from "../utils/utilities/DateUtils";
+import { DateUtils } from "../utils/utilities/DateUtils";
 import User from "../features/users/user";
 import { VerificationCode } from "./verifications/verification";
 import { sendEmail } from "../utils/emails/sendEmail";
@@ -180,7 +178,6 @@ export const sendPasswordResetEmail = async (email: string) => {
   const user = await User.findOne({ where: { email } });
   appAssert(user, NOT_FOUND, "User not found");
 
-  const fiveMinAgo = DateUtils.fiveMinutesAgo();
   const count = await VerificationCode.count({
     where: {
       userId: user.id,
@@ -255,5 +252,50 @@ export const resetPassword = async ({
 
   return {
     user: updatedUser.omitPassword(),
+  };
+};
+
+export const sendVerificationCode = async (email: string) => {
+  const user = await User.findOne({ where: { email } });
+  appAssert(user, NOT_FOUND, "User not found");
+
+  const verificationCode = await VerificationCode.findOne({
+    where: {
+      userId: user.id,
+      type: VerificationCodeTypes.EmailVerification,
+    },
+    attributes: ["id", "expiresAt"],
+  });
+
+  appAssert(
+    verificationCode,
+    INTERNAL_SERVER_ERROR,
+    "Failed to send verification code"
+  );
+
+  if (Date.now() < verificationCode.expiresAt.getTime()) {
+    return {
+      message: "Verification code already sent",
+      id: verificationCode.id,
+      expiresAt: verificationCode.expiresAt,
+    };
+  }
+
+  verificationCode.code = generateOTP();
+  verificationCode.expiresAt = DateUtils.fiveMinutesFromNow();
+  await verificationCode.save();
+
+  const { error: errorEmail } = await sendEmail({
+    to: user.email,
+    ...createVerifyEmailTemplate(verificationCode.code),
+  });
+
+  if (errorEmail)
+    console.log("Failed to send verification email: " + errorEmail);
+
+  return {
+    message: "Verification code sent successfully",
+    id: verificationCode.id,
+    expiresAt: verificationCode.expiresAt,
   };
 };

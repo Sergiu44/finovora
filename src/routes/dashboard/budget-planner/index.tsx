@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import {
   Card,
   CardContent,
@@ -6,17 +6,12 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../components/ui/card";
-import {
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "../../../components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { ChartContainer, ChartTooltip } from "../../../components/ui/chart";
+import { BarChart, Bar, XAxis, YAxis } from "recharts";
 import { Button } from "../../../components/ui/button";
-import { PlusIcon } from "@heroicons/react/16/solid";
+import { ArrowRightIcon, PlusIcon } from "@heroicons/react/16/solid";
 import { useMemo, useState } from "react";
+import BaseWrapper from "../../../components/reusable/layouts/BaseWrapper";
 
 // Sample data - replace with actual API data
 const mockBudgetData = [
@@ -43,6 +38,7 @@ export const Route = createFileRoute("/dashboard/budget-planner/")({
 });
 
 function RouteComponent() {
+  const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const CustomBar = (props: any) => {
@@ -97,169 +93,178 @@ function RouteComponent() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Budget planner</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage and track your spending limits
-          </p>
+    <BaseWrapper>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold">Budget planner</h1>
+            <p className="text-sm text-muted-foreground">
+              Manage and track your spending limits
+            </p>
+          </div>
+          <Button
+            className="flex items-center gap-2"
+            type="button"
+            variant="outline"
+            onClick={() =>
+              router.navigate({ to: "/dashboard/budget-planner/create" })
+            }
+          >
+            Budget Setting
+            <ArrowRightIcon className="w-4 h-4" />
+          </Button>
         </div>
-        <Button className="flex items-center gap-2">
-          <PlusIcon className="w-4 h-4" />
-          Add Budget
-        </Button>
-      </div>
 
-      <div className="grid gap-4">
-        {/* Budget Overview Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Budget Overview</CardTitle>
-            <CardDescription>
-              Your spending progress across all categories
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="w-full">
-              <ChartContainer config={chartConfig}>
-                <BarChart
-                  data={formattedData}
-                  margin={{ top: 0, right: 0, bottom: 0, left: 100 }}
-                  barGap={0}
-                >
-                  <XAxis
-                    type="category"
-                    dataKey="name"
-                    tickLine={false}
-                    axisLine={false}
-                    interval={0}
-                    tick={{ fontSize: 12 }}
-                    height={50}
-                    angle={-45}
-                    textAnchor="end"
-                  />
-                  <YAxis type="number" tickLine={false} axisLine={false} />
-                  <Bar
-                    dataKey="remaining"
-                    fill="black"
-                    stackId="a"
-                    barSize={80}
-                    shape={(props) => (
-                      <CustomBar {...props} radius={[0, 0, 12, 12]} />
-                    )}
-                  />
-                  <Bar
-                    dataKey="spent"
-                    fill="black"
-                    stackId="a"
-                    barSize={80}
-                    opacity={0.15}
-                    shape={(props) => (
-                      <CustomBar {...props} radius={[12, 12, 0, 0]} />
-                    )}
-                  />
-                  <ChartTooltip
-                    cursor={false}
-                    content={({ active, payload }) => {
-                      if (!active || !payload) return null;
-                      const total =
-                        (payload[0]?.value || 0) + (payload[1]?.value || 0);
-                      return (
-                        <div className="rounded-lg border bg-background p-2 shadow-sm">
-                          <div className="grid gap-2">
-                            <div className="flex items-center justify-between gap-2">
-                              <span className="font-semibold">
-                                {payload[0]?.payload.name}
-                              </span>
-                            </div>
-                            <div className="grid gap-1">
+        <div className="grid gap-4">
+          {/* Budget Overview Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Budget Overview</CardTitle>
+              <CardDescription>
+                Your spending progress across all categories
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="w-full">
+                <ChartContainer config={chartConfig}>
+                  <BarChart
+                    data={formattedData}
+                    margin={{ top: 0, right: 0, bottom: 0, left: 100 }}
+                    barGap={0}
+                  >
+                    <XAxis
+                      type="category"
+                      dataKey="name"
+                      tickLine={false}
+                      axisLine={false}
+                      interval={0}
+                      tick={{ fontSize: 12 }}
+                      height={50}
+                      angle={-45}
+                      textAnchor="end"
+                    />
+                    <YAxis type="number" tickLine={false} axisLine={false} />
+                    <Bar
+                      dataKey="remaining"
+                      fill="black"
+                      stackId="a"
+                      barSize={80}
+                      shape={(props) => (
+                        <CustomBar {...props} radius={[0, 0, 12, 12]} />
+                      )}
+                    />
+                    <Bar
+                      dataKey="spent"
+                      fill="black"
+                      stackId="a"
+                      barSize={80}
+                      opacity={0.15}
+                      shape={(props) => (
+                        <CustomBar {...props} radius={[12, 12, 0, 0]} />
+                      )}
+                    />
+                    <ChartTooltip
+                      cursor={false}
+                      content={({ active, payload }) => {
+                        if (!active || !payload) return null;
+                        const total =
+                          (payload[0]?.value || 0) + (payload[1]?.value || 0);
+                        return (
+                          <div className="rounded-lg border bg-background p-2 shadow-sm">
+                            <div className="grid gap-2">
                               <div className="flex items-center justify-between gap-2">
-                                <span className="text-error-600 font-medium">
-                                  Consumed:
-                                </span>
-                                <span className="font-medium text-error-600">
-                                  ${payload[0]?.value}
+                                <span className="font-semibold">
+                                  {payload[0]?.payload.name}
                                 </span>
                               </div>
-                              <div className="flex items-center justify-between gap-2">
-                                <span className="text-green-600 font-medium">
-                                  Remaining:
-                                </span>
-                                <span className="font-medium text-green-600">
-                                  ${payload[1]?.value}
-                                </span>
-                              </div>
-                              <div className="flex items-center justify-between gap-2 pt-1 border-t">
-                                <span className="text-muted-foreground">
-                                  Total Budget:
-                                </span>
-                                <span className="font-medium">${total}</span>
+                              <div className="grid gap-1">
+                                <div className="flex items-center justify-between gap-2">
+                                  <span className="text-error-600 font-medium">
+                                    Consumed:
+                                  </span>
+                                  <span className="font-medium text-error-600">
+                                    ${payload[0]?.value}
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-between gap-2">
+                                  <span className="text-green-600 font-medium">
+                                    Remaining:
+                                  </span>
+                                  <span className="font-medium text-green-600">
+                                    ${payload[1]?.value}
+                                  </span>
+                                </div>
+                                <div className="flex items-center justify-between gap-2 pt-1 border-t">
+                                  <span className="text-muted-foreground">
+                                    Total Budget:
+                                  </span>
+                                  <span className="font-medium">${total}</span>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    }}
-                  />
-                </BarChart>
-              </ChartContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Categories Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Budget Categories</CardTitle>
-            <CardDescription>
-              Configure spending limits for each category
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-4">
-              {formattedData.map((category) => (
-                <div
-                  key={category.name}
-                  className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted/50 cursor-pointer transition-colors"
-                  onClick={() => setSelectedCategory(category.name)}
-                >
-                  <div className="flex items-center gap-4">
-                    <div
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: category.color }}
+                        );
+                      }}
                     />
-                    <div>
-                      <p className="font-medium">{category.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        ${category.spent} of ${category.budget}
-                      </p>
+                  </BarChart>
+                </ChartContainer>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Categories Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Budget Categories</CardTitle>
+              <CardDescription>
+                Configure spending limits for each category
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4">
+                {formattedData.map((category) => (
+                  <div
+                    key={category.name}
+                    className="flex items-center justify-between p-4 rounded-lg border hover:bg-muted/50 cursor-pointer transition-colors"
+                    onClick={() => setSelectedCategory(category.name)}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: category.color }}
+                      />
+                      <div>
+                        <p className="font-medium">{category.name}</p>
+                        <p className="text-sm text-muted-foreground">
+                          ${category.spent} of ${category.budget}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <p className="font-medium">{category.percentage}%</p>
+                        <p className="text-sm text-muted-foreground">
+                          of budget used
+                        </p>
+                      </div>
+                      <div
+                        className={`text-sm font-medium ${
+                          category.remaining < 0
+                            ? "text-error-600"
+                            : "text-green-600"
+                        }`}
+                      >
+                        ${Math.abs(category.remaining)}{" "}
+                        {category.remaining < 0 ? "over" : "left"}
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <div className="text-right">
-                      <p className="font-medium">{category.percentage}%</p>
-                      <p className="text-sm text-muted-foreground">
-                        of budget used
-                      </p>
-                    </div>
-                    <div
-                      className={`text-sm font-medium ${
-                        category.remaining < 0
-                          ? "text-error-600"
-                          : "text-green-600"
-                      }`}
-                    >
-                      ${Math.abs(category.remaining)}{" "}
-                      {category.remaining < 0 ? "over" : "left"}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </div>
+    </BaseWrapper>
   );
 }

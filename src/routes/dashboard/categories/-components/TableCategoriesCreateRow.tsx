@@ -5,11 +5,16 @@ import { TableRow, TableCell } from "../../../../components/ui/table";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import VALIDATIONS from "../../../../utils/hooks/useValidation";
 import { Input } from "../../../../components/ui/input";
-import { type CreateCategory, createCategory } from "../../../../utils/actions/categories";
+import {
+  type CreateCategory,
+  createCategory,
+} from "../../../../utils/actions/categories";
 import { useValidation } from "../../../../utils/hooks/useValidation/useValidation";
 import Validator from "../../../../utils/hooks/useValidation/Validator";
 
-const validator = new Validator().forProperty("name").check(VALIDATIONS.isRequired, "Name is required");
+const validator = new Validator()
+  .forProperty("name")
+  .check(VALIDATIONS.isRequired, "Name is required");
 
 export default function TableCategoriesCreateRow({
   columns,
@@ -22,7 +27,8 @@ export default function TableCategoriesCreateRow({
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const { errors, onChangeInput, values, onChangeValue } = useValidation(validator);
+  const { errors, onChangeInput, values, onChangeValue } =
+    useValidation(validator);
 
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
@@ -67,13 +73,15 @@ export default function TableCategoriesCreateRow({
 
   return (
     <TableRow>
-      <TableCell className={`m-0 py-2 ${parentCategoryId ? "px-6" : "px-2"}`} colSpan={columns.length}>
+      <TableCell className={`m-0 py-2 px-2}`} colSpan={columns.length}>
         {isCreating ? (
           <form onSubmit={handleCreateCategory} ref={formRef}>
             <div className="relative">
               <Input
                 type="text"
-                onChange={(ev) => onChangeInput(ev as React.ChangeEvent<HTMLInputElement>)}
+                onChange={(ev) =>
+                  onChangeInput(ev as React.ChangeEvent<HTMLInputElement>)
+                }
                 value={(values["name"] || "") as string}
                 name="name"
                 placeholder={`Create a new ${parentCategoryId ? "sub" : ""}category`}

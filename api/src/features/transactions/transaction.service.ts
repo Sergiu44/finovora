@@ -20,40 +20,55 @@ type CreateTransactionAttributes = {
   categoryId: number;
   userId: number;
 };
-export const createTransaction = async (transaction: CreateTransactionAttributes) => {
+export const createTransaction = async (
+  transaction: CreateTransactionAttributes
+) => {
   // Start a managed transaction
   const result = await SequelizeDatabaseWrapper.getInstance()
     .getDatabaseInstance()
     .transaction(async (t) => {
       // Find all required entities within the transaction
-      const [existingUser, existingAccount, existingTransactionType] = await Promise.all([
-        User.findByPk(transaction.userId, { transaction: t, lock: true }),
-        Account.findByPk(transaction.accountId, {
-          transaction: t,
-          lock: true,
-        }),
-        TransactionType.findByPk(transaction.transactionTypeId, {
-          transaction: t,
-        }),
-      ]);
+      const [existingUser, existingAccount, existingTransactionType] =
+        await Promise.all([
+          User.findByPk(transaction.userId, { transaction: t, lock: true }),
+          Account.findByPk(transaction.accountId, {
+            transaction: t,
+            lock: true,
+          }),
+          TransactionType.findByPk(transaction.transactionTypeId, {
+            transaction: t,
+          }),
+        ]);
 
       // Validate existence of required entities
       appAssert(existingUser, NOT_FOUND, "User does not exist");
       appAssert(existingAccount, NOT_FOUND, "Account does not exist");
-      appAssert(existingTransactionType, NOT_FOUND, "Transaction type does not exist");
+      appAssert(
+        existingTransactionType,
+        NOT_FOUND,
+        "Transaction type does not exist"
+      );
 
       // Handle destination account for transfers
       let existingDestinationAccount: Account | null = null;
       if (transaction.destinationAccountId) {
-        existingDestinationAccount = await Account.findByPk(transaction.destinationAccountId, {
-          transaction: t,
-          lock: true,
-        });
-        appAssert(existingDestinationAccount, NOT_FOUND, "Destination account does not exist");
+        existingDestinationAccount = await Account.findByPk(
+          transaction.destinationAccountId,
+          {
+            transaction: t,
+            lock: true,
+          }
+        );
+        appAssert(
+          existingDestinationAccount,
+          NOT_FOUND,
+          "Destination account does not exist"
+        );
       }
 
       // Update account balances based on transaction type
-      const sequelize = SequelizeDatabaseWrapper.getInstance().getDatabaseInstance();
+      const sequelize =
+        SequelizeDatabaseWrapper.getInstance().getDatabaseInstance();
 
       switch (transaction.transactionTypeId) {
         case TransactionTypes.Income:
@@ -127,7 +142,6 @@ export const createTransaction = async (transaction: CreateTransactionAttributes
       }
 
       // Save account balance changes
-      console.log(existingAccount);
       await existingAccount.save({ transaction: t });
       if (existingDestinationAccount) {
         await existingDestinationAccount.save({ transaction: t });
@@ -137,7 +151,10 @@ export const createTransaction = async (transaction: CreateTransactionAttributes
       const newTransaction = await Transaction.create(
         {
           ...transaction,
-          amount: transaction.transactionTypeId === TransactionTypes.Income ? transaction.amount : -transaction.amount,
+          amount:
+            transaction.transactionTypeId === TransactionTypes.Income
+              ? transaction.amount
+              : -transaction.amount,
         },
         {
           transaction: t,
@@ -172,13 +189,22 @@ export const getTransactionsForAccount = async (
 ) => {
   const existingAccount = await Account.findByPk(accountId);
   appAssert(existingAccount, NOT_FOUND, "Account does not exist");
-  appAssert(existingAccount.userId === userId, NOT_FOUND, "Account does not belong to user");
+  appAssert(
+    existingAccount.userId === userId,
+    NOT_FOUND,
+    "Account does not belong to user"
+  );
 
   // Build where clause for date filtering
   const whereClause: WhereOptions = {
     accountId,
     userId,
-    transactionDate: { [Op.between]: [DateUtils.getFirstDayOfMonth(), DateUtils.getLastDayOfMonth()] },
+    transactionDate: {
+      [Op.between]: [
+        DateUtils.getFirstDayOfMonth(),
+        DateUtils.getLastDayOfMonth(),
+      ],
+    },
   };
 
   if (startDate && endDate) {

@@ -8,11 +8,20 @@ interface IInputCodeProps {
   onComplete: (code: string) => void;
   className?: string;
 }
-export default function InputCode({ length = 6, label, loading, onComplete, className }: IInputCodeProps) {
+export default function InputCode({
+  length = 6,
+  label,
+  loading,
+  onComplete,
+  className,
+}: IInputCodeProps) {
   const [code, setCode] = useState([...Array(length)].map(() => ""));
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const processInput = (e: React.ChangeEvent<HTMLInputElement>, slot: number) => {
+  const processInput = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    slot: number
+  ) => {
     const num = e.target.value;
     if (/[^0-9]/.test(num)) return;
     const newCode = [...code];
@@ -43,6 +52,7 @@ export default function InputCode({ length = 6, label, loading, onComplete, clas
               type="text"
               inputMode="numeric"
               maxLength={1}
+              className="text-foreground! border-2! border-chart-5!"
               value={num}
               autoFocus={!code[0].length && idx === 0}
               readOnly={loading}

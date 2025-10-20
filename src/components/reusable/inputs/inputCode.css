@@ -19,11 +19,10 @@
   -moz-box-shadow: none;
   box-shadow: none;
   text-align: center;
-  height: 70px;
-  width: 60px;
+  height: 50px;
+  width: 40px;
   border-radius: 10px;
   margin: 0 4px;
-  border: 2px solid #4f5b66;
   font-size: var(--text-2xl);
 }
 .code-inputs input:focus {

@@ -23,9 +23,12 @@ import { Route as AuthAuthImport } from './routes/auth/_auth'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings/route'
 import { Route as DashboardCategoriesIndexImport } from './routes/dashboard/categories/index'
 import { Route as DashboardBudgetPlannerIndexImport } from './routes/dashboard/budget-planner/index'
+import { Route as DashboardBudgetPlannerCreateImport } from './routes/dashboard/budget-planner/create'
+import { Route as AuthAuthVerifyEmailImport } from './routes/auth/_auth.verify-email'
 import { Route as AuthAuthRegisterImport } from './routes/auth/_auth.register'
 import { Route as AuthAuthLoginImport } from './routes/auth/_auth.login'
 import { Route as AuthAuthForgotPasswordImport } from './routes/auth/_auth.forgot-password'
+import { Route as DashboardSettingsRecursiveTransactionsIndexImport } from './routes/dashboard/settings/recursive-transactions/index'
 import { Route as DashboardSettingsProfileIndexImport } from './routes/dashboard/settings/profile/index'
 import { Route as DashboardSettingsCurrenciesIndexImport } from './routes/dashboard/settings/currencies/index'
 import { Route as DashboardSettingsAccountsIndexImport } from './routes/dashboard/settings/accounts/index'
@@ -107,6 +110,19 @@ const DashboardBudgetPlannerIndexRoute =
     getParentRoute: () => DashboardRouteRoute,
   } as any)
 
+const DashboardBudgetPlannerCreateRoute =
+  DashboardBudgetPlannerCreateImport.update({
+    id: '/budget-planner/create',
+    path: '/budget-planner/create',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
+
+const AuthAuthVerifyEmailRoute = AuthAuthVerifyEmailImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
+  getParentRoute: () => AuthAuthRoute,
+} as any)
+
 const AuthAuthRegisterRoute = AuthAuthRegisterImport.update({
   id: '/register',
   path: '/register',
@@ -124,6 +140,13 @@ const AuthAuthForgotPasswordRoute = AuthAuthForgotPasswordImport.update({
   path: '/forgot-password',
   getParentRoute: () => AuthAuthRoute,
 } as any)
+
+const DashboardSettingsRecursiveTransactionsIndexRoute =
+  DashboardSettingsRecursiveTransactionsIndexImport.update({
+    id: '/recursive-transactions/',
+    path: '/recursive-transactions/',
+    getParentRoute: () => DashboardSettingsRouteRoute,
+  } as any)
 
 const DashboardSettingsProfileIndexRoute =
   DashboardSettingsProfileIndexImport.update({
@@ -269,6 +292,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAuthRegisterImport
       parentRoute: typeof AuthAuthImport
     }
+    '/auth/_auth/verify-email': {
+      id: '/auth/_auth/verify-email'
+      path: '/verify-email'
+      fullPath: '/auth/verify-email'
+      preLoaderRoute: typeof AuthAuthVerifyEmailImport
+      parentRoute: typeof AuthAuthImport
+    }
+    '/dashboard/budget-planner/create': {
+      id: '/dashboard/budget-planner/create'
+      path: '/budget-planner/create'
+      fullPath: '/dashboard/budget-planner/create'
+      preLoaderRoute: typeof DashboardBudgetPlannerCreateImport
+      parentRoute: typeof DashboardRouteImport
+    }
     '/dashboard/budget-planner/': {
       id: '/dashboard/budget-planner/'
       path: '/budget-planner'
@@ -311,6 +348,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsProfileIndexImport
       parentRoute: typeof DashboardSettingsRouteImport
     }
+    '/dashboard/settings/recursive-transactions/': {
+      id: '/dashboard/settings/recursive-transactions/'
+      path: '/recursive-transactions'
+      fullPath: '/dashboard/settings/recursive-transactions'
+      preLoaderRoute: typeof DashboardSettingsRecursiveTransactionsIndexImport
+      parentRoute: typeof DashboardSettingsRouteImport
+    }
     '/dashboard/settings/accounts/edit/$accountId': {
       id: '/dashboard/settings/accounts/edit/$accountId'
       path: '/accounts/edit/$accountId'
@@ -349,6 +393,7 @@ interface DashboardSettingsRouteRouteChildren {
   DashboardSettingsAccountsIndexRoute: typeof DashboardSettingsAccountsIndexRoute
   DashboardSettingsCurrenciesIndexRoute: typeof DashboardSettingsCurrenciesIndexRoute
   DashboardSettingsProfileIndexRoute: typeof DashboardSettingsProfileIndexRoute
+  DashboardSettingsRecursiveTransactionsIndexRoute: typeof DashboardSettingsRecursiveTransactionsIndexRoute
   DashboardSettingsAccountsEditAccountIdRouteRoute: typeof DashboardSettingsAccountsEditAccountIdRouteRoute
   DashboardSettingsAccountsAccountTypesAccountTypeIdRoute: typeof DashboardSettingsAccountsAccountTypesAccountTypeIdRoute
   DashboardSettingsAccountsAccountTypesCreateRoute: typeof DashboardSettingsAccountsAccountTypesCreateRoute
@@ -362,6 +407,8 @@ const DashboardSettingsRouteRouteChildren: DashboardSettingsRouteRouteChildren =
     DashboardSettingsCurrenciesIndexRoute:
       DashboardSettingsCurrenciesIndexRoute,
     DashboardSettingsProfileIndexRoute: DashboardSettingsProfileIndexRoute,
+    DashboardSettingsRecursiveTransactionsIndexRoute:
+      DashboardSettingsRecursiveTransactionsIndexRoute,
     DashboardSettingsAccountsEditAccountIdRouteRoute:
       DashboardSettingsAccountsEditAccountIdRouteRoute,
     DashboardSettingsAccountsAccountTypesAccountTypeIdRoute:
@@ -383,6 +430,7 @@ interface DashboardRouteRouteChildren {
   DashboardProfileRoute: typeof DashboardProfileRoute
   DashboardReportsRoute: typeof DashboardReportsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardBudgetPlannerCreateRoute: typeof DashboardBudgetPlannerCreateRoute
   DashboardBudgetPlannerIndexRoute: typeof DashboardBudgetPlannerIndexRoute
   DashboardCategoriesIndexRoute: typeof DashboardCategoriesIndexRoute
 }
@@ -393,6 +441,7 @@ const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardProfileRoute: DashboardProfileRoute,
   DashboardReportsRoute: DashboardReportsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardBudgetPlannerCreateRoute: DashboardBudgetPlannerCreateRoute,
   DashboardBudgetPlannerIndexRoute: DashboardBudgetPlannerIndexRoute,
   DashboardCategoriesIndexRoute: DashboardCategoriesIndexRoute,
 }
@@ -405,12 +454,14 @@ interface AuthAuthRouteChildren {
   AuthAuthForgotPasswordRoute: typeof AuthAuthForgotPasswordRoute
   AuthAuthLoginRoute: typeof AuthAuthLoginRoute
   AuthAuthRegisterRoute: typeof AuthAuthRegisterRoute
+  AuthAuthVerifyEmailRoute: typeof AuthAuthVerifyEmailRoute
 }
 
 const AuthAuthRouteChildren: AuthAuthRouteChildren = {
   AuthAuthForgotPasswordRoute: AuthAuthForgotPasswordRoute,
   AuthAuthLoginRoute: AuthAuthLoginRoute,
   AuthAuthRegisterRoute: AuthAuthRegisterRoute,
+  AuthAuthVerifyEmailRoute: AuthAuthVerifyEmailRoute,
 }
 
 const AuthAuthRouteWithChildren = AuthAuthRoute._addFileChildren(
@@ -439,12 +490,15 @@ export interface FileRoutesByFullPath {
   '/auth/forgot-password': typeof AuthAuthForgotPasswordRoute
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
+  '/auth/verify-email': typeof AuthAuthVerifyEmailRoute
+  '/dashboard/budget-planner/create': typeof DashboardBudgetPlannerCreateRoute
   '/dashboard/budget-planner': typeof DashboardBudgetPlannerIndexRoute
   '/dashboard/categories': typeof DashboardCategoriesIndexRoute
   '/dashboard/settings/accounts/create': typeof DashboardSettingsAccountsCreateRoute
   '/dashboard/settings/accounts': typeof DashboardSettingsAccountsIndexRoute
   '/dashboard/settings/currencies': typeof DashboardSettingsCurrenciesIndexRoute
   '/dashboard/settings/profile': typeof DashboardSettingsProfileIndexRoute
+  '/dashboard/settings/recursive-transactions': typeof DashboardSettingsRecursiveTransactionsIndexRoute
   '/dashboard/settings/accounts/edit/$accountId': typeof DashboardSettingsAccountsEditAccountIdRouteRoute
   '/dashboard/settings/accounts/account-types/$accountTypeId': typeof DashboardSettingsAccountsAccountTypesAccountTypeIdRoute
   '/dashboard/settings/accounts/account-types/create': typeof DashboardSettingsAccountsAccountTypesCreateRoute
@@ -462,12 +516,15 @@ export interface FileRoutesByTo {
   '/auth/forgot-password': typeof AuthAuthForgotPasswordRoute
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
+  '/auth/verify-email': typeof AuthAuthVerifyEmailRoute
+  '/dashboard/budget-planner/create': typeof DashboardBudgetPlannerCreateRoute
   '/dashboard/budget-planner': typeof DashboardBudgetPlannerIndexRoute
   '/dashboard/categories': typeof DashboardCategoriesIndexRoute
   '/dashboard/settings/accounts/create': typeof DashboardSettingsAccountsCreateRoute
   '/dashboard/settings/accounts': typeof DashboardSettingsAccountsIndexRoute
   '/dashboard/settings/currencies': typeof DashboardSettingsCurrenciesIndexRoute
   '/dashboard/settings/profile': typeof DashboardSettingsProfileIndexRoute
+  '/dashboard/settings/recursive-transactions': typeof DashboardSettingsRecursiveTransactionsIndexRoute
   '/dashboard/settings/accounts/edit/$accountId': typeof DashboardSettingsAccountsEditAccountIdRouteRoute
   '/dashboard/settings/accounts/account-types/$accountTypeId': typeof DashboardSettingsAccountsAccountTypesAccountTypeIdRoute
   '/dashboard/settings/accounts/account-types/create': typeof DashboardSettingsAccountsAccountTypesCreateRoute
@@ -488,12 +545,15 @@ export interface FileRoutesById {
   '/auth/_auth/forgot-password': typeof AuthAuthForgotPasswordRoute
   '/auth/_auth/login': typeof AuthAuthLoginRoute
   '/auth/_auth/register': typeof AuthAuthRegisterRoute
+  '/auth/_auth/verify-email': typeof AuthAuthVerifyEmailRoute
+  '/dashboard/budget-planner/create': typeof DashboardBudgetPlannerCreateRoute
   '/dashboard/budget-planner/': typeof DashboardBudgetPlannerIndexRoute
   '/dashboard/categories/': typeof DashboardCategoriesIndexRoute
   '/dashboard/settings/accounts/create': typeof DashboardSettingsAccountsCreateRoute
   '/dashboard/settings/accounts/': typeof DashboardSettingsAccountsIndexRoute
   '/dashboard/settings/currencies/': typeof DashboardSettingsCurrenciesIndexRoute
   '/dashboard/settings/profile/': typeof DashboardSettingsProfileIndexRoute
+  '/dashboard/settings/recursive-transactions/': typeof DashboardSettingsRecursiveTransactionsIndexRoute
   '/dashboard/settings/accounts/edit/$accountId': typeof DashboardSettingsAccountsEditAccountIdRouteRoute
   '/dashboard/settings/accounts/account-types/$accountTypeId': typeof DashboardSettingsAccountsAccountTypesAccountTypeIdRoute
   '/dashboard/settings/accounts/account-types/create': typeof DashboardSettingsAccountsAccountTypesCreateRoute
@@ -514,12 +574,15 @@ export interface FileRouteTypes {
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
+    | '/auth/verify-email'
+    | '/dashboard/budget-planner/create'
     | '/dashboard/budget-planner'
     | '/dashboard/categories'
     | '/dashboard/settings/accounts/create'
     | '/dashboard/settings/accounts'
     | '/dashboard/settings/currencies'
     | '/dashboard/settings/profile'
+    | '/dashboard/settings/recursive-transactions'
     | '/dashboard/settings/accounts/edit/$accountId'
     | '/dashboard/settings/accounts/account-types/$accountTypeId'
     | '/dashboard/settings/accounts/account-types/create'
@@ -536,12 +599,15 @@ export interface FileRouteTypes {
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
+    | '/auth/verify-email'
+    | '/dashboard/budget-planner/create'
     | '/dashboard/budget-planner'
     | '/dashboard/categories'
     | '/dashboard/settings/accounts/create'
     | '/dashboard/settings/accounts'
     | '/dashboard/settings/currencies'
     | '/dashboard/settings/profile'
+    | '/dashboard/settings/recursive-transactions'
     | '/dashboard/settings/accounts/edit/$accountId'
     | '/dashboard/settings/accounts/account-types/$accountTypeId'
     | '/dashboard/settings/accounts/account-types/create'
@@ -560,12 +626,15 @@ export interface FileRouteTypes {
     | '/auth/_auth/forgot-password'
     | '/auth/_auth/login'
     | '/auth/_auth/register'
+    | '/auth/_auth/verify-email'
+    | '/dashboard/budget-planner/create'
     | '/dashboard/budget-planner/'
     | '/dashboard/categories/'
     | '/dashboard/settings/accounts/create'
     | '/dashboard/settings/accounts/'
     | '/dashboard/settings/currencies/'
     | '/dashboard/settings/profile/'
+    | '/dashboard/settings/recursive-transactions/'
     | '/dashboard/settings/accounts/edit/$accountId'
     | '/dashboard/settings/accounts/account-types/$accountTypeId'
     | '/dashboard/settings/accounts/account-types/create'
@@ -611,6 +680,7 @@ export const routeTree = rootRoute
         "/dashboard/profile",
         "/dashboard/reports",
         "/dashboard/",
+        "/dashboard/budget-planner/create",
         "/dashboard/budget-planner/",
         "/dashboard/categories/"
       ]
@@ -623,6 +693,7 @@ export const routeTree = rootRoute
         "/dashboard/settings/accounts/",
         "/dashboard/settings/currencies/",
         "/dashboard/settings/profile/",
+        "/dashboard/settings/recursive-transactions/",
         "/dashboard/settings/accounts/edit/$accountId",
         "/dashboard/settings/accounts/account-types/$accountTypeId",
         "/dashboard/settings/accounts/account-types/create",
@@ -641,7 +712,8 @@ export const routeTree = rootRoute
       "children": [
         "/auth/_auth/forgot-password",
         "/auth/_auth/login",
-        "/auth/_auth/register"
+        "/auth/_auth/register",
+        "/auth/_auth/verify-email"
       ]
     },
     "/dashboard/billing": {
@@ -672,6 +744,14 @@ export const routeTree = rootRoute
       "filePath": "auth/_auth.register.tsx",
       "parent": "/auth/_auth"
     },
+    "/auth/_auth/verify-email": {
+      "filePath": "auth/_auth.verify-email.tsx",
+      "parent": "/auth/_auth"
+    },
+    "/dashboard/budget-planner/create": {
+      "filePath": "dashboard/budget-planner/create.tsx",
+      "parent": "/dashboard"
+    },
     "/dashboard/budget-planner/": {
       "filePath": "dashboard/budget-planner/index.tsx",
       "parent": "/dashboard"
@@ -694,6 +774,10 @@ export const routeTree = rootRoute
     },
     "/dashboard/settings/profile/": {
       "filePath": "dashboard/settings/profile/index.tsx",
+      "parent": "/dashboard/settings"
+    },
+    "/dashboard/settings/recursive-transactions/": {
+      "filePath": "dashboard/settings/recursive-transactions/index.tsx",
       "parent": "/dashboard/settings"
     },
     "/dashboard/settings/accounts/edit/$accountId": {

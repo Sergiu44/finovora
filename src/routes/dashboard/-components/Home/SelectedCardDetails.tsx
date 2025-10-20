@@ -8,15 +8,13 @@ import {
   SelectValue,
 } from "../../../../components/ui/select";
 
-interface ISelectedCardDetailsProps {
-  card: { name: string };
-}
-export default function SelectedCardDetails(props: ISelectedCardDetailsProps) {
-  const { card } = props;
-  console.log(card);
+// interface ISelectedCardDetailsProps {
+//   card: { name: string };
+// }
+export default function SelectedCardDetails() {
   return (
     <div>
-      <Card>
+      <Card className="shadow-accent-foreground">
         <CardContent>
           <CardTitle className="text-muted-foreground flex justify-between">
             <h2 className="grow-1 w-full">Balance history/statistics</h2>

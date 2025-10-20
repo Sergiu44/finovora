@@ -2,6 +2,8 @@ import React, { type Ref } from "react";
 import { Input } from "../../ui/input.tsx";
 import ErrorMessage from "../errorMessages/errorMessage.tsx";
 
+const DEFAULT_CLASSNAME = "dark:text-white text-black";
+
 interface InputProps extends React.ComponentProps<"input"> {
   leftElement?: React.ReactNode;
   rightElement?: React.ReactNode;
@@ -79,7 +81,7 @@ export default function CustomInput({
             id={id}
             name={name}
             type={type}
-            className={`${className} ${leftElement && inside ? "pl-8" : ""} ${rightElement && inside ? "pr-8" : ""} ${
+            className={`${className} ${DEFAULT_CLASSNAME} ${leftElement && inside ? "pl-8" : ""} ${rightElement && inside ? "pr-8" : ""} ${
               errorMessage
                 ? "border-error focus-visible:ring-error-600 focus-visible:border-error"
                 : ""
@@ -99,7 +101,9 @@ export default function CustomInput({
 
         {/* Right element positioned outside */}
         {rightElement && !inside && (
-          <div className={`flex items-center ${rightElementClassName}`}>
+          <div
+            className={`flex items-center ${rightElementClassName} ${errorMessage && "[&_svg]:text-error"}`}
+          >
             {rightElement}
           </div>
         )}

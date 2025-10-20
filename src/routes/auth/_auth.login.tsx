@@ -14,29 +14,32 @@ export const Route = createFileRoute("/auth/_auth/login")({
 });
 
 function RouteComponent() {
-  const { errors, onChangeInput, applyErrorsFromApi, setErrors } = useValidation(
-    new Validator()
-      .forProperty("email")
-      .check(VALIDATIONS.isEmail, "Invalid email")
-      .forProperty("password")
-      .check(VALIDATIONS.isRequired, "Password is required")
-  );
+  const { errors, onChangeInput, applyErrorsFromApi, setErrors } =
+    useValidation(
+      new Validator()
+        .forProperty("email")
+        .check(VALIDATIONS.isEmail, "Invalid email")
+        .forProperty("password")
+        .check(VALIDATIONS.isRequired, "Password is required")
+    );
   const [active, setIsActive] = useState(false);
   const { setUserMainAccountId } = useUserMainAccount();
 
   const router = useRouter();
 
   return (
-    <div className="mx-auto pb-20 flex flex-col justify-between h-full">
-      <div className="">
-        <div className="mb-4 block">
-          <h3 className="text-lg">Sign in into your account</h3>
-          <p className="text-sm text-muted-foreground font-bold">
+    <>
+      <div className="mx-auto pb-20 flex flex-col">
+        <div className="mb-4 block text-center">
+          <h3 className="text-3xl text-popover-foreground">
+            Sign in into your account
+          </h3>
+          <p className="text-sm text-muted-foreground font-bold mt-2">
             Access your account in order to be able to start a budget plan
           </p>
         </div>
         <form
-          className="block"
+          className="block mt-12"
           onSubmit={(e) => {
             setErrors({ ...errors, email: "", password: "" });
             e.preventDefault();
@@ -54,6 +57,20 @@ function RouteComponent() {
               )
               .then(({ data }) => {
                 const { user } = data;
+
+                if (!user.verified)
+                  return createEnhancedAxios()
+                    .post(`${import.meta.env.VITE_API_URL}/auth/email/send`, {
+                      email,
+                    })
+                    .then(() => {
+                      router.navigate({
+                        to: "/auth/verify-email",
+                        search: {
+                          email: email as string,
+                        },
+                      });
+                    });
 
                 setUserMainAccountId(user.primaryAccountId);
                 localStorage.setItem("user", JSON.stringify(user));
@@ -78,40 +95,49 @@ function RouteComponent() {
             errorMessage={errors["password"]}
             leftElement={
               active ? (
-                <EyeIcon onClick={() => setIsActive(!active)} className="h-4 w-4 select-none" />
+                <EyeIcon
+                  onClick={() => setIsActive(!active)}
+                  className="h-4 w-4 select-none text-muted-foreground"
+                />
               ) : (
-                <EyeClosedIcon onClick={() => setIsActive(!active)} className="h-4 w-4 select-none" />
+                <EyeClosedIcon
+                  onClick={() => setIsActive(!active)}
+                  className="h-4 w-4 select-none text-muted-foreground"
+                />
               )
             }
           />
-          <Button variant="secondary" className="w-full mt-2">
+          <Button variant="accent" className="w-full mt-2">
             Submit
           </Button>
 
-          <div className="grid grid-cols-[1fr_30px_1fr] my-4">
-            <div></div>
-            <span className="text-center">OR</span>
-            <div></div>
+          <div className="grid grid-cols-[1fr_30px_1fr] my-4 items-center gap-2">
+            <div className="h-[1px] bg-muted-foreground"></div>
+            <span className="text-center text-popover-foreground">OR</span>
+            <div className="h-[1px] bg-muted-foreground"></div>
           </div>
 
-          <Button className="w-full">Continue with Google</Button>
-          <span className="mt-6 inline-block w-full text-center text-base">
-            Don't have an account yet?
-            <Link
-              className="text-center inline-block hover:decoration-1 hover:underline text-muted-foreground ml-1"
-              to="/auth/register"
-            >
-              Start here
-            </Link>
-          </span>
+          <Button className="w-full" type="button">
+            Continue with Google
+          </Button>
         </form>
       </div>
 
-      <div className="text-center">
-        <Link className="text-sm text-muted-foreground" to="/auth/forgot-password">
+      <div className="w-full justify-center text-base! text-muted-foreground flex">
+        <span>Don't have an account yet?</span>
+        <Link
+          className="text-center inline-block hover:decoration-1 hover:underline hover:underline-offset-2 ml-1 text-primary"
+          to="/auth/register"
+        >
+          Start here
+        </Link>
+      </div>
+
+      <div className="text-center mt-2">
+        <Link className="text-sm text-primary" to="/auth/forgot-password">
           Forgot your password?
         </Link>
       </div>
-    </div>
+    </>
   );
 }

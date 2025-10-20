@@ -12,6 +12,7 @@ import {
   refreshUserAccessToken,
   resetPassword,
   sendPasswordResetEmail,
+  sendVerificationCode,
   verifyEmail,
 } from "./auth.service";
 import { clearAuthCookies, setAuthCookies } from "../utils/utilities/cookies";
@@ -108,6 +109,20 @@ export const resetPasswordHandler = catchErrors(
     await resetPassword(request);
     return clearAuthCookies(res).status(OK).json({
       message: "Password reset successful",
+    });
+  }
+);
+
+export const sendVerificationEmailHandler = catchErrors(
+  async (req: Request, res: Response) => {
+    const request = emailSchema.parse(req.body.email);
+
+    const { message, ...verificationCode } =
+      await sendVerificationCode(request);
+
+    return res.status(OK).json({
+      message,
+      verificationCode,
     });
   }
 );

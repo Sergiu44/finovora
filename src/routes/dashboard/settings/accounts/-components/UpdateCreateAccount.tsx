@@ -214,7 +214,6 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
                   values["gradientId"] == item.id && values["type"] == "default"
                 }
                 onSelect={() => {
-                  console.log(item);
                   setErrors({
                     ...errors,
                     gradientId: undefined,
@@ -262,7 +261,6 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
                   values["gradientId"] == item.id && values["type"] == "user"
                 }
                 onSelect={() => {
-                  console.log(item);
                   setErrors({
                     ...errors,
                     gradientId: undefined,

@@ -4,7 +4,11 @@ import SelectedCardDetails from "./-components/Home/SelectedCardDetails";
 import { Button } from "../../components/ui/button";
 import { InformationCircleIcon } from "@heroicons/react/16/solid";
 import SelectedCardTransactions from "./-components/Home/SelectedCardTransactions";
-import { deleteUserAccount, getUserCardAccounts, type DeleteAccount } from "../../utils/actions/accounts/userAccounts";
+import {
+  deleteUserAccount,
+  getUserCardAccounts,
+  type DeleteAccount,
+} from "../../utils/actions/accounts/userAccounts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AccountPreviewCard from "./settings/accounts/-components/AccountPreviewCard";
 import EmptyAccountCard from "./settings/accounts/-components/EmptyAccountCard";
@@ -55,17 +59,19 @@ function RouteComponent() {
     return account?.transactions
       ?.filter((transaction) => transaction.transactionType.name === "Income")
       .reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
-  }, [account?.id]);
+  }, [account?.transactions]);
   const expenses = useMemo(() => {
     return account?.transactions
       ?.filter((transaction) => transaction.transactionType.name === "Expense")
       .reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
-  }, [account?.id]);
+  }, [account?.transactions]);
 
   return (
     <BaseWrapper>
       <h1 className="text-3xl font-bold">Dashboard</h1>
-      <p className="text-sm text-muted-foreground">Easy way to manage your finances</p>
+      <p className="text-sm text-muted-foreground">
+        Easy way to manage your finances
+      </p>
       <div className="grid grid-cols-[350px_1fr] gap-4 mt-4">
         <div>
           <div className={`rounded-xl mb-4 shadow-lg relative`}>
@@ -82,11 +88,22 @@ function RouteComponent() {
                   gradient={(() => {
                     return {
                       type: "default",
-                      id: account.defaultGradient?.id || account.userGradient?.id || 0,
-                      name: account.defaultGradient?.name || account.userGradient?.name || "",
-                      slug: account.defaultGradient?.slug || account.userGradient?.slug || "",
+                      id:
+                        account.defaultGradient?.id ||
+                        account.userGradient?.id ||
+                        0,
+                      name:
+                        account.defaultGradient?.name ||
+                        account.userGradient?.name ||
+                        "",
+                      slug:
+                        account.defaultGradient?.slug ||
+                        account.userGradient?.slug ||
+                        "",
 
-                      colors: isDefaultGradientItem(account.defaultGradient || account.userGradient)
+                      colors: isDefaultGradientItem(
+                        account.defaultGradient || account.userGradient
+                      )
                         ? [
                             account.defaultGradient.color1,
                             account.defaultGradient.color2,
@@ -126,10 +143,21 @@ function RouteComponent() {
                       gradient={(() => {
                         return {
                           type: "default",
-                          id: account.defaultGradient?.id || account.userGradient?.id || 0,
-                          name: account.defaultGradient?.name || account.userGradient?.name || "",
-                          slug: account.defaultGradient?.slug || account.userGradient?.slug || "",
-                          colors: isDefaultGradientItem(account.defaultGradient || account.userGradient)
+                          id:
+                            account.defaultGradient?.id ||
+                            account.userGradient?.id ||
+                            0,
+                          name:
+                            account.defaultGradient?.name ||
+                            account.userGradient?.name ||
+                            "",
+                          slug:
+                            account.defaultGradient?.slug ||
+                            account.userGradient?.slug ||
+                            "",
+                          colors: isDefaultGradientItem(
+                            account.defaultGradient || account.userGradient
+                          )
                             ? [
                                 account.defaultGradient.color1,
                                 account.defaultGradient.color2,
@@ -137,7 +165,10 @@ function RouteComponent() {
                                 account.defaultGradient.color4,
                                 account.defaultGradient.color5,
                               ]
-                            : [account.userGradient.to, account.userGradient.from],
+                            : [
+                                account.userGradient.to,
+                                account.userGradient.from,
+                              ],
                         };
                       })()}
                     />
@@ -146,40 +177,58 @@ function RouteComponent() {
             )}
           </div>
 
-          <Card className="border-0 shadow-none! border-b! border-border">
+          <Card className="border-0 border-b! border-border">
             <CardContent>
               <h3 className="font-bold mb-2 block">Account information</h3>
               <p className="text-xs">Lorem ipsum dolor sit amet con</p>
 
               <div className="mt-4 grid grid-cols-[1fr_1fr] gap-1">
-                <span className="text-sm font-bold text-muted-foreground">Account name</span>
-                <span className="text-sm text-muted-foreground">{account?.name}</span>
+                <span className="text-sm font-bold text-muted-foreground">
+                  Account name
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  {account?.name}
+                </span>
 
-                <span className="text-sm font-bold text-muted-foreground">Account type</span>
-                <span className="text-sm text-muted-foreground">{account?.accountType.name}</span>
+                <span className="text-sm font-bold text-muted-foreground">
+                  Account type
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  {account?.accountType.name}
+                </span>
 
-                <span className="text-sm font-bold text-muted-foreground">Currency</span>
+                <span className="text-sm font-bold text-muted-foreground">
+                  Currency
+                </span>
                 <span className="text-sm text-muted-foreground">
                   {account?.currency.code} ({account?.currency.symbol})
                 </span>
 
-                <span className="text-sm font-bold text-muted-foreground">Created at</span>
+                <span className="text-sm font-bold text-muted-foreground">
+                  Created at
+                </span>
                 <span className="text-sm text-muted-foreground">
-                  {account?.createdAt ? new Date(account.createdAt).toLocaleDateString() : ""}
+                  {account?.createdAt
+                    ? new Date(account.createdAt).toLocaleDateString()
+                    : ""}
                 </span>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0! shadow-none! border-b! border-border">
+          <Card className="border-0! border-b! border-border">
             <CardContent>
               <h3 className="font-bold mb-2 block">Billing details</h3>
-              <p className="text-xs">The percentages are relative to last month</p>
+              <p className="text-xs">
+                The percentages are relative to last month
+              </p>
 
               <div className="grid grid-cols-2 gap-4 mt-6">
                 <div className="flex flex-col items-center">
                   <div className="flex gap-2">
-                    <h3 className="text-xl font-bold text-green-500">{income?.toFixed(2)}</h3>
+                    <h3 className="text-xl font-bold text-green-500">
+                      {income?.toFixed(2)}
+                    </h3>
                     {!!account?.incomePercentage && (
                       <span className="grid items-center h-full rounded-md px-1.5 text-xs text-green-800 bg-green-300">
                         {account?.incomePercentage > 0 && "+"}
@@ -192,7 +241,9 @@ function RouteComponent() {
 
                 <div className="flex flex-col items-center">
                   <div className="flex gap-2">
-                    <h3 className="text-xl font-bold text-error-600">{expenses?.toFixed(2)}</h3>
+                    <h3 className="text-xl font-bold text-error-600">
+                      {expenses?.toFixed(2)}
+                    </h3>
                     {!!account?.expensePercentage && (
                       <span className="grid items-center h-full rounded-md px-1.5 text-xs text-error-300 bg-error-700">
                         {account?.expensePercentage > 0 && "+"}
@@ -225,13 +276,16 @@ function RouteComponent() {
         </div>
 
         <div>
-          <SelectedCardDetails card={{ name: "test" }} />
+          <SelectedCardDetails />
           <SelectedCardTransactions />
         </div>
       </div>
 
       {openAccountsDialog && (
-        <div onClick={() => setOpenAccountsDialog(false)} className="absolute inset-0 z-5 bg-black/50"></div>
+        <div
+          onClick={() => setOpenAccountsDialog(false)}
+          className="absolute inset-0 z-5 bg-black/50"
+        ></div>
       )}
 
       {openDeleteAccountModal && account && (

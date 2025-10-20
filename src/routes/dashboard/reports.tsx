@@ -34,7 +34,6 @@ function RouteComponent() {
     },
   } satisfies ChartConfig;
 
-  console.log(chartData);
   return (
     <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
       <ChartContainer

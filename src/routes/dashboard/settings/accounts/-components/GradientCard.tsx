@@ -27,8 +27,7 @@ export default function GradientCard({
       const res = await deleteUserGradientAsync(id);
       return res.status;
     },
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: () => {
       onDelete?.(card.id);
       toast.success("Gradient deleted successfully");
     },

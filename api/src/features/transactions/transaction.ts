@@ -18,6 +18,7 @@ type TransactionAttributes = {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
+  fixed?: boolean;
 };
 
 type TransactionCreationAttributes = Optional<
@@ -42,6 +43,7 @@ export class Transaction extends Model<
   declare amount: number;
   declare description: string | null;
   declare transactionDate: Date;
+  declare fixed?: boolean;
   declare user: NonAttribute<User>;
   declare account: NonAttribute<Account>;
   declare destinationAccount: NonAttribute<Account>;
@@ -115,6 +117,11 @@ export class Transaction extends Model<
           },
           onUpdate: "CASCADE",
           onDelete: "CASCADE",
+        },
+        fixed: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
         },
         transactionTypeId: {
           type: DataTypes.INTEGER,

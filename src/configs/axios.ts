@@ -57,7 +57,13 @@ export function createEnhancedAxios(
             });
             break;
           case 401:
+            toast.getToasts().forEach((t) => {
+              if (t.id === "unauthorized") {
+                return;
+              }
+            });
             toast.error("Unauthorized", {
+              id: "unauthorized",
               description: "Session expired. Redirecting to login...",
               duration: 5000,
             });

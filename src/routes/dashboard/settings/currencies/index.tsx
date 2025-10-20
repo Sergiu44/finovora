@@ -12,7 +12,6 @@ function RouteComponent() {
   useEffect(() => {
     const handleKeyDown = (ev: KeyboardEvent) => {
       if (Number(ev.key) >= 0 && Number(ev.key) <= 9) {
-        console.log(ev.key, value);
         setValue((prevState) =>
           prevState === "0" ? ev.key : prevState + ev.key
         );
