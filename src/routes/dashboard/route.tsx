@@ -21,6 +21,7 @@ import { PlusIcon, TypeIcon, Wallet2Icon } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import AddTransactionForCurrentAccount from "./-components/AddTransactionForCurrentAccount";
 import { useUserDetails } from "../../context/UserDetails";
+import SwitchTheme from "../../components/reusable/switch/SwitchTheme";
 
 export const Route = createFileRoute("/dashboard")({
   component: RouteComponent,
@@ -164,40 +165,45 @@ function RouteComponent() {
           <div className="flex items-center justify-between">
             <span className="font-bold">{moment().format("DD MMM YYYY")}</span>
 
-            <div className="flex items-start relative gap-2">
-              <BellAlertIcon className="icon icon-active" />
+            <div className="flex relative gap-2 items-center">
+              <BellAlertIcon className="h-4 w-4" />
 
-              {true && (
-                <div className="mt-auto relative">
-                  <div
-                    onClick={() => setMenuOpen(!menuOpen)}
-                    className="hover:bg-bg-main-light cursor-pointer px-4 py-2 rounded-md  flex items-center justify-between"
-                  >
-                    <p className="text-sm">{user?.email}</p>
-                    <ChevronUpDownIcon className="icon" />
+              {user && (
+                <>
+                  <SwitchTheme />
+                  <div className="mt-auto relative">
+                    <div
+                      onClick={() => setMenuOpen(!menuOpen)}
+                      className="hover:bg-bg-main-light cursor-pointer px-4 py-2 rounded-md  flex items-center justify-between"
+                    >
+                      <p className="text-sm">{user?.email}</p>
+                      <ChevronUpDownIcon className="icon" />
+                    </div>
+
+                    <AnimateChangeInHeight className="mb-2 absolute inset-x-0">
+                      {menuOpen && (
+                        <div className="py-2 rounded-md bg-muted">
+                          <div className="flex px-4 hover:bg-white hover:text-black text-muted-foreground mx-2 rounded-md cursor-pointer py-2 items-center justify-between">
+                            <div>My Profile</div>
+                            <ArrowLeftStartOnRectangleIcon className="h-5" />
+                          </div>
+                          <div className="flex px-4 hover:bg-white hover:text-black text-muted-foreground mx-2 rounded-md cursor-pointer py-2 items-center justify-between">
+                            <div>Settings</div>
+                            <ArrowLeftStartOnRectangleIcon className="h-5" />
+                          </div>
+
+                          <div className="h-[1px] bg-border w-full my-2" />
+                          <div className="flex px-4 hover:bg-white hover:text-black text-muted-foreground mx-2 rounded-md cursor-pointer  py-2 items-center justify-between">
+                            <div onClick={async () => handleLogout()}>
+                              Logout
+                            </div>
+                            <ArrowLeftStartOnRectangleIcon className="h-5" />
+                          </div>
+                        </div>
+                      )}
+                    </AnimateChangeInHeight>
                   </div>
-
-                  <AnimateChangeInHeight className="mb-2 absolute inset-x-0">
-                    {menuOpen && (
-                      <div className="py-2 rounded-md bg-muted">
-                        <div className="flex px-4 hover:bg-white hover:text-black text-muted-foreground mx-2 rounded-md cursor-pointer py-2 items-center justify-between">
-                          <div>My Profile</div>
-                          <ArrowLeftStartOnRectangleIcon className="h-5" />
-                        </div>
-                        <div className="flex px-4 hover:bg-white hover:text-black text-muted-foreground mx-2 rounded-md cursor-pointer py-2 items-center justify-between">
-                          <div>Settings</div>
-                          <ArrowLeftStartOnRectangleIcon className="h-5" />
-                        </div>
-
-                        <div className="h-[1px] bg-border w-full my-2" />
-                        <div className="flex px-4 hover:bg-white hover:text-black text-muted-foreground mx-2 rounded-md cursor-pointer  py-2 items-center justify-between">
-                          <div onClick={async () => handleLogout()}>Logout</div>
-                          <ArrowLeftStartOnRectangleIcon className="h-5" />
-                        </div>
-                      </div>
-                    )}
-                  </AnimateChangeInHeight>
-                </div>
+                </>
               )}
             </div>
           </div>

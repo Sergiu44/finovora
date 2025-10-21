@@ -65,7 +65,7 @@ export default function CachedSelect({
         disabled={isLoading}
       >
         <SelectTrigger
-          className={`${className} mt-2 data-[placeholder]:text-muted-foreground! text-black ${errorMessage && "border-error! focus-visible:ring-error-600! focus-visible:border-error!"}`}
+          className={`h-[40px]! ${className} mt-2 data-[placeholder]:text-muted-foreground! text-black ${errorMessage && "border-error! focus-visible:ring-error-600! focus-visible:border-error!"}`}
         >
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>

@@ -2,7 +2,7 @@ import React, { type Ref } from "react";
 import { Input } from "../../ui/input.tsx";
 import ErrorMessage from "../errorMessages/errorMessage.tsx";
 
-const DEFAULT_CLASSNAME = "dark:text-white text-black";
+const DEFAULT_CLASSNAME = "dark:text-white text-black flex-1 h-[40px]!";
 
 interface InputProps extends React.ComponentProps<"input"> {
   leftElement?: React.ReactNode;
