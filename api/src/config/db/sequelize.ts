@@ -14,6 +14,7 @@ import { DefaultGradient } from "../../features/nomenclatures/defaultGradients/d
 import { UserGradient } from "../../features/users/userGradients/userGradient";
 import { HistoryCurrencyRate } from "../../features/historyCurrencyRates/historyCurrencyRate";
 import { UserHistoryCurrencyRate } from "../../features/historyCurrencyRates/user/userHistoryCurrencyRate";
+import { BudgetExpense } from "../../features/categories/categoryBudget/categoryBudget";
 
 export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
   private static instance: SequelizeDatabaseWrapper | null = null;
@@ -24,16 +25,22 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
     this.environment = environment;
   }
 
-  public static getInstance(environment: string = "development"): SequelizeDatabaseWrapper {
+  public static getInstance(
+    environment: string = "development"
+  ): SequelizeDatabaseWrapper {
     if (!SequelizeDatabaseWrapper.instance) {
-      SequelizeDatabaseWrapper.instance = new SequelizeDatabaseWrapper(environment);
+      SequelizeDatabaseWrapper.instance = new SequelizeDatabaseWrapper(
+        environment
+      );
     }
     return SequelizeDatabaseWrapper.instance;
   }
 
   public getDatabaseInstance(): SequelizeType {
     if (!SequelizeDatabaseWrapper.dbInstance) {
-      throw new Error("Database not initialized. Call connectToDatabase first.");
+      throw new Error(
+        "Database not initialized. Call connectToDatabase first."
+      );
     }
     return SequelizeDatabaseWrapper.dbInstance;
   }
@@ -46,10 +53,15 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
         await sequelize.authenticate();
         SequelizeDatabaseWrapper.dbInstance = sequelize;
         this.initializeModels();
-        console.log(`Database connection established successfully for ${this.environment} environment.`);
+        console.log(
+          `Database connection established successfully for ${this.environment} environment.`
+        );
       }
     } catch (err) {
-      console.error(`Error initializing the API server for ${this.environment} environment:`, err);
+      console.error(
+        `Error initializing the API server for ${this.environment} environment:`,
+        err
+      );
       throw err;
     }
   };
@@ -77,6 +89,7 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
             UserGradient,
             HistoryCurrencyRate,
             UserHistoryCurrencyRate,
+            BudgetExpense,
           ],
         });
       default:
@@ -104,6 +117,7 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
     UserGradient.configInit(dbInstance);
     HistoryCurrencyRate.configInit(dbInstance);
     UserHistoryCurrencyRate.configInit(dbInstance);
+    BudgetExpense.configInit(dbInstance);
 
     Account.associate();
     AccountType.associate();
@@ -113,5 +127,6 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
     UserGradient.associate();
     UserHistoryCurrencyRate.associate();
     HistoryCurrencyRate.associate();
+    BudgetExpense.associate();
   }
 }

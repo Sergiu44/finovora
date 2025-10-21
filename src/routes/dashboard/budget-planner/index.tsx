@@ -12,26 +12,11 @@ import { Button } from "../../../components/ui/button";
 import { ArrowRightIcon, PlusIcon } from "@heroicons/react/16/solid";
 import { useMemo, useState } from "react";
 import BaseWrapper from "../../../components/reusable/layouts/BaseWrapper";
-
-// Sample data - replace with actual API data
-const mockBudgetData = [
-  { category: "Food & Dining", budget: 500, spent: 350, color: "#22c55e" },
-  { category: "Transportation", budget: 300, spent: 280, color: "#3b82f6" },
-  { category: "Entertainment", budget: 200, spent: 150, color: "#f59e0b" },
-  { category: "Shopping", budget: 400, spent: 420, color: "#ef4444" },
-  { category: "Utilities", budget: 250, spent: 230, color: "#8b5cf6" },
-];
-
-const chartConfig = {
-  budget: {
-    label: "Budget Amount",
-    color: "var(--primary)",
-  },
-  spent: {
-    label: "Spent Amount",
-    color: "var(--muted)",
-  },
-};
+import { useQuery } from "@tanstack/react-query";
+import {
+  getBudgetOverview,
+  type BudgetOverviewData,
+} from "../../../utils/actions/categories";
 
 export const Route = createFileRoute("/dashboard/budget-planner/")({
   component: RouteComponent,
@@ -41,12 +26,16 @@ function RouteComponent() {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  const { data: budgetData, isLoading } = useQuery({
+    queryKey: ["budget-overview"],
+    queryFn: getBudgetOverview,
+  });
+
   const CustomBar = (props: any) => {
     const { fill, x, y, width, height, payload, opacity } = props;
     const remaining = payload.remaining;
     const radius =
       remaining <= 0 ? [12, 12, 12, 12] : props.radius || [0, 0, 0, 0];
-    console.log("Bar data:", { name: payload.name, remaining, radius });
 
     const [topLeft, topRight, bottomRight, bottomLeft] = radius;
 
@@ -71,15 +60,22 @@ function RouteComponent() {
   };
 
   const formattedData = useMemo(() => {
-    return mockBudgetData.map((item) => ({
-      name: item.category,
-      spent: item.spent,
-      budget: item.budget,
-      remaining: item.budget - item.spent < 0 ? 0 : item.budget - item.spent,
-      percentage: Math.round((item.spent / item.budget) * 100),
-      color: item.color,
+    if (!budgetData) return [];
+
+    return budgetData.map((item) => ({
+      name: item.categoryName,
+      spent: item.actualSpending,
+      budget: item.budgetAmount,
+      remaining: item.remaining,
+      percentage: item.percentage,
+      color:
+        item.percentage > 100
+          ? "#ef4444"
+          : item.percentage > 80
+            ? "#f59e0b"
+            : "#22c55e",
     }));
-  }, []);
+  }, [budgetData]);
 
   const chartConfig = {
     consumed: {
@@ -91,6 +87,66 @@ function RouteComponent() {
       color: "var(--green-600)",
     },
   };
+
+  if (isLoading) {
+    return (
+      <BaseWrapper>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-muted-foreground">Loading budget data...</div>
+        </div>
+      </BaseWrapper>
+    );
+  }
+
+  if (!budgetData || budgetData.length === 0) {
+    return (
+      <BaseWrapper>
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold">Budget planner</h1>
+              <p className="text-sm text-muted-foreground">
+                Manage and track your spending limits
+              </p>
+            </div>
+            <Button
+              className="flex items-center gap-2"
+              type="button"
+              variant="outline"
+              onClick={() =>
+                router.navigate({ to: "/dashboard/budget-planner/create" })
+              }
+            >
+              Create Budget
+              <ArrowRightIcon className="w-4 h-4" />
+            </Button>
+          </div>
+
+          <Card>
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <div className="text-center space-y-4">
+                <h3 className="text-lg font-semibold">
+                  No budgets created yet
+                </h3>
+                <p className="text-muted-foreground">
+                  Create your first budget to start tracking your spending
+                </p>
+                <Button
+                  onClick={() =>
+                    router.navigate({ to: "/dashboard/budget-planner/create" })
+                  }
+                  className="flex items-center gap-2"
+                >
+                  <PlusIcon className="w-4 h-4" />
+                  Create Budget
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </BaseWrapper>
+    );
+  }
 
   return (
     <BaseWrapper>
@@ -110,7 +166,7 @@ function RouteComponent() {
               router.navigate({ to: "/dashboard/budget-planner/create" })
             }
           >
-            Budget Setting
+            Create Budget
             <ArrowRightIcon className="w-4 h-4" />
           </Button>
         </div>
@@ -167,23 +223,29 @@ function RouteComponent() {
                       cursor={false}
                       content={({ active, payload }) => {
                         if (!active || !payload) return null;
-                        const total =
-                          (payload[0]?.value || 0) + (payload[1]?.value || 0);
+                        const spent = payload[0]?.value || 0;
+                        const remaining = payload[1]?.value || 0;
+                        const total = spent + remaining;
+                        const percentage = Math.round((spent / total) * 100);
+
                         return (
-                          <div className="rounded-lg border bg-background p-2 shadow-sm">
+                          <div className="rounded-lg border bg-background p-3 shadow-sm">
                             <div className="grid gap-2">
                               <div className="flex items-center justify-between gap-2">
                                 <span className="font-semibold">
                                   {payload[0]?.payload.name}
                                 </span>
+                                <span className="text-sm text-muted-foreground">
+                                  {percentage}% used
+                                </span>
                               </div>
                               <div className="grid gap-1">
                                 <div className="flex items-center justify-between gap-2">
                                   <span className="text-error-600 font-medium">
-                                    Consumed:
+                                    Spent:
                                   </span>
                                   <span className="font-medium text-error-600">
-                                    ${payload[0]?.value}
+                                    ${spent.toFixed(2)}
                                   </span>
                                 </div>
                                 <div className="flex items-center justify-between gap-2">
@@ -191,14 +253,16 @@ function RouteComponent() {
                                     Remaining:
                                   </span>
                                   <span className="font-medium text-green-600">
-                                    ${payload[1]?.value}
+                                    ${remaining.toFixed(2)}
                                   </span>
                                 </div>
                                 <div className="flex items-center justify-between gap-2 pt-1 border-t">
                                   <span className="text-muted-foreground">
                                     Total Budget:
                                   </span>
-                                  <span className="font-medium">${total}</span>
+                                  <span className="font-medium">
+                                    ${total.toFixed(2)}
+                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -236,7 +300,8 @@ function RouteComponent() {
                       <div>
                         <p className="font-medium">{category.name}</p>
                         <p className="text-sm text-muted-foreground">
-                          ${category.spent} of ${category.budget}
+                          ${category.spent.toFixed(2)} of $
+                          {category.budget.toFixed(2)}
                         </p>
                       </div>
                     </div>
@@ -249,13 +314,13 @@ function RouteComponent() {
                       </div>
                       <div
                         className={`text-sm font-medium ${
-                          category.remaining < 0
+                          category.remaining <= 0
                             ? "text-error-600"
                             : "text-green-600"
                         }`}
                       >
-                        ${Math.abs(category.remaining)}{" "}
-                        {category.remaining < 0 ? "over" : "left"}
+                        ${Math.abs(category.remaining).toFixed(2)}{" "}
+                        {category.remaining <= 0 ? "over" : "left"}
                       </div>
                     </div>
                   </div>

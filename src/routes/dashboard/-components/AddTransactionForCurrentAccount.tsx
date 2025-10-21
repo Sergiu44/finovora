@@ -158,7 +158,7 @@ export default function AddTransactionForCurrentAccount(
           </div>
 
           {/* Transaction Type - Top Row */}
-          <div className="grid grid-cols-[35%_auto] mb-2">
+          <div className="grid grid-cols-[40%_auto] mb-2">
             <div></div>
 
             {/* Grid Layout for Form Fields */}

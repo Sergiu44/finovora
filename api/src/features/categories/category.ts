@@ -2,6 +2,7 @@ import { DataTypes, NonAttribute, Sequelize } from "sequelize";
 import { Model, Table } from "sequelize-typescript";
 import User from "../users/user";
 import { TransactionType } from "../transactions/transactionTypes/transactionType";
+import { BudgetExpense } from "./categoryBudget/categoryBudget";
 
 type CategoryAttributes = {
   id: number;
@@ -54,6 +55,10 @@ export class Category extends Model<
     Category.belongsTo(TransactionType, {
       foreignKey: "transactionTypeId",
       as: "transactionType",
+    });
+    Category.hasOne(BudgetExpense, {
+      foreignKey: "categoryId",
+      as: "budgetExpense",
     });
   }
 
