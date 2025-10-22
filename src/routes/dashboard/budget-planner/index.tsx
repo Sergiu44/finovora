@@ -6,17 +6,18 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../components/ui/card";
-import { ChartContainer, ChartTooltip } from "../../../components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis } from "recharts";
+import {
+  ChartContainer,
+  ChartTooltip,
+  type ChartConfig,
+} from "../../../components/ui/chart";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { Button } from "../../../components/ui/button";
 import { ArrowRightIcon, PlusIcon } from "@heroicons/react/16/solid";
 import { useMemo, useState } from "react";
 import BaseWrapper from "../../../components/reusable/layouts/BaseWrapper";
 import { useQuery } from "@tanstack/react-query";
-import {
-  getBudgetOverview,
-  type BudgetOverviewData,
-} from "../../../utils/actions/categories";
+import { getBudgetOverview } from "../../../utils/actions/categories";
 
 export const Route = createFileRoute("/dashboard/budget-planner/")({
   component: RouteComponent,
@@ -32,10 +33,24 @@ function RouteComponent() {
   });
 
   const CustomBar = (props: any) => {
-    const { fill, x, y, width, height, payload, opacity } = props;
-    const remaining = payload.remaining;
-    const radius =
-      remaining <= 0 ? [12, 12, 12, 12] : props.radius || [0, 0, 0, 0];
+    const { fill, x, y, width, height, payload, opacity, dataKey } = props;
+
+    // Determine border radius based on spending scenario
+    let radius = [0, 0, 0, 0];
+
+    if (dataKey === "remaining") {
+      // Remaining budget - rounded bottom corners
+      radius = payload.spent > 0 ? [0, 0, 0, 0] : [12, 12, 0, 0];
+    } else if (dataKey === "spent") {
+      // Spent amount - no rounding if there's overspent, rounded top if no overspent
+      radius =
+        payload.overspent > 0 || payload.spent === 0
+          ? [0, 0, 0, 0]
+          : [12, 12, 0, 0];
+    } else if (dataKey === "overspent") {
+      // Overspent amount - rounded top corners
+      radius = payload.overspent > 0 ? [12, 12, 0, 0] : [0, 0, 0, 0];
+    }
 
     const [topLeft, topRight, bottomRight, bottomLeft] = radius;
 
@@ -59,34 +74,36 @@ function RouteComponent() {
     );
   };
 
+  const calculateBarchartWidth = (numberOfItem = 9) => {
+    if (numberOfItem > 9) return numberOfItem * 100;
+    return "100%";
+  };
+
   const formattedData = useMemo(() => {
     if (!budgetData) return [];
 
-    return budgetData.map((item) => ({
-      name: item.categoryName,
-      spent: item.actualSpending,
-      budget: item.budgetAmount,
-      remaining: item.remaining,
-      percentage: item.percentage,
-      color:
-        item.percentage > 100
-          ? "#ef4444"
-          : item.percentage > 80
-            ? "#f59e0b"
-            : "#22c55e",
-    }));
-  }, [budgetData]);
+    return budgetData.map((item) => {
+      const spentAmount = Math.abs(item.actualSpending);
+      const budgetAmount = item.budgetAmount;
+      const remaining = Math.max(0, budgetAmount - spentAmount);
+      const overspent = Math.max(0, spentAmount - budgetAmount);
 
-  const chartConfig = {
-    consumed: {
-      label: "Consumed",
-      color: "var(--error-600)",
-    },
-    remaining: {
-      label: "Remaining",
-      color: "var(--green-600)",
-    },
-  };
+      return {
+        name: item.categoryName,
+        spent: Math.min(spentAmount, budgetAmount), // Only show spent up to budget limit
+        budget: budgetAmount,
+        remaining: remaining,
+        overspent: overspent,
+        percentage: item.percentage,
+        color:
+          item.percentage > 100
+            ? "#ef4444"
+            : item.percentage > 80
+              ? "#f59e0b"
+              : "#22c55e",
+      };
+    });
+  }, [budgetData]);
 
   if (isLoading) {
     return (
@@ -182,51 +199,54 @@ function RouteComponent() {
             </CardHeader>
             <CardContent>
               <div className="w-full">
-                <ChartContainer config={chartConfig}>
-                  <BarChart
-                    data={formattedData}
-                    margin={{ top: 0, right: 0, bottom: 0, left: 100 }}
-                    barGap={0}
-                  >
+                <ResponsiveContainer height={500} className="overflow-x-scroll">
+                  <BarChart barGap={0} barCategoryGap={0} data={formattedData}>
                     <XAxis
                       type="category"
                       dataKey="name"
                       tickLine={false}
                       axisLine={false}
-                      interval={0}
                       tick={{ fontSize: 12 }}
-                      height={50}
-                      angle={-45}
-                      textAnchor="end"
+                      textAnchor="middle"
                     />
                     <YAxis type="number" tickLine={false} axisLine={false} />
                     <Bar
                       dataKey="remaining"
-                      fill="black"
+                      fill="#10b981"
                       stackId="a"
                       barSize={80}
-                      shape={(props) => (
-                        <CustomBar {...props} radius={[0, 0, 12, 12]} />
-                      )}
+                      opacity={0.4}
+                      shape={(props) => <CustomBar {...props} />}
                     />
                     <Bar
                       dataKey="spent"
-                      fill="black"
+                      fill="#3b82f6"
                       stackId="a"
                       barSize={80}
-                      opacity={0.15}
-                      shape={(props) => (
-                        <CustomBar {...props} radius={[12, 12, 0, 0]} />
-                      )}
+                      shape={(props) => <CustomBar {...props} />}
+                    />
+                    <Bar
+                      dataKey="overspent"
+                      fill="#ef4444"
+                      stackId="a"
+                      barSize={80}
+                      shape={(props) => <CustomBar {...props} />}
                     />
                     <ChartTooltip
                       cursor={false}
                       content={({ active, payload }) => {
                         if (!active || !payload) return null;
-                        const spent = payload[0]?.value || 0;
-                        const remaining = payload[1]?.value || 0;
-                        const total = spent + remaining;
-                        const percentage = Math.round((spent / total) * 100);
+                        const remaining: number =
+                          Number(payload[0]?.value) || 0;
+                        const spent: number = Number(payload[1]?.value) || 0;
+                        const overspent: number =
+                          Number(payload[2]?.value) || 0;
+                        const totalBudget =
+                          remaining === 0 ? spent : spent + remaining; // Total budget is spent + overspent
+                        const totalSpent = spent + overspent;
+                        const percentage = Math.round(
+                          (totalSpent / totalBudget) * 100
+                        );
 
                         return (
                           <div className="rounded-lg border bg-background p-3 shadow-sm">
@@ -241,18 +261,46 @@ function RouteComponent() {
                               </div>
                               <div className="grid gap-1">
                                 <div className="flex items-center justify-between gap-2">
-                                  <span className="text-error-600 font-medium">
+                                  <span
+                                    className="font-medium"
+                                    style={{ color: "#3b82f6" }}
+                                  >
                                     Spent:
                                   </span>
-                                  <span className="font-medium text-error-600">
+                                  <span
+                                    className="font-medium"
+                                    style={{ color: "#3b82f6" }}
+                                  >
                                     ${spent.toFixed(2)}
                                   </span>
                                 </div>
+                                {overspent > 0 && (
+                                  <div className="flex items-center justify-between gap-2">
+                                    <span
+                                      className="font-medium"
+                                      style={{ color: "#ef4444" }}
+                                    >
+                                      Overspent:
+                                    </span>
+                                    <span
+                                      className="font-medium"
+                                      style={{ color: "#ef4444" }}
+                                    >
+                                      ${overspent.toFixed(2)}
+                                    </span>
+                                  </div>
+                                )}
                                 <div className="flex items-center justify-between gap-2">
-                                  <span className="text-green-600 font-medium">
+                                  <span
+                                    className="font-medium"
+                                    style={{ color: "#10b981" }}
+                                  >
                                     Remaining:
                                   </span>
-                                  <span className="font-medium text-green-600">
+                                  <span
+                                    className="font-medium"
+                                    style={{ color: "#10b981" }}
+                                  >
                                     ${remaining.toFixed(2)}
                                   </span>
                                 </div>
@@ -261,7 +309,7 @@ function RouteComponent() {
                                     Total Budget:
                                   </span>
                                   <span className="font-medium">
-                                    ${total.toFixed(2)}
+                                    ${totalBudget.toFixed(2)}
                                   </span>
                                 </div>
                               </div>
@@ -271,7 +319,7 @@ function RouteComponent() {
                       }}
                     />
                   </BarChart>
-                </ChartContainer>
+                </ResponsiveContainer>
               </div>
             </CardContent>
           </Card>
@@ -300,8 +348,13 @@ function RouteComponent() {
                       <div>
                         <p className="font-medium">{category.name}</p>
                         <p className="text-sm text-muted-foreground">
-                          ${category.spent.toFixed(2)} of $
-                          {category.budget.toFixed(2)}
+                          ${(category.spent + category.overspent).toFixed(2)} of
+                          ${category.budget.toFixed(2)}
+                          {category.overspent > 0 && (
+                            <span className="text-error-600 ml-1">
+                              (+${category.overspent.toFixed(2)} over)
+                            </span>
+                          )}
                         </p>
                       </div>
                     </div>
@@ -314,13 +367,18 @@ function RouteComponent() {
                       </div>
                       <div
                         className={`text-sm font-medium ${
-                          category.remaining <= 0
+                          category.overspent > 0
                             ? "text-error-600"
-                            : "text-green-600"
+                            : category.remaining <= 0
+                              ? "text-error-600"
+                              : "text-green-600"
                         }`}
                       >
-                        ${Math.abs(category.remaining).toFixed(2)}{" "}
-                        {category.remaining <= 0 ? "over" : "left"}
+                        {category.overspent > 0 ? (
+                          <>${category.overspent.toFixed(2)} over budget</>
+                        ) : (
+                          <>${category.remaining.toFixed(2)} left</>
+                        )}
                       </div>
                     </div>
                   </div>

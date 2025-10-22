@@ -37,6 +37,7 @@ export class Category extends Model<
   declare parentCategory?: NonAttribute<Category>;
   declare transactionTypeId: number;
   declare transactionType?: NonAttribute<TransactionType>;
+  declare budgetExpense?: NonAttribute<BudgetExpense>;
 
   static associate() {
     Category.belongsTo(User, {

@@ -80,8 +80,8 @@ function RouteComponent() {
     if (categoriesData?.categories && categoryBudgets.length === 0) {
       const initialBudgets = categoriesData.categories.map((category: any) => ({
         id: category.id,
-        name: category.name,
-        budgetAmount: 0,
+        name: category.value, // Use 'value' field which contains the category name
+        budgetAmount: category.budgetAmount || 0, // Use existing budget amount if available
       }));
       setCategoryBudgets(initialBudgets);
     }
@@ -174,15 +174,13 @@ function RouteComponent() {
   };
 
   const handleSaveBudgets = () => {
-    const budgetsToSave = categoryBudgets
-      .filter((cat) => cat.budgetAmount > 0)
-      .map((cat) => ({
-        categoryId: cat.id,
-        budgetAmount: cat.budgetAmount,
-        currencyId: 1,
-        startDate: new Date(),
-        endDate: null,
-      }));
+    const budgetsToSave = categoryBudgets.map((cat) => ({
+      categoryId: cat.id,
+      budgetAmount: cat.budgetAmount,
+      currencyId: 1,
+      startDate: new Date(),
+      endDate: null,
+    }));
 
     console.log("Saving budgets:", budgetsToSave);
     mutate(
@@ -197,13 +195,15 @@ function RouteComponent() {
       {
         onSuccess: () => {
           toast.success("Budgets saved successfully");
+          // Navigate back to budget planner after successful save
+          router.navigate({ to: "/dashboard/budget-planner" });
         },
         onError: (error) => {
           console.error("Error saving budgets", error);
+          toast.error("Failed to save budgets. Please try again.");
         },
       }
     );
-    // Here you would call your API to save the budgets
   };
 
   return (
@@ -220,6 +220,11 @@ function RouteComponent() {
           </div>
           <p className="text-sm text-muted-foreground ml-7">
             Set your budget limits for each category (increments of $50)
+            {categoryBudgets.some((cat) => cat.budgetAmount > 0) && (
+              <span className="ml-2 text-green-600 font-medium">
+                • Existing budgets loaded
+              </span>
+            )}
           </p>
         </div>
 
@@ -293,7 +298,14 @@ function RouteComponent() {
                   <div key={category.id} className="space-y-3">
                     {/* Category Header */}
                     <div className="flex justify-between items-center">
-                      <span className="font-medium">{category.name}</span>
+                      <span className="font-medium flex items-center gap-2">
+                        {category.name}
+                        {category.budgetAmount > 0 && (
+                          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                            Existing
+                          </span>
+                        )}
+                      </span>
                       <div className="flex items-center gap-3">
                         <span className="text-sm font-mono text-muted-foreground">
                           ${category.budgetAmount.toFixed(2)}
@@ -368,24 +380,39 @@ function RouteComponent() {
         </Card>
 
         {/* Action Buttons */}
-        <div className="flex gap-3 justify-end">
+        <div className="flex gap-3 justify-between">
           <Button
             variant="outline"
-            onClick={() => router.navigate({ to: "/dashboard/budget-planner" })}
+            onClick={() => {
+              setCategoryBudgets((prev) =>
+                prev.map((cat) => ({ ...cat, budgetAmount: 0 }))
+              );
+            }}
+            disabled={totalBudget === 0}
           >
-            Cancel
+            Reset All
           </Button>
-          <Button
-            onClick={handleSaveBudgets}
-            disabled={isOverBudget || totalBudget === 0}
-            className="min-w-[120px]"
-          >
-            {isPending ? (
-              <Loader2Icon className="w-4 h-4 animate-spin" />
-            ) : (
-              "Save Budgets"
-            )}
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={() =>
+                router.navigate({ to: "/dashboard/budget-planner" })
+              }
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveBudgets}
+              disabled={isOverBudget || totalBudget === 0}
+              className="min-w-[120px]"
+            >
+              {isPending ? (
+                <Loader2Icon className="w-4 h-4 animate-spin" />
+              ) : (
+                "Save Budgets"
+              )}
+            </Button>
+          </div>
         </div>
       </div>
     </BaseWrapper>

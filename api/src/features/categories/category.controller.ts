@@ -135,22 +135,73 @@ export const getCategoriesWithBudgetAsync = catchErrors(
       attributes: ["id", "name"],
     });
     return res.status(200).json({
-      categories: categories.map((c) => ({ id: c.id, value: c.name })),
+      categories: categories.map((c) => ({
+        id: c.id,
+        value: c.name,
+        budgetAmount:
+          parseFloat(c.budgetExpense?.budgetAmount?.toString() || "0") || 0,
+        currencyId: c.budgetExpense?.currencyId || 1,
+        startDate: c.budgetExpense?.startDate || new Date(),
+        endDate: c.budgetExpense?.endDate || null,
+      })),
       totalIncome,
     });
   }
 );
-
 export const createBudgetPlannerAsync = catchErrors(
   async (req: Request, res: Response) => {
     const categoriesBudgets = req.body;
-    const budgetPlanner = await BudgetExpense.bulkCreate(
-      categoriesBudgets.map((cb: object) => ({
-        ...cb,
-        userId: req.userId,
-      }))
+    const userId = req.userId;
+
+    // Process each budget - update if exists, create if not
+    const results = await Promise.all(
+      categoriesBudgets.map(async (cb: any) => {
+        const budgetData = {
+          ...cb,
+          userId,
+        };
+
+        // Check if budget already exists for this category
+        const existingBudget = await BudgetExpense.findOne({
+          where: {
+            userId,
+            categoryId: cb.categoryId,
+            startDate: {
+              [Op.lte]: new Date(), // Current or past start date
+            },
+            endDate: {
+              [Op.or]: [{ [Op.is]: null }, { [Op.gte]: new Date() }], // No end date or future end date
+            },
+          },
+        });
+
+        if (existingBudget) {
+          if (cb.budgetAmount === 0) {
+            // Delete budget if amount is 0
+            await existingBudget.destroy();
+            return null;
+          } else {
+            // Update existing budget
+            await existingBudget.update({
+              budgetAmount: cb.budgetAmount,
+              currencyId: cb.currencyId,
+              updatedAt: new Date(),
+            });
+            return existingBudget;
+          }
+        } else {
+          if (cb.budgetAmount === 0) {
+            // Don't create budget if amount is 0
+            return null;
+          } else {
+            // Create new budget
+            return await BudgetExpense.create(budgetData);
+          }
+        }
+      })
     );
-    return res.status(201).json(budgetPlanner);
+
+    return res.status(201).json(results.filter((result) => result !== null));
   }
 );
 

@@ -88,7 +88,7 @@ function RouteComponent() {
           <span>No categories found</span>
         )}
       </BaseWrapper>
-      <div className="sticky bottom-0 py-6 px-12 inset-x-0 border-t border-sidebar-border inset-shadow-2xs">
+      <div className="bg-white sticky bottom-0 py-6 px-12 inset-x-0 border-t border-sidebar-border inset-shadow-2xs">
         <Button
           variant="destructive"
           onClick={() => {
