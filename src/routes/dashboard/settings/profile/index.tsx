@@ -99,9 +99,9 @@ function RouteComponent() {
 
       <Tabs defaultValue="personal" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="personal">Personal Info</TabsTrigger>
-          <TabsTrigger value="account">Account Details</TabsTrigger>
-          <TabsTrigger value="preferences">Preferences</TabsTrigger>
+          <TabsTrigger className="hover:bg-gray-100" value="personal">Personal Info</TabsTrigger>
+          <TabsTrigger className="hover:bg-gray-100" value="account">Account Details</TabsTrigger>
+          <TabsTrigger className="hover:bg-gray-100" value="preferences">Preferences</TabsTrigger>
         </TabsList>
 
         <TabsContent value="personal" className="space-y-6">

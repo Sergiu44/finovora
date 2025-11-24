@@ -33,7 +33,7 @@ export default function CachedSelect({
   params,
   omitIds,
 }: PropsWithChildren<ICachedSelectProps>) {
-  const [value, setValue] = useState<string | undefined>(defaultValue);
+  const [value, setValue] = useState<string | undefined>(defaultValue ? defaultValue.toString() : undefined);
   const { data, isLoading } = useQuery({
     queryKey: [`cached-select-${entityName}`, params],
     queryFn: async () => {
@@ -53,7 +53,6 @@ export default function CachedSelect({
       : data;
   }, [data, omitIds]);
 
-  console.log(value);
   return (
     <div>
       <Select
@@ -62,6 +61,7 @@ export default function CachedSelect({
           onChange(e);
         }}
         value={value}
+        defaultValue={defaultValue}
         name={name}
         disabled={isLoading}
       >

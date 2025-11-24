@@ -48,9 +48,16 @@ export async function getTransactionsForAccountAsync(
   if (endDate) params.append("endDate", endDate);
 
   const queryString = params.toString();
-  const url = `${import.meta.env.VITE_API_URL}/transactions/${accountId}${queryString ? `?${queryString}` : ""}`;
+  const url = `${import.meta.env.VITE_API_URL}/transactions/accounts/${accountId}${queryString ? `?${queryString}` : ""}`;
 
   const { data } = await createEnhancedAxios().get(url, {
+    withCredentials: true,
+  });
+  return data;
+}
+
+export async function getTransactionAsync(transactionId: number) {
+  const { data } = await createEnhancedAxios().get(`${import.meta.env.VITE_API_URL}/transactions/${transactionId}`, {
     withCredentials: true,
   });
   return data;

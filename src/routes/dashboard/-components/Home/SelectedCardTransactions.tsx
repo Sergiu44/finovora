@@ -1,62 +1,47 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardTitle } from "../../../../components/ui/card";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "@radix-ui/react-popover";
-import { format } from "date-fns";
+import { endOfMonth, format, isSameMonth, startOfMonth } from "date-fns";
 import { Button } from "../../../../components/ui/button";
 import {
   CalendarIcon,
-  ArrowUpRight,
-  ArrowDownLeft,
-  ArrowUpDown,
 } from "lucide-react";
 import { Calendar } from "../../../../components/ui/calendar";
 import type { DateRange } from "react-day-picker";
 import { useQuery } from "@tanstack/react-query";
 import { getTransactionsForAccountAsync } from "../../../../utils/actions/transactions";
 import { useUserMainAccount } from "../../../../context/UserMainAccount";
-
-interface TransactionType {
-  id: number;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface Category {
-  id: number;
-  userId: number;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  parentCategoryId: number | null;
-  transactionTypeId: number;
-}
-
-interface Transaction {
-  id: number;
-  userId: number;
-  accountId: number;
-  transactionTypeId: number;
-  categoryId: number;
-  amount: string;
-  description: string;
-  transactionDate: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  transactionType: TransactionType;
-  category?: Category;
-}
+import AccordionTransactionGroupedByDate, {
+  type TransactionsGrouped,
+} from "./AccordionTransactionGroupedByDate";
 
 export default function SelectedCardTransactions() {
   const { account } = useUserMainAccount();
-  const [date, setDate] = useState<DateRange>();
+  const currentMonthRange = useMemo<DateRange>(() => {
+    const now = new Date();
+    return {
+      from: startOfMonth(now),
+      to: endOfMonth(now),
+    };
+  }, []);
+  const [date, setDate] = useState<DateRange | undefined>(currentMonthRange);
 
-  const { data: transactions, isLoading } = useQuery({
+  const isCurrentMonthFilter =
+    !!date?.from &&
+    !!date?.to &&
+    !!currentMonthRange.from &&
+    !!currentMonthRange.to &&
+    isSameMonth(date.from, currentMonthRange.from) &&
+    isSameMonth(date.to, currentMonthRange.to);
+
+  const {
+    data: transactionsGroupedByDate,
+    isLoading,
+  } = useQuery<TransactionsGrouped>({
     queryKey: ["transactions", account?.id, date?.from, date?.to],
     queryFn: () => {
       const startDate = date?.from
@@ -68,37 +53,33 @@ export default function SelectedCardTransactions() {
   });
 
   const clearFilters = () => {
-    setDate(undefined);
+    setDate(currentMonthRange);
   };
 
-  const formatAmount = (amount: string) => {
-    const numAmount = parseFloat(amount);
-    const formattedAmount = numAmount.toLocaleString("ro-RO", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-
-    return numAmount >= 0
-      ? `+${formattedAmount} ${account?.currency.code}`
-      : `${formattedAmount} ${account?.currency.code}`;
-  };
-
-  const getTransactionIcon = (transactionType: string) => {
-    if (transactionType === "Transfer") {
-      return <ArrowUpDown className="h-4 w-4 text-gray-500" />;
+  const rangeLabel = useMemo(() => {
+    if (date?.from && date?.to) {
+      return `${format(date.from, "MMM dd")} – ${format(date.to, "MMM dd")}`;
     }
-    return transactionType === "Expense" ? (
-      <ArrowDownLeft className="h-4 w-4 text-red-500" />
-    ) : (
-      <ArrowUpRight className="h-4 w-4 text-green-500" />
-    );
-  };
+    if (currentMonthRange.from && currentMonthRange.to) {
+      return `${format(currentMonthRange.from, "MMM dd")} – ${format(
+        currentMonthRange.to,
+        "MMM dd"
+      )}`;
+    }
+    return "";
+  }, [date, currentMonthRange]);
 
   return (
-    <Card className="mt-4">
-      <CardContent>
+    <div className="space-y-2">
+      <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest px-4 py-1.5 rounded-full bg-primary/70 text-primary-foreground shadow-sm border border-primary/70">
+        <span className="inline-block size-2 rounded-full bg-primary-foreground/80"></span>
+        <span>{isCurrentMonthFilter ? "Current Month" : "Custom Range"}</span>
+        <span className="text-primary-foreground/80">{rangeLabel}</span>
+      </div>
+      <Card>
+        <CardContent>
         <CardTitle className="text-muted-foreground flex justify-between items-center">
-          <h2 className="grow-1 w-full">Transactions</h2>
+          <h2 className="grow-1 w-full text-lg font-bold">Transactions</h2>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -109,12 +90,15 @@ export default function SelectedCardTransactions() {
                 <CalendarIcon />
                 {date?.from && date?.to ? (
                   `${format(date.from, "dd/MM/yyyy")} - ${format(date.to, "dd/MM/yyyy")}`
-                ) : date?.from ? (
-                  format(date.from, "dd/MM/yyyy")
-                ) : date?.to ? (
-                  format(date.to, "dd/MM/yyyy")
                 ) : (
-                  <span>Pick a date</span>
+                  <span>
+                    {currentMonthRange.from && currentMonthRange.to
+                      ? `${format(currentMonthRange.from, "dd/MM/yyyy")} - ${format(
+                          currentMonthRange.to,
+                          "dd/MM/yyyy"
+                        )}`
+                      : "Pick a date"}
+                  </span>
                 )}
               </Button>
             </PopoverTrigger>
@@ -130,71 +114,32 @@ export default function SelectedCardTransactions() {
           </Popover>
         </CardTitle>
 
-        {date && (
-          <Button
-            variant="link"
-            onClick={clearFilters}
-            className="text-slate-500 hover:text-slate-700 cursor-pointer px-0 text-sm! flex items-center gap-1"
-          >
-            Clear filters
-          </Button>
-        )}
+        <div className="flex items-center justify-between mt-2">
+          <p className="text-sm font-semibold text-primary">
+            Viewing {isCurrentMonthFilter ? "the current month" : "a custom range"} · {rangeLabel}
+          </p>
+          {!isCurrentMonthFilter && (
+            <Button
+              variant="ghost"
+              size="xs"
+              onClick={clearFilters}
+              className="text-primary hover:text-primary/80 cursor-pointer px-2 text-xs flex items-center gap-1"
+            >
+              Reset to current month
+            </Button>
+          )}
+        </div>
 
         {isLoading ? (
           <div className="text-center py-8">
             <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mb-2"></div>
             <div className="text-muted-foreground">Loading transactions...</div>
           </div>
-        ) : transactions && transactions.length > 0 ? (
-          <div className="flex flex-col gap-3 mt-4">
-            {transactions.map((transaction: Transaction) => (
-              <div
-                key={transaction.id}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-white rounded-full border border-gray-300">
-                    {getTransactionIcon(transaction.transactionType.name)}
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-medium text-md text-gray-900">
-                      {transaction.description}
-                    </span>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      {transaction.category && (
-                        <>
-                          <span className="bg-gray-200 px-2 py-1 rounded-full text-xs">
-                            {transaction.category.name}
-                          </span>
-                          <span>•</span>
-                        </>
-                      )}
-                      <span>
-                        {format(
-                          new Date(transaction.transactionDate),
-                          "dd/MM/yyyy"
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div
-                    className={`font-semibold ${
-                      parseFloat(transaction.amount) >= 0
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {formatAmount(transaction.amount)}
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    {transaction.transactionType.name}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+        ) : transactionsGroupedByDate && Object.keys(transactionsGroupedByDate).length > 0 ? (
+          <AccordionTransactionGroupedByDate
+            groupedTransactions={transactionsGroupedByDate}
+            currencyCode={account?.currency.code}
+          />
         ) : (
           <div className="text-muted-foreground text-center py-8">
             <div className="text-gray-400 mb-2">📊</div>
@@ -206,7 +151,8 @@ export default function SelectedCardTransactions() {
             </div>
           </div>
         )}
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

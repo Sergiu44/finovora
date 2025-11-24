@@ -4,6 +4,7 @@ import { Account } from "../accounts/account";
 import User from "../users/user";
 import { TransactionType } from "./transactionTypes/transactionType";
 import { Category } from "../categories/category";
+import { Currency } from "../currencies/currency";
 
 type TransactionAttributes = {
   id: number;
@@ -12,6 +13,7 @@ type TransactionAttributes = {
   destinationAccountId?: number;
   transactionTypeId: number;
   categoryId?: number;
+  currencyId?: number;
   amount: number;
   description?: string;
   transactionDate: Date;
@@ -40,6 +42,7 @@ export class Transaction extends Model<
   declare destinationAccountId: number;
   declare transactionTypeId: number;
   declare categoryId?: number;
+  declare currencyId?: number;
   declare amount: number;
   declare description: string | null;
   declare transactionDate: Date;
@@ -49,6 +52,7 @@ export class Transaction extends Model<
   declare destinationAccount: NonAttribute<Account>;
   declare transactionType: NonAttribute<TransactionType>;
   declare category: NonAttribute<Category>;
+  declare currency: NonAttribute<Currency>;
 
   static associate() {
     Transaction.belongsTo(User, {
@@ -71,6 +75,10 @@ export class Transaction extends Model<
       foreignKey: "destinationAccountId",
       as: "destinationAccount",
     });
+    Transaction.belongsTo(Currency, {
+      foreignKey: "currencyId",
+      as: "currency",
+    })
   }
 
   public static configInit(SequelizeInstance: Sequelize) {
@@ -162,6 +170,15 @@ export class Transaction extends Model<
           allowNull: false,
           defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
           comment: "When the transaction actually occurred",
+        },
+        currencyId: {
+          type: DataTypes.BIGINT,
+          allowNull: true,
+          defaultValue: 1,
+          references: {
+            model: Currency,
+            key: "id",
+          },
         },
         createdAt: {
           type: DataTypes.DATE,

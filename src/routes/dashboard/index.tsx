@@ -17,6 +17,8 @@ import { useUserMainAccount } from "../../context/UserMainAccount";
 import ConfirmationModal from "../../components/reusable/dialogs/ConfirmationModal";
 import BaseWrapper from "../../components/reusable/layouts/BaseWrapper";
 import { TrashIcon } from "@heroicons/react/24/outline";
+import SelectedCardDetails from "./-components/Home/SelectedCardDetails";
+import SelectedCardTransactions from "./-components/Home/SelectedCardTransactions";
 
 export const Route = createFileRoute("/dashboard/")({
   component: RouteComponent,
@@ -70,9 +72,22 @@ function RouteComponent() {
       <p className="text-sm text-muted-foreground ml-2.5">
         Easy way to manage your finances
       </p>
-      <div className="grid grid-cols-[350px_1fr] gap-4 mt-4">
-        <div>
-          <div className={`rounded-xl mb-4 shadow-lg relative`}>
+
+      <Card className="border-border mt-4 py-2">
+            <CardContent className="px-2">
+              <Button
+                type="button"
+                variant="ghost-destructive"
+                className="w-full justify-start transition-none rounded-md!"
+                size="xs"
+                onClick={() => setOpenDeleteAccountModal(true)}
+              >
+                <TrashIcon /> Delete account
+              </Button>
+            </CardContent>
+          </Card>
+      <div className="grid grid-cols-[minmax(250px,350px)_1fr_1fr] gap-4 mt-4">
+          <div className={`rounded-[12px] mb-4 shadow-lg relative`}>
             <AnimatePresence mode="wait">
               {account ? (
                 <AccountPreviewCard
@@ -175,7 +190,7 @@ function RouteComponent() {
             )}
           </div>
 
-          <Card className="border border-border">
+          <Card className="border border-border pt-4 pb-0 h-[200px]">
             <CardContent>
               <h3 className="font-bold mb-2 block">Account information</h3>
 
@@ -213,8 +228,8 @@ function RouteComponent() {
             </CardContent>
           </Card>
 
-          {/* <Card className="border-0! border-b! border-border">
-            <CardContent>
+          <Card className="border border-border py-4">
+            <CardContent className="">
               <h3 className="font-bold mb-2 block">Billing details</h3>
               <p className="text-xs">
                 The percentages are relative to last month
@@ -222,12 +237,12 @@ function RouteComponent() {
 
               <div className="grid grid-cols-2 gap-4 mt-6">
                 <div className="flex flex-col items-center">
-                  <div className="flex gap-2">
+                  <div className="flex flex-col gap-2">
                     <h3 className="text-xl font-bold text-green-500">
                       {income?.toFixed(2)}
                     </h3>
                     {!!account?.incomePercentage && (
-                      <span className="grid items-center h-full rounded-md px-1.5 text-xs text-green-800 bg-green-300">
+                      <span className="grid items-center text-center h-full rounded-md px-1.5 py-2 text-xs text-green-800 bg-green-300">
                         {account?.incomePercentage > 0 && "+"}
                         {account?.incomePercentage?.toFixed(2)}%
                       </span>
@@ -252,26 +267,11 @@ function RouteComponent() {
                 </div>
               </div>
             </CardContent>
-          </Card> */}
-
-          <Card className="border-border mt-4 py-2">
-            <CardContent className="px-2">
-              <Button
-                type="button"
-                variant="ghost-destructive"
-                className="w-full justify-start transition-none rounded-md!"
-                size="xs"
-                onClick={() => setOpenDeleteAccountModal(true)}
-              >
-                <TrashIcon /> Delete account
-              </Button>
-            </CardContent>
           </Card>
-        </div>
 
-        <div>
-          {/* <SelectedCardDetails />
-          <SelectedCardTransactions /> */}
+        <div className="col-span-3">
+          {/* <SelectedCardDetails /> */}
+          <SelectedCardTransactions />
         </div>
       </div>
 

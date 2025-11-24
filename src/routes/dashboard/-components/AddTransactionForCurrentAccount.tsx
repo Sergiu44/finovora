@@ -13,28 +13,38 @@ import { useUserMainAccount } from "../../../context/UserMainAccount";
 import { useValidation } from "../../../utils/hooks/useValidation/useValidation";
 import Validator from "../../../utils/hooks/useValidation/Validator";
 import VALIDATIONS from "../../../utils/hooks/useValidation/index";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getEnumValues } from "../../../utils/arrays";
 import CustomInput from "../../../components/reusable/inputs/CustomInput";
 import {
   TransactionTypes,
   CategoryType,
 } from "../../../types/enums/TransactionTypes";
-import { createTransactionAsync } from "../../../utils/actions/transactions";
+import { createTransactionAsync, getTransactionAsync } from "../../../utils/actions/transactions";
+import moment from "moment";
 
 interface IAddTransactionForCurrentAccount {
   open: boolean;
   setOpen: (open: boolean) => void;
+  transactionId?: number;
 }
 
 export default function AddTransactionForCurrentAccount(
   props: IAddTransactionForCurrentAccount
 ) {
+  const { mutate: createTransaction } = useMutation({
+    mutationKey: ["createTransaction"],
+    mutationFn: createTransactionAsync,
+  });
+  const { data: transactionData } = useQuery({
+    queryKey: ["transaction", props.transactionId],
+    queryFn: () => getTransactionAsync(props.transactionId!),
+    enabled: !!props.transactionId,
+  });
   const { account } = useUserMainAccount();
   const [transactionType, setTransactionType] = useState<TransactionTypes>(
     TransactionTypes.Income
   );
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   // Form validation
   const {
@@ -85,6 +95,26 @@ export default function AddTransactionForCurrentAccount(
   );
 
   useEffect(() => {
+    if (transactionData) {
+      console.log("transactionData", transactionData);
+      setValues({
+        ...values,
+
+        ...(transactionData ? {
+          categoryId: transactionData.category?.id?.toString(),
+          destinationAccountId: transactionData.destinationAccount?.id?.toString(),
+          currencyId: transactionData.currency?.id,
+          amount: transactionData.amount.toString(),
+          description: transactionData.description,
+          date: moment(new Date(transactionData.transactionDate)).format("YYYY-MM-DD"),
+          accountId: transactionData.account?.id?.toString(),
+          transactionTypeId: transactionData.transactionType?.id?.toString(),
+        } :{}),
+      });
+    }
+  }, [transactionData]);
+
+  useEffect(() => {
     if (account) {
       setValues({
         ...values,
@@ -92,11 +122,6 @@ export default function AddTransactionForCurrentAccount(
       });
     }
   }, [account]);
-
-  const { mutate: createTransaction } = useMutation({
-    mutationKey: ["createTransaction"],
-    mutationFn: createTransactionAsync,
-  });
 
   // Handle form submission
   const handleSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
@@ -139,7 +164,6 @@ export default function AddTransactionForCurrentAccount(
   useEffect(() => {
     if (props.open) {
       setTransactionType(TransactionTypes.Expense);
-      setSelectedCategory("");
     }
   }, [props.open]);
 
@@ -167,7 +191,6 @@ export default function AddTransactionForCurrentAccount(
                 value={transactionType.toString()}
                 onValueChange={(value) => {
                   setTransactionType(Number(value) as TransactionTypes);
-                  setSelectedCategory("");
                 }}
                 className="w-full border-0!"
               >
@@ -202,6 +225,7 @@ export default function AddTransactionForCurrentAccount(
                     value={values.amount}
                     onChange={onChangeInput}
                     errorMessage={errors.amount || errors.currencyId}
+                    defaultValue={values.currencyId}
                     type="number"
                     step="0.01"
                     min="0"
@@ -213,6 +237,7 @@ export default function AddTransactionForCurrentAccount(
                         entityName="currencies"
                         placeholder="Currency"
                         name="currencyId"
+                        defaultValue={values.currencyId}
                         onChange={(value) => onChangeValue("currencyId", value)}
                       />
                     }
@@ -234,6 +259,7 @@ export default function AddTransactionForCurrentAccount(
                   id="date"
                   name="date"
                   type="date"
+                  defaultValue={moment().format("YYYY-MM-DD")}
                   onChange={onChangeInput}
                   className="w-full  text-[14px]! place-content-center! block!"
                 />
@@ -252,6 +278,7 @@ export default function AddTransactionForCurrentAccount(
                   id="description"
                   name="description"
                   onChange={onChangeInput}
+                  defaultValue={values.description}
                   placeholder="What is this transaction for?"
                   className="w-full "
                 />
@@ -273,9 +300,8 @@ export default function AddTransactionForCurrentAccount(
                     errorMessage={errors.categoryId}
                     onChange={(value) => {
                       onChangeValue("categoryId", value);
-                      setSelectedCategory(value);
                     }}
-                    defaultValue={selectedCategory}
+                    defaultValue={values.categoryId ? values.categoryId.toString() : undefined}
                     params={{ transactionTypeId: transactionType.toString() }}
                   />
                 </div>
@@ -291,7 +317,7 @@ export default function AddTransactionForCurrentAccount(
                 </Label>
                 <CachedSelect
                   className=""
-                  defaultValue={account?.id.toString()}
+                  defaultValue={values.accountId}
                   entityName="accounts"
                   placeholder="Select an account"
                   name="accountId"
@@ -315,6 +341,7 @@ export default function AddTransactionForCurrentAccount(
                     placeholder="Select a transfer account"
                     name="destinationAccountId"
                     errorMessage={errors.destinationAccountId}
+                    defaultValue={values.destinationAccountId}
                     onChange={(value) =>
                       onChangeValue("destinationAccountId", value)
                     }

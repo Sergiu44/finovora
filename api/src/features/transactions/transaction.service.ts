@@ -235,5 +235,36 @@ export const getTransactionsForAccount = async (
     ],
     order: [["transactionDate", "DESC"]],
   });
-  return transactions;
+
+  const groupedTransactions = transactions.reduce<
+    Record<
+      string,
+      {
+        totalAmount: number;
+        totalIncome: number;
+        totalExpenses: number;
+        transactions: Transaction[];
+      }
+    >
+  >((acc, transaction) => {
+    const date = transaction.transactionDate.toISOString().split("T")[0];
+    if (!acc[date]) {
+      acc[date] = {
+        totalAmount: 0,
+        totalIncome: 0,
+        totalExpenses: 0,
+        transactions: [],
+      };
+    }
+    acc[date].transactions.push(transaction);
+    const amount = Number(transaction.amount);
+    acc[date].totalAmount += amount;
+    if (amount >= 0) {
+      acc[date].totalIncome += amount;
+    } else {
+      acc[date].totalExpenses += Math.abs(amount);
+    }
+    return acc;
+  }, {});
+  return groupedTransactions;
 };
