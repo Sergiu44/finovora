@@ -136,7 +136,7 @@ function RouteComponent() {
         <Button className="w-full">Continue with Google</Button>
       </form>
 
-      <div className="mt-20 w-full justify-center text-base! text-muted-foreground flex">
+      <div className="mt-20 w-full justify-centertext-muted-foreground flex">
         Already having an account?
         <Link
           className="text-center inline-block hover:decoration-1 hover:underline hover:underline-offset-2 text-primary ml-1"

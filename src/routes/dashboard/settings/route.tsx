@@ -12,9 +12,9 @@ export const Route = createFileRoute("/dashboard/settings")({
 function RouteComponent() {
   return (
     <div className="grid grid-cols-[250px_1fr] min-h-[calc(100vh-64px)]">
-      <div className="px-4 pt-12 bg-sidebar dark:bg-sidebar/60">
-        <h3 className="text-md font-bold text-left pl-2">Manage</h3>
-        <div className="flex flex-col items-center gap-0.5 mt-2">
+      <div className="px-3 pt-6 m-2 max-h-[calc(100vh-84px)] sticky top-2 rounded-[4px]">
+        <h3 className="text-md font-semibold text-left pl-2">Manage</h3>
+        <div className="flex flex-col items-center gap-1 mt-2">
           <IconLink
             variant="slim"
             icon={<Cog6ToothIcon />}
@@ -35,7 +35,7 @@ function RouteComponent() {
           />
         </div>
 
-        <h3 className="text-md font-bold text-left mt-4 pl-2">Security</h3>
+        <h3 className="text-md font-semibold text-left mt-4 pl-2">Security</h3>
         <div className="flex flex-col items-center gap-1 mt-2">
           <IconLink
             variant="slim"
@@ -46,7 +46,7 @@ function RouteComponent() {
         </div>
       </div>
       <div className="border-l border-border">
-        <div className="max-w-6xl mx-auto w-full">
+        <div className="mx-4">
           <Outlet />
         </div>
       </div>

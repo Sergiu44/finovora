@@ -53,6 +53,7 @@ export default function CachedSelect({
       : data;
   }, [data, omitIds]);
 
+  console.log(value);
   return (
     <div>
       <Select
@@ -65,7 +66,7 @@ export default function CachedSelect({
         disabled={isLoading}
       >
         <SelectTrigger
-          className={`h-[40px]! ${className} mt-2 data-[placeholder]:text-muted-foreground! text-black ${errorMessage && "border-error! focus-visible:ring-error-600! focus-visible:border-error!"}`}
+          className={`h-[40px]! ${className} mt-2 data-[placeholder]:text-muted-foreground/40! text-black ${errorMessage && "border-error! focus-visible:ring-error-600! focus-visible:border-error!"}`}
         >
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>

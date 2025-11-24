@@ -78,7 +78,7 @@ export default function UpdateCreateAccountType(props: IUpdateCreateAccountTypeP
   return (
     <div className="py-8 px-8">
       <h3>Let's {props.data?.name ? "update your " : "create a new "} account type</h3>
-      <p className="text-base text-main-washed">
+      <p className=" ">
         This account type will allow you to manage you finance more efficiently.
       </p>
       <form onSubmit={handleSubmit}>

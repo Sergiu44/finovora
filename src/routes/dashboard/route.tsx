@@ -5,10 +5,6 @@ import {
   ArrowLeftStartOnRectangleIcon,
   BellAlertIcon,
   ChevronUpDownIcon,
-  CreditCardIcon,
-  DocumentIcon,
-  HomeIcon,
-  Cog6ToothIcon,
 } from "@heroicons/react/20/solid";
 import moment from "moment";
 import { useState } from "react";
@@ -17,7 +13,7 @@ import { createEnhancedAxios } from "../../configs/axios";
 import { useQuery } from "@tanstack/react-query";
 import { getAccountsForSwitch } from "../../utils/actions/accounts/userAccounts";
 import { useUserMainAccount } from "../../context/UserMainAccount";
-import { PlusIcon, TypeIcon, Wallet2Icon } from "lucide-react";
+import { CogIcon, LucideHome, PlusIcon, TypeIcon, Wallet2Icon } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import AddTransactionForCurrentAccount from "./-components/AddTransactionForCurrentAccount";
 import { useUserDetails } from "../../context/UserDetails";
@@ -52,30 +48,30 @@ function RouteComponent() {
   };
   return (
     <div className="dashboard__grid-container">
-      <div className="flex flex-col p-4 max-h-screen sticky top-0 bg-sidebar border-r rounded-none border-sidebar-border">
-        <h3 className="dark:text-white text-3xl ml-4">Finovora</h3>
+      <div className="flex flex-col p-4 max-h-screen sticky top-0 bg-white border-r rounded-none border-sidebar-border">
+        <h3 className="dark:text-white text-2xl font-semibold">Finovora</h3>
 
         <div className="flex flex-col mt-12 gap-2">
           <IconLink
             href="/dashboard"
-            icon={<HomeIcon className="h-4 w-4" />}
+            icon={<LucideHome className="h-4 w-4" />}
             text="Home"
             size="sm"
           />
 
-          <IconLink
+          {/* <IconLink
             href="/dashboard/reports"
             icon={<DocumentIcon className="h-4 w-4" />}
             text="Reports"
             size="sm"
-          />
+          /> */}
 
-          <IconLink
+          {/* <IconLink
             size="sm"
             href="/dashboard/billing"
             icon={<CreditCardIcon className="h-4 w-4" />}
             text="Billing"
-          />
+          /> */}
 
           <IconLink
             size="sm"
@@ -94,7 +90,7 @@ function RouteComponent() {
           <IconLink
             size="sm"
             href="/dashboard/settings/profile"
-            icon={<Cog6ToothIcon className="h-4 w-4" />}
+            icon={<CogIcon className="h-4 w-4" />}
             text="Settings"
           />
         </div>
@@ -104,7 +100,7 @@ function RouteComponent() {
           <div className="mt-auto">
             <AnimateChangeInHeight className="mb-2">
               {walletOpen && (
-                <div className="py-3 rounded-md bg-muted text-muted-foreground!">
+                <div className="py-3 rounded-md border border-border bg-white text-muted-foreground!">
                   {data && data.length > 0 ? (
                     data?.map((account) => (
                       <div
@@ -112,11 +108,11 @@ function RouteComponent() {
                           setWalletOpen(false);
                           setUserMainAccountId(account.id);
                         }}
-                        className="mx-2 px-4 rounded-3xl py-3 flex justify-between items-start cursor-pointer hover:bg-white"
+                        className="mx-2 px-3 rounded-sm! py-3 flex justify-between items-center cursor-pointer hover:bg-muted"
                         key={account.id}
                       >
                         <div className="text-black text-sm">{account.name}</div>
-                        <div className="text-black font-bold">
+                        <div className="text-black font-bold text-xs">
                           {account.balance} {account.currency.symbol}
                         </div>
                       </div>
@@ -132,21 +128,22 @@ function RouteComponent() {
             {!walletOpen && (
               <Button
                 onClick={() => setAddTransactionModalOpen(true)}
-                className="flex items-center rounded-3xl w-full"
+                className="flex items-center rounded-sm w-full cursor-pointer"
                 variant="default"
+                size="sm"
               >
-                <PlusIcon />
-                <span className="font-bold text-[16px]">Add transaction</span>
+                <PlusIcon className="size-3.5" />
+                Add transaction
               </Button>
             )}
             <div
               onClick={() => setWalletOpen(!walletOpen)}
-              className="hover:bg-muted cursor-pointer px-4 py-2 mt-1 rounded-md  flex items-center justify-between"
+              className="hover:bg-muted cursor-pointer pl-2 py-2 mt-1 rounded-md  flex items-center justify-between"
             >
               <p className="text-sm text-light-gray">
                 {account && account.name}
               </p>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 text-sm">
                 <span className="font-bold">{account && account.balance} </span>
                 <span className="font-bold">
                   {account && account.currency.symbol}
@@ -160,7 +157,7 @@ function RouteComponent() {
         )}
       </div>
 
-      <div className="grow-1 bg-background">
+      <div className="grow-1 bg-gray-50">
         <div className="bg-white border-b border-sidebar-border px-6 py-3">
           <div className="flex items-center justify-between">
             <span className="font-bold">{moment().format("DD MMM YYYY")}</span>

@@ -48,7 +48,7 @@ export default function AccountPreviewCard({
       transition={{ duration: 0.3, ease: "easeInOut" }}
     >
       <motion.div
-        className="rounded-lg p-6 text-white shadow-lg h-[200px]"
+        className="rounded-lg py-4 px-6 text-white shadow-sm h-[200px] hover:shadow-lg"
         style={getGradientBgStyle()}
       >
         <div className="flex flex-col justify-between h-full">

@@ -126,7 +126,7 @@ function RouteComponent() {
                   </DropdownMenu>
                 </div>
               </div>
-              <div className="bg-bg-main-light p-4 my-2 rounded-md text-main">
+              <div className="bg-bg-main-light p-4 my-2 rounded-md ">
                 <p>{data[selectedAccountType].description || "No description available."}</p>
               </div>
             </>
@@ -137,7 +137,7 @@ function RouteComponent() {
             data.map((accountType, index) => (
               <div
                 onClick={() => setSelectedAccountType(index)}
-                className={`cursor-pointer hover:border-bg-main bg-bg-main-light p-4 mb-2.5 rounded-md border-2 border-transparent text-main flex justify-between
+                className={`cursor-pointer hover:border-bg-main bg-bg-main-light p-4 mb-2.5 rounded-md border-2 border-transparent  flex justify-between
                   
                   ${selectedAccountType === index ? "border-2 !border-main" : ""}`}
               >

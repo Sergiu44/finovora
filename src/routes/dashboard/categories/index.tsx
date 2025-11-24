@@ -69,7 +69,7 @@ function RouteComponent() {
                 value={CategoryType[
                   key as keyof typeof CategoryType
                 ].toString()}
-                className="text-sm sm:text-base"
+                className="text-sm sm:"
               >
                 {key}
               </TabsTrigger>

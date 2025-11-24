@@ -123,7 +123,7 @@ function RouteComponent() {
         </form>
       </div>
 
-      <div className="w-full justify-center text-base! text-muted-foreground flex">
+      <div className="w-full justify-centertext-muted-foreground flex">
         <span>Don't have an account yet?</span>
         <Link
           className="text-center inline-block hover:decoration-1 hover:underline hover:underline-offset-2 ml-1 text-primary"

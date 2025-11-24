@@ -1,9 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent } from "../../components/ui/card";
-import SelectedCardDetails from "./-components/Home/SelectedCardDetails";
 import { Button } from "../../components/ui/button";
-import { InformationCircleIcon } from "@heroicons/react/16/solid";
-import SelectedCardTransactions from "./-components/Home/SelectedCardTransactions";
 import {
   deleteUserAccount,
   getUserCardAccounts,
@@ -19,6 +16,7 @@ import { AnimatePresence } from "framer-motion";
 import { useUserMainAccount } from "../../context/UserMainAccount";
 import ConfirmationModal from "../../components/reusable/dialogs/ConfirmationModal";
 import BaseWrapper from "../../components/reusable/layouts/BaseWrapper";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
 export const Route = createFileRoute("/dashboard/")({
   component: RouteComponent,
@@ -68,8 +66,8 @@ function RouteComponent() {
 
   return (
     <BaseWrapper>
-      <h1 className="text-3xl font-bold">Dashboard</h1>
-      <p className="text-sm text-muted-foreground">
+      <h1 className="text-3xl font-bold ml-2.5">Dashboard</h1>
+      <p className="text-sm text-muted-foreground ml-2.5">
         Easy way to manage your finances
       </p>
       <div className="grid grid-cols-[350px_1fr] gap-4 mt-4">
@@ -177,34 +175,33 @@ function RouteComponent() {
             )}
           </div>
 
-          <Card className="border-0 border-b! border-border">
+          <Card className="border border-border">
             <CardContent>
               <h3 className="font-bold mb-2 block">Account information</h3>
-              <p className="text-xs">Lorem ipsum dolor sit amet con</p>
 
-              <div className="mt-4 grid grid-cols-[1fr_1fr] gap-1">
-                <span className="text-sm font-bold text-muted-foreground">
+              <div className="mt-4 grid grid-cols-[2fr_1fr] gap-1">
+                <span className="text-sm font-semibold text-muted-foreground">
                   Account name
                 </span>
                 <span className="text-sm text-muted-foreground">
                   {account?.name}
                 </span>
 
-                <span className="text-sm font-bold text-muted-foreground">
+                <span className="text-sm font-semibold text-muted-foreground">
                   Account type
                 </span>
                 <span className="text-sm text-muted-foreground">
                   {account?.accountType.name}
                 </span>
 
-                <span className="text-sm font-bold text-muted-foreground">
+                <span className="text-sm font-semibold text-muted-foreground">
                   Currency
                 </span>
                 <span className="text-sm text-muted-foreground">
                   {account?.currency.code} ({account?.currency.symbol})
                 </span>
 
-                <span className="text-sm font-bold text-muted-foreground">
+                <span className="text-sm font-semibold text-muted-foreground">
                   Created at
                 </span>
                 <span className="text-sm text-muted-foreground">
@@ -216,7 +213,7 @@ function RouteComponent() {
             </CardContent>
           </Card>
 
-          <Card className="border-0! border-b! border-border">
+          {/* <Card className="border-0! border-b! border-border">
             <CardContent>
               <h3 className="font-bold mb-2 block">Billing details</h3>
               <p className="text-xs">
@@ -255,29 +252,26 @@ function RouteComponent() {
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
-          <Card className="border-0! shadow-none!">
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4 flex items-start gap-0.5">
-                <InformationCircleIcon className="w-3 h-3 text-primary" /> test
-              </p>
+          <Card className="border-border mt-4 py-2">
+            <CardContent className="px-2">
               <Button
                 type="button"
-                variant="destructive"
-                className="rounded-xs w-full mt-2"
+                variant="ghost-destructive"
+                className="w-full justify-start transition-none rounded-md!"
                 size="xs"
                 onClick={() => setOpenDeleteAccountModal(true)}
               >
-                Delete account
+                <TrashIcon /> Delete account
               </Button>
             </CardContent>
           </Card>
         </div>
 
         <div>
-          <SelectedCardDetails />
-          <SelectedCardTransactions />
+          {/* <SelectedCardDetails />
+          <SelectedCardTransactions /> */}
         </div>
       </div>
 

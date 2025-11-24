@@ -36,10 +36,10 @@ export default function IconLink({
             }
           : {
               className:
-                "bg-primary/50 hover:bg-primary! text-white! transition-all ease-in-out duration-500",
+                "bg-primary-300 hover:bg-primary-400! text-white! transition-all ease-in-out duration-500",
             }
       }
-      className={`group select-none py-3 px-4 rounded-[32px] cursor-pointer items-center gap-2 w-full dark:text-muted-foreground ${className || ""} ${variant === "slim" ? "py-1! px-2! rounded-[12px]!" : "hover:outline-2 hover:outline-primary dark:hover:text-white"}`}
+      className={`group font-medium select-none py-3 px-4 rounded-[32px] cursor-pointer items-center gap-2 w-full dark:text-muted-foreground ${className || ""} ${variant === "slim" ? "py-1.5! px-3! rounded-[20px]! hover:bg-primary-400 hover:text-white" : "hover:bg-gray-100 dark:hover:text-white"}`}
     >
       {({ isActive }) => (
         <>
@@ -56,7 +56,7 @@ export default function IconLink({
               className={
                 size
                   ? `text-${size}`
-                  : `${variant === "slim" ? "text-sm" : "text-base"}`
+                  : `${variant === "slim" ? "text-sm" : ""}`
               }
             >
               {text}

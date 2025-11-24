@@ -14,7 +14,7 @@ import {
 export default function SelectedCardDetails() {
   return (
     <div>
-      <Card className="shadow-accent-foreground">
+      {/* <Card className="shadow-accent-foreground">
         <CardContent>
           <CardTitle className="text-muted-foreground flex justify-between">
             <h2 className="grow-1 w-full">Balance history/statistics</h2>
@@ -31,7 +31,7 @@ export default function SelectedCardDetails() {
             </Select>
           </CardTitle>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   );
 }

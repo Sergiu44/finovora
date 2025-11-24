@@ -166,7 +166,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
         <CachedSelect
           onChange={(value) => onChangeValue("accountTypeId", value)}
           errorMessage={errors["accountTypeId"]}
-          defaultValue={props.data?.accountTypeId.toString() || ""}
+          defaultValue={props.data?.accountTypeId?.toString() ?? ""}
           name="accountTypeId"
           entityName="account-types"
           placeholder="Select Account Type"
@@ -175,7 +175,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
         <CachedSelect
           onChange={(value) => onChangeValue("currencyId", value)}
           errorMessage={errors["currencyId"]}
-          defaultValue={props.data?.currencyId.toString() || ""}
+          defaultValue={props.data?.currencyId?.toString() ?? ""}
           name="currencyId"
           entityName="currencies"
           placeholder="Select Currency"
@@ -211,7 +211,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
               <GradientCard
                 key={"default-gradient-" + item.id}
                 isSelected={
-                  values["gradientId"] == item.id && values["type"] == "default"
+                  values["gradientId"]?.toString() == item.id?.toString() && values["type"] == "default"
                 }
                 onSelect={() => {
                   setErrors({
@@ -258,7 +258,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
                 }}
                 key={"user-gradient-" + item.id}
                 isSelected={
-                  values["gradientId"] == item.id && values["type"] == "user"
+                  values["gradientId"]?.toString() == item.id?.toString() && values["type"] == "user"
                 }
                 onSelect={() => {
                   setErrors({

@@ -14,8 +14,8 @@ export interface Account {
   balance: number;
   name: string;
   description: string | null;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface AccountCardFormat extends Account {
