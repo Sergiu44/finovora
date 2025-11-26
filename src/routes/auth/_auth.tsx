@@ -2,6 +2,7 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import Logo from "../../components/reusable/utils/Logo";
 import { useTheme } from "../../context/ThemeProvider";
 import { motion, AnimatePresence } from "framer-motion";
+import SwitchTheme from "../../components/reusable/switch/SwitchTheme";
 
 export const Route = createFileRoute("/auth/_auth")({
   component: RouteComponent,
@@ -11,7 +12,7 @@ function RouteComponent() {
   const { theme } = useTheme();
 
   return (
-    <div className="grid grid-cols-12 gap-6 h-full overflow-hidden">
+    <div className="grid grid-cols-12 gap-6 overflow-hidden h-screen">
       <div className="relative col-span-5 m-6 mr-0">
         <div className="flex justify-between items-center my-auto w-5/7 mx-auto h-[100px] z-10">
           <Logo />
@@ -48,7 +49,12 @@ function RouteComponent() {
             />
           )}
         </AnimatePresence>
+
+
       </div>
+        <div className="absolute bottom-4 right-4">
+          <SwitchTheme />
+        </div>
     </div>
   );
 }

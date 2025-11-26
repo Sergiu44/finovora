@@ -1,17 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardTitle } from "../../../../components/ui/card";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@radix-ui/react-popover";
-import { endOfMonth, format, isSameMonth, startOfMonth } from "date-fns";
-import { Button } from "../../../../components/ui/button";
-import {
-  CalendarIcon,
-} from "lucide-react";
-import { Calendar } from "../../../../components/ui/calendar";
-import type { DateRange } from "react-day-picker";
+import { endOfMonth, format, startOfMonth } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { getTransactionsForAccountAsync } from "../../../../utils/actions/transactions";
 import { useUserMainAccount } from "../../../../context/UserMainAccount";
@@ -21,113 +10,84 @@ import AccordionTransactionGroupedByDate, {
 
 export default function SelectedCardTransactions() {
   const { account } = useUserMainAccount();
-  const currentMonthRange = useMemo<DateRange>(() => {
+  const [weekStartsOn, setWeekStartsOn] = useState<number>(1);
+  const currentMonthRange = useMemo(() => {
     const now = new Date();
     return {
       from: startOfMonth(now),
       to: endOfMonth(now),
     };
   }, []);
-  const [date, setDate] = useState<DateRange | undefined>(currentMonthRange);
 
-  const isCurrentMonthFilter =
-    !!date?.from &&
-    !!date?.to &&
-    !!currentMonthRange.from &&
-    !!currentMonthRange.to &&
-    isSameMonth(date.from, currentMonthRange.from) &&
-    isSameMonth(date.to, currentMonthRange.to);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const storedPreference = window.localStorage.getItem(
+      "finovora:calendar-week-start"
+    );
+    if (!storedPreference) return;
+    const parsed = Number(storedPreference);
+    if (!Number.isNaN(parsed) && parsed >= 0 && parsed <= 6) {
+      setWeekStartsOn(parsed);
+    }
+  }, []);
+
+  const rangeLabel = useMemo(() => {
+    if (!currentMonthRange.from || !currentMonthRange.to) {
+      return "";
+    }
+    return `${format(currentMonthRange.from, "MMM dd")} – ${format(
+      currentMonthRange.to,
+      "MMM dd"
+    )}`;
+  }, [currentMonthRange.from, currentMonthRange.to]);
 
   const {
     data: transactionsGroupedByDate,
     isLoading,
   } = useQuery<TransactionsGrouped>({
-    queryKey: ["transactions", account?.id, date?.from, date?.to],
+    queryKey: [
+      "transactions",
+      account?.id,
+      currentMonthRange.from,
+      currentMonthRange.to,
+    ],
     queryFn: () => {
-      const startDate = date?.from
-        ? format(date.from, "yyyy-MM-dd")
+      const startDate = currentMonthRange.from
+        ? format(currentMonthRange.from, "yyyy-MM-dd")
         : undefined;
-      const endDate = date?.to ? format(date.to, "yyyy-MM-dd") : undefined;
+      const endDate = currentMonthRange.to
+        ? format(currentMonthRange.to, "yyyy-MM-dd")
+        : undefined;
       return getTransactionsForAccountAsync(account!.id, startDate, endDate);
     },
   });
 
-  const clearFilters = () => {
-    setDate(currentMonthRange);
-  };
-
-  const rangeLabel = useMemo(() => {
-    if (date?.from && date?.to) {
-      return `${format(date.from, "MMM dd")} – ${format(date.to, "MMM dd")}`;
-    }
-    if (currentMonthRange.from && currentMonthRange.to) {
-      return `${format(currentMonthRange.from, "MMM dd")} – ${format(
-        currentMonthRange.to,
-        "MMM dd"
-      )}`;
-    }
-    return "";
-  }, [date, currentMonthRange]);
-
   return (
-    <div className="space-y-2">
-      <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest px-4 py-1.5 rounded-full bg-primary/70 text-primary-foreground shadow-sm border border-primary/70">
-        <span className="inline-block size-2 rounded-full bg-primary-foreground/80"></span>
-        <span>{isCurrentMonthFilter ? "Current Month" : "Custom Range"}</span>
-        <span className="text-primary-foreground/80">{rangeLabel}</span>
-      </div>
+    <div className="space-y-4">
+      <TransactionPeriodSummary
+        monthLabel={
+          currentMonthRange.from
+            ? format(currentMonthRange.from, "MMMM yyyy")
+            : ""
+        }
+        periodLabel={rangeLabel}
+        preferenceLabel={`Week starts on ${
+          weekdayLabels[weekStartsOn] ?? "Monday"
+        }`}
+      />
       <Card>
         <CardContent>
         <CardTitle className="text-muted-foreground flex justify-between items-center">
           <h2 className="grow-1 w-full text-lg font-bold">Transactions</h2>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                data-empty={!date}
-                className="text-sm! data-[empty=true]:text-muted-foreground text-slate-700 justify-start text-left font-normal w-min"
-              >
-                <CalendarIcon />
-                {date?.from && date?.to ? (
-                  `${format(date.from, "dd/MM/yyyy")} - ${format(date.to, "dd/MM/yyyy")}`
-                ) : (
-                  <span>
-                    {currentMonthRange.from && currentMonthRange.to
-                      ? `${format(currentMonthRange.from, "dd/MM/yyyy")} - ${format(
-                          currentMonthRange.to,
-                          "dd/MM/yyyy"
-                        )}`
-                      : "Pick a date"}
-                  </span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                weekStartsOn={1}
-                numberOfMonths={2}
-                mode="range"
-                selected={date}
-                onSelect={setDate}
-              />
-            </PopoverContent>
-          </Popover>
+          <p className="text-xs uppercase tracking-widest text-muted-foreground">
+            Current month overview
+          </p>
         </CardTitle>
 
         <div className="flex items-center justify-between mt-2">
           <p className="text-sm font-semibold text-primary">
-            Viewing {isCurrentMonthFilter ? "the current month" : "a custom range"} · {rangeLabel}
+            Viewing the current month · {rangeLabel}
           </p>
-          {!isCurrentMonthFilter && (
-            <Button
-              variant="ghost"
-              size="xs"
-              onClick={clearFilters}
-              className="text-primary hover:text-primary/80 cursor-pointer px-2 text-xs flex items-center gap-1"
-            >
-              Reset to current month
-            </Button>
-          )}
         </div>
 
         {isLoading ? (
@@ -145,14 +105,46 @@ export default function SelectedCardTransactions() {
             <div className="text-gray-400 mb-2">📊</div>
             <div>No transactions found</div>
             <div className="text-sm mt-1">
-              {date
-                ? "No transactions found for the selected date range"
-                : "Select a date range to filter transactions"}
+              No transactions found for the current month
             </div>
           </div>
         )}
         </CardContent>
       </Card>
+    </div>
+  );
+}
+
+interface SummaryProps {
+  monthLabel: string;
+  preferenceLabel: string;
+  periodLabel: string;
+}
+
+const weekdayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+function TransactionPeriodSummary({
+  monthLabel,
+  preferenceLabel,
+  periodLabel,
+}: SummaryProps) {
+  return (
+    <div className="rounded-2xl border border-border bg-white/80 px-4 py-3 shadow-sm backdrop-blur">
+      <p className="text-xs uppercase tracking-widest text-muted-foreground">
+        Current Month
+      </p>
+      <div className="mt-2 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-lg font-semibold text-foreground">{monthLabel}</p>
+          <p className="text-sm text-muted-foreground">{preferenceLabel}</p>
+        </div>
+        <div className="text-sm text-muted-foreground sm:text-right">
+          <span className="text-[11px] uppercase tracking-wide">
+            Active period
+          </span>
+          <p className="text-base font-semibold text-foreground">{periodLabel}</p>
+        </div>
+      </div>
     </div>
   );
 }

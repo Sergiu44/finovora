@@ -17,7 +17,6 @@ import { useUserMainAccount } from "../../context/UserMainAccount";
 import ConfirmationModal from "../../components/reusable/dialogs/ConfirmationModal";
 import BaseWrapper from "../../components/reusable/layouts/BaseWrapper";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import SelectedCardDetails from "./-components/Home/SelectedCardDetails";
 import SelectedCardTransactions from "./-components/Home/SelectedCardTransactions";
 
 export const Route = createFileRoute("/dashboard/")({
