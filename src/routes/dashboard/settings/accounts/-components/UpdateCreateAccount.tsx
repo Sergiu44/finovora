@@ -31,6 +31,7 @@ import {
   isDefaultGradientItem,
 } from "../../../../../utils/actions/nomenclatures/defaultGradient";
 import ErrorMessage from "../../../../../components/reusable/errorMessages/errorMessage";
+import { SettingsPageHeader, SettingsPageLayout } from "../../-components/SettingsPageHeader";
 
 interface IUpdateCreateAccountProps {
   id?: string;
@@ -143,14 +144,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
   }, [props.data, setValues]);
 
   return (
-    <div className="py-4 px-2">
-      <h3 className="text-2xl font-bold ml-1">
-        Let's {props.data?.name ? "update your " : "create a new "} account
-      </h3>
-      <p className="text-sm text-muted-foreground mb-4! ml-1">
-        This account will allow you to manage your transactions more
-        efficiently.
-      </p>
+      <SettingsPageLayout title={`Let's ${props.data?.name ? "update your " : "create a new "} account`} description="This account will allow you to manage your transactions more efficiently.">
       <form onSubmit={handleSubmit} className="flex flex-col gap-0">
         <Input
           onChange={onChangeInput}
@@ -287,7 +281,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
         <div className="flex gap-2 self-end mt-4">
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline" type="button">
+              <Button variant="secondary" type="button">
                 <Eye className="w-4 h-4 mr-2" />
                 Preview
               </Button>
@@ -351,6 +345,6 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
           </Button>
         </div>
       </form>
-    </div>
+      </SettingsPageLayout>
   );
 }

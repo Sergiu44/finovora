@@ -59,12 +59,10 @@ function RouteComponent() {
           }
         >
           <TabsList
-            variant={"underline"}
             className="grid grid-cols-2 w-full sm:max-w-[360px]"
           >
             {getEnumValues(TransactionType).map((key) => (
               <TabsTrigger
-                variant={"underline"}
                 key={"categories-" + key}
                 value={CategoryType[
                   key as keyof typeof CategoryType

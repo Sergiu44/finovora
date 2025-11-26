@@ -17,7 +17,7 @@ import { useUserMainAccount } from "../../context/UserMainAccount";
 import ConfirmationModal from "../../components/reusable/dialogs/ConfirmationModal";
 import BaseWrapper from "../../components/reusable/layouts/BaseWrapper";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import SelectedCardTransactions from "./-components/Home/SelectedCardTransactions";
+import SelectedCardTransactions from "./-index-components/Home/SelectedCardTransactions";
 
 export const Route = createFileRoute("/dashboard/")({
   component: RouteComponent,
@@ -77,7 +77,7 @@ function RouteComponent() {
               <Button
                 type="button"
                 variant="ghost-destructive"
-                className="w-full justify-start transition-none rounded-md!"
+                className="w-full justify-start transition-none rounded-[8px]!"
                 size="xs"
                 onClick={() => setOpenDeleteAccountModal(true)}
               >
@@ -86,7 +86,7 @@ function RouteComponent() {
             </CardContent>
           </Card>
       <div className="grid grid-cols-[minmax(250px,350px)_1fr_1fr] gap-4 mt-4">
-          <div className={`rounded-[12px] mb-4 shadow-lg relative`}>
+          <div className={`rounded-[12px] shadow-lg relative`}>
             <AnimatePresence mode="wait">
               {account ? (
                 <AccountPreviewCard
@@ -227,8 +227,8 @@ function RouteComponent() {
             </CardContent>
           </Card>
 
-          <Card className="border border-border py-4">
-            <CardContent className="">
+          <Card className="border border-border">
+            <CardContent>
               <h3 className="font-bold mb-2 block">Billing details</h3>
               <p className="text-xs">
                 The percentages are relative to last month

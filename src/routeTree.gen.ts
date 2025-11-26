@@ -16,13 +16,13 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/dashboard/route'
 import { Route as IndexImport } from './routes/index'
 import { Route as DashboardIndexImport } from './routes/dashboard/index'
-import { Route as DashboardReportsImport } from './routes/dashboard/reports'
-import { Route as DashboardProfileImport } from './routes/dashboard/profile'
-import { Route as DashboardBillingImport } from './routes/dashboard/billing'
 import { Route as AuthAuthImport } from './routes/auth/_auth'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings/route'
+import { Route as DashboardReportsIndexImport } from './routes/dashboard/reports/index'
+import { Route as DashboardProfileIndexImport } from './routes/dashboard/profile/index'
 import { Route as DashboardCategoriesIndexImport } from './routes/dashboard/categories/index'
 import { Route as DashboardBudgetPlannerIndexImport } from './routes/dashboard/budget-planner/index'
+import { Route as DashboardBillingIndexImport } from './routes/dashboard/billing/index'
 import { Route as DashboardBudgetPlannerCreateImport } from './routes/dashboard/budget-planner/create'
 import { Route as AuthAuthVerifyEmailImport } from './routes/auth/_auth.verify-email'
 import { Route as AuthAuthRegisterImport } from './routes/auth/_auth.register'
@@ -68,24 +68,6 @@ const DashboardIndexRoute = DashboardIndexImport.update({
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 
-const DashboardReportsRoute = DashboardReportsImport.update({
-  id: '/reports',
-  path: '/reports',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-
-const DashboardProfileRoute = DashboardProfileImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-
-const DashboardBillingRoute = DashboardBillingImport.update({
-  id: '/billing',
-  path: '/billing',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-
 const AuthAuthRoute = AuthAuthImport.update({
   id: '/_auth',
   getParentRoute: () => AuthRoute,
@@ -94,6 +76,18 @@ const AuthAuthRoute = AuthAuthImport.update({
 const DashboardSettingsRouteRoute = DashboardSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+
+const DashboardReportsIndexRoute = DashboardReportsIndexImport.update({
+  id: '/reports/',
+  path: '/reports/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+
+const DashboardProfileIndexRoute = DashboardProfileIndexImport.update({
+  id: '/profile/',
+  path: '/profile/',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 
@@ -109,6 +103,12 @@ const DashboardBudgetPlannerIndexRoute =
     path: '/budget-planner/',
     getParentRoute: () => DashboardRouteRoute,
   } as any)
+
+const DashboardBillingIndexRoute = DashboardBillingIndexImport.update({
+  id: '/billing/',
+  path: '/billing/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
 
 const DashboardBudgetPlannerCreateRoute =
   DashboardBudgetPlannerCreateImport.update({
@@ -243,27 +243,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAuthImport
       parentRoute: typeof AuthRoute
     }
-    '/dashboard/billing': {
-      id: '/dashboard/billing'
-      path: '/billing'
-      fullPath: '/dashboard/billing'
-      preLoaderRoute: typeof DashboardBillingImport
-      parentRoute: typeof DashboardRouteImport
-    }
-    '/dashboard/profile': {
-      id: '/dashboard/profile'
-      path: '/profile'
-      fullPath: '/dashboard/profile'
-      preLoaderRoute: typeof DashboardProfileImport
-      parentRoute: typeof DashboardRouteImport
-    }
-    '/dashboard/reports': {
-      id: '/dashboard/reports'
-      path: '/reports'
-      fullPath: '/dashboard/reports'
-      preLoaderRoute: typeof DashboardReportsImport
-      parentRoute: typeof DashboardRouteImport
-    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/'
@@ -306,6 +285,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBudgetPlannerCreateImport
       parentRoute: typeof DashboardRouteImport
     }
+    '/dashboard/billing/': {
+      id: '/dashboard/billing/'
+      path: '/billing'
+      fullPath: '/dashboard/billing'
+      preLoaderRoute: typeof DashboardBillingIndexImport
+      parentRoute: typeof DashboardRouteImport
+    }
     '/dashboard/budget-planner/': {
       id: '/dashboard/budget-planner/'
       path: '/budget-planner'
@@ -318,6 +304,20 @@ declare module '@tanstack/react-router' {
       path: '/categories'
       fullPath: '/dashboard/categories'
       preLoaderRoute: typeof DashboardCategoriesIndexImport
+      parentRoute: typeof DashboardRouteImport
+    }
+    '/dashboard/profile/': {
+      id: '/dashboard/profile/'
+      path: '/profile'
+      fullPath: '/dashboard/profile'
+      preLoaderRoute: typeof DashboardProfileIndexImport
+      parentRoute: typeof DashboardRouteImport
+    }
+    '/dashboard/reports/': {
+      id: '/dashboard/reports/'
+      path: '/reports'
+      fullPath: '/dashboard/reports'
+      preLoaderRoute: typeof DashboardReportsIndexImport
       parentRoute: typeof DashboardRouteImport
     }
     '/dashboard/settings/accounts/create': {
@@ -426,24 +426,24 @@ const DashboardSettingsRouteRouteWithChildren =
 
 interface DashboardRouteRouteChildren {
   DashboardSettingsRouteRoute: typeof DashboardSettingsRouteRouteWithChildren
-  DashboardBillingRoute: typeof DashboardBillingRoute
-  DashboardProfileRoute: typeof DashboardProfileRoute
-  DashboardReportsRoute: typeof DashboardReportsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardBudgetPlannerCreateRoute: typeof DashboardBudgetPlannerCreateRoute
+  DashboardBillingIndexRoute: typeof DashboardBillingIndexRoute
   DashboardBudgetPlannerIndexRoute: typeof DashboardBudgetPlannerIndexRoute
   DashboardCategoriesIndexRoute: typeof DashboardCategoriesIndexRoute
+  DashboardProfileIndexRoute: typeof DashboardProfileIndexRoute
+  DashboardReportsIndexRoute: typeof DashboardReportsIndexRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardSettingsRouteRoute: DashboardSettingsRouteRouteWithChildren,
-  DashboardBillingRoute: DashboardBillingRoute,
-  DashboardProfileRoute: DashboardProfileRoute,
-  DashboardReportsRoute: DashboardReportsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardBudgetPlannerCreateRoute: DashboardBudgetPlannerCreateRoute,
+  DashboardBillingIndexRoute: DashboardBillingIndexRoute,
   DashboardBudgetPlannerIndexRoute: DashboardBudgetPlannerIndexRoute,
   DashboardCategoriesIndexRoute: DashboardCategoriesIndexRoute,
+  DashboardProfileIndexRoute: DashboardProfileIndexRoute,
+  DashboardReportsIndexRoute: DashboardReportsIndexRoute,
 }
 
 const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
@@ -483,17 +483,17 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRouteRouteWithChildren
   '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
   '/auth': typeof AuthAuthRouteWithChildren
-  '/dashboard/billing': typeof DashboardBillingRoute
-  '/dashboard/profile': typeof DashboardProfileRoute
-  '/dashboard/reports': typeof DashboardReportsRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/auth/forgot-password': typeof AuthAuthForgotPasswordRoute
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
   '/auth/verify-email': typeof AuthAuthVerifyEmailRoute
   '/dashboard/budget-planner/create': typeof DashboardBudgetPlannerCreateRoute
+  '/dashboard/billing': typeof DashboardBillingIndexRoute
   '/dashboard/budget-planner': typeof DashboardBudgetPlannerIndexRoute
   '/dashboard/categories': typeof DashboardCategoriesIndexRoute
+  '/dashboard/profile': typeof DashboardProfileIndexRoute
+  '/dashboard/reports': typeof DashboardReportsIndexRoute
   '/dashboard/settings/accounts/create': typeof DashboardSettingsAccountsCreateRoute
   '/dashboard/settings/accounts': typeof DashboardSettingsAccountsIndexRoute
   '/dashboard/settings/currencies': typeof DashboardSettingsCurrenciesIndexRoute
@@ -509,17 +509,17 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
   '/auth': typeof AuthAuthRouteWithChildren
-  '/dashboard/billing': typeof DashboardBillingRoute
-  '/dashboard/profile': typeof DashboardProfileRoute
-  '/dashboard/reports': typeof DashboardReportsRoute
   '/dashboard': typeof DashboardIndexRoute
   '/auth/forgot-password': typeof AuthAuthForgotPasswordRoute
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
   '/auth/verify-email': typeof AuthAuthVerifyEmailRoute
   '/dashboard/budget-planner/create': typeof DashboardBudgetPlannerCreateRoute
+  '/dashboard/billing': typeof DashboardBillingIndexRoute
   '/dashboard/budget-planner': typeof DashboardBudgetPlannerIndexRoute
   '/dashboard/categories': typeof DashboardCategoriesIndexRoute
+  '/dashboard/profile': typeof DashboardProfileIndexRoute
+  '/dashboard/reports': typeof DashboardReportsIndexRoute
   '/dashboard/settings/accounts/create': typeof DashboardSettingsAccountsCreateRoute
   '/dashboard/settings/accounts': typeof DashboardSettingsAccountsIndexRoute
   '/dashboard/settings/currencies': typeof DashboardSettingsCurrenciesIndexRoute
@@ -538,17 +538,17 @@ export interface FileRoutesById {
   '/dashboard/settings': typeof DashboardSettingsRouteRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/auth/_auth': typeof AuthAuthRouteWithChildren
-  '/dashboard/billing': typeof DashboardBillingRoute
-  '/dashboard/profile': typeof DashboardProfileRoute
-  '/dashboard/reports': typeof DashboardReportsRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/auth/_auth/forgot-password': typeof AuthAuthForgotPasswordRoute
   '/auth/_auth/login': typeof AuthAuthLoginRoute
   '/auth/_auth/register': typeof AuthAuthRegisterRoute
   '/auth/_auth/verify-email': typeof AuthAuthVerifyEmailRoute
   '/dashboard/budget-planner/create': typeof DashboardBudgetPlannerCreateRoute
+  '/dashboard/billing/': typeof DashboardBillingIndexRoute
   '/dashboard/budget-planner/': typeof DashboardBudgetPlannerIndexRoute
   '/dashboard/categories/': typeof DashboardCategoriesIndexRoute
+  '/dashboard/profile/': typeof DashboardProfileIndexRoute
+  '/dashboard/reports/': typeof DashboardReportsIndexRoute
   '/dashboard/settings/accounts/create': typeof DashboardSettingsAccountsCreateRoute
   '/dashboard/settings/accounts/': typeof DashboardSettingsAccountsIndexRoute
   '/dashboard/settings/currencies/': typeof DashboardSettingsCurrenciesIndexRoute
@@ -567,17 +567,17 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dashboard/settings'
     | '/auth'
-    | '/dashboard/billing'
-    | '/dashboard/profile'
-    | '/dashboard/reports'
     | '/dashboard/'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
     | '/auth/verify-email'
     | '/dashboard/budget-planner/create'
+    | '/dashboard/billing'
     | '/dashboard/budget-planner'
     | '/dashboard/categories'
+    | '/dashboard/profile'
+    | '/dashboard/reports'
     | '/dashboard/settings/accounts/create'
     | '/dashboard/settings/accounts'
     | '/dashboard/settings/currencies'
@@ -592,17 +592,17 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard/settings'
     | '/auth'
-    | '/dashboard/billing'
-    | '/dashboard/profile'
-    | '/dashboard/reports'
     | '/dashboard'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
     | '/auth/verify-email'
     | '/dashboard/budget-planner/create'
+    | '/dashboard/billing'
     | '/dashboard/budget-planner'
     | '/dashboard/categories'
+    | '/dashboard/profile'
+    | '/dashboard/reports'
     | '/dashboard/settings/accounts/create'
     | '/dashboard/settings/accounts'
     | '/dashboard/settings/currencies'
@@ -619,17 +619,17 @@ export interface FileRouteTypes {
     | '/dashboard/settings'
     | '/auth'
     | '/auth/_auth'
-    | '/dashboard/billing'
-    | '/dashboard/profile'
-    | '/dashboard/reports'
     | '/dashboard/'
     | '/auth/_auth/forgot-password'
     | '/auth/_auth/login'
     | '/auth/_auth/register'
     | '/auth/_auth/verify-email'
     | '/dashboard/budget-planner/create'
+    | '/dashboard/billing/'
     | '/dashboard/budget-planner/'
     | '/dashboard/categories/'
+    | '/dashboard/profile/'
+    | '/dashboard/reports/'
     | '/dashboard/settings/accounts/create'
     | '/dashboard/settings/accounts/'
     | '/dashboard/settings/currencies/'
@@ -676,13 +676,13 @@ export const routeTree = rootRoute
       "filePath": "dashboard/route.tsx",
       "children": [
         "/dashboard/settings",
-        "/dashboard/billing",
-        "/dashboard/profile",
-        "/dashboard/reports",
         "/dashboard/",
         "/dashboard/budget-planner/create",
+        "/dashboard/billing/",
         "/dashboard/budget-planner/",
-        "/dashboard/categories/"
+        "/dashboard/categories/",
+        "/dashboard/profile/",
+        "/dashboard/reports/"
       ]
     },
     "/dashboard/settings": {
@@ -716,18 +716,6 @@ export const routeTree = rootRoute
         "/auth/_auth/verify-email"
       ]
     },
-    "/dashboard/billing": {
-      "filePath": "dashboard/billing.tsx",
-      "parent": "/dashboard"
-    },
-    "/dashboard/profile": {
-      "filePath": "dashboard/profile.tsx",
-      "parent": "/dashboard"
-    },
-    "/dashboard/reports": {
-      "filePath": "dashboard/reports.tsx",
-      "parent": "/dashboard"
-    },
     "/dashboard/": {
       "filePath": "dashboard/index.tsx",
       "parent": "/dashboard"
@@ -752,12 +740,24 @@ export const routeTree = rootRoute
       "filePath": "dashboard/budget-planner/create.tsx",
       "parent": "/dashboard"
     },
+    "/dashboard/billing/": {
+      "filePath": "dashboard/billing/index.tsx",
+      "parent": "/dashboard"
+    },
     "/dashboard/budget-planner/": {
       "filePath": "dashboard/budget-planner/index.tsx",
       "parent": "/dashboard"
     },
     "/dashboard/categories/": {
       "filePath": "dashboard/categories/index.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/profile/": {
+      "filePath": "dashboard/profile/index.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/reports/": {
+      "filePath": "dashboard/reports/index.tsx",
       "parent": "/dashboard"
     },
     "/dashboard/settings/accounts/create": {

@@ -1,34 +1,24 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardTitle } from "../../../../components/ui/card";
-import { endOfMonth, format, startOfMonth } from "date-fns";
+import { addMonths, endOfMonth, format, startOfMonth, subMonths } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { getTransactionsForAccountAsync } from "../../../../utils/actions/transactions";
 import { useUserMainAccount } from "../../../../context/UserMainAccount";
 import AccordionTransactionGroupedByDate, {
   type TransactionsGrouped,
 } from "./AccordionTransactionGroupedByDate";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import moment from "moment";
 
 export default function SelectedCardTransactions() {
+  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   const { account } = useUserMainAccount();
-  const [weekStartsOn, setWeekStartsOn] = useState<number>(1);
   const currentMonthRange = useMemo(() => {
     const now = new Date();
     return {
       from: startOfMonth(now),
       to: endOfMonth(now),
     };
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const storedPreference = window.localStorage.getItem(
-      "finovora:calendar-week-start"
-    );
-    if (!storedPreference) return;
-    const parsed = Number(storedPreference);
-    if (!Number.isNaN(parsed) && parsed >= 0 && parsed <= 6) {
-      setWeekStartsOn(parsed);
-    }
   }, []);
 
   const rangeLabel = useMemo(() => {
@@ -65,15 +55,9 @@ export default function SelectedCardTransactions() {
   return (
     <div className="space-y-4">
       <TransactionPeriodSummary
-        monthLabel={
-          currentMonthRange.from
-            ? format(currentMonthRange.from, "MMMM yyyy")
-            : ""
-        }
+        monthValue={currentMonth}
         periodLabel={rangeLabel}
-        preferenceLabel={`Week starts on ${
-          weekdayLabels[weekStartsOn] ?? "Monday"
-        }`}
+        onChangeMonth={(val: Date) => setCurrentMonth(val)}
       />
       <Card>
         <CardContent>
@@ -92,7 +76,7 @@ export default function SelectedCardTransactions() {
 
         {isLoading ? (
           <div className="text-center py-8">
-            <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mb-2"></div>
+            <div className="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mb-2"></div>
             <div className="text-muted-foreground">Loading transactions...</div>
           </div>
         ) : transactionsGroupedByDate && Object.keys(transactionsGroupedByDate).length > 0 ? (
@@ -116,27 +100,22 @@ export default function SelectedCardTransactions() {
 }
 
 interface SummaryProps {
-  monthLabel: string;
-  preferenceLabel: string;
+  monthValue: Date;
   periodLabel: string;
+  onChangeMonth: (val: Date) => void;
 }
 
-const weekdayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
 function TransactionPeriodSummary({
-  monthLabel,
-  preferenceLabel,
+  monthValue,
   periodLabel,
+  onChangeMonth
 }: SummaryProps) {
   return (
-    <div className="rounded-2xl border border-border bg-white/80 px-4 py-3 shadow-sm backdrop-blur">
-      <p className="text-xs uppercase tracking-widest text-muted-foreground">
-        Current Month
-      </p>
       <div className="mt-2 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-lg font-semibold text-foreground">{monthLabel}</p>
-          <p className="text-sm text-muted-foreground">{preferenceLabel}</p>
+        <div className="flex items-center justify-between gap-1 w-[200px]">
+          <ChevronLeft onClick={() => onChangeMonth(subMonths(monthValue, 1))} />
+          <p className="text-lg font-semibold text-foreground">{moment(monthValue).format("MMMM YYYY")}</p>
+          <ChevronRight onClick={() => onChangeMonth(addMonths(monthValue, 1))} />
         </div>
         <div className="text-sm text-muted-foreground sm:text-right">
           <span className="text-[11px] uppercase tracking-wide">
@@ -145,6 +124,5 @@ function TransactionPeriodSummary({
           <p className="text-base font-semibold text-foreground">{periodLabel}</p>
         </div>
       </div>
-    </div>
   );
 }

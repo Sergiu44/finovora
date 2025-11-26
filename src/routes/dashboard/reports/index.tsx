@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useUserMainAccount } from "../../context/UserMainAccount";
+import { useUserMainAccount } from "../../../context/UserMainAccount";
 import { useMemo } from "react";
 import { format } from "date-fns";
 import {
@@ -9,11 +9,11 @@ import {
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "../../components/ui/chart";
+} from "../../../components/ui/chart";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
-import { CardContent } from "../../components/ui/card";
+import { CardContent } from "../../../components/ui/card";
 
-export const Route = createFileRoute("/dashboard/reports")({
+export const Route = createFileRoute("/dashboard/reports/")({
   component: RouteComponent,
 });
 

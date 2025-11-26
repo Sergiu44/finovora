@@ -1,11 +1,6 @@
 import { createFileRoute, Outlet, useRouter } from "@tanstack/react-router";
-import "./dashboard.css";
+import "../../styles/dashboard.css";
 import IconLink from "../../components/reusable/IconLink";
-import {
-  ArrowLeftStartOnRectangleIcon,
-  BellAlertIcon,
-  ChevronUpDownIcon,
-} from "@heroicons/react/20/solid";
 import moment from "moment";
 import { useState } from "react";
 import { AnimateChangeInHeight } from "../../utils/hoc/AnimateChangeInHeight";
@@ -13,17 +8,27 @@ import { createEnhancedAxios } from "../../configs/axios";
 import { useQuery } from "@tanstack/react-query";
 import { getAccountsForSwitch } from "../../utils/actions/accounts/userAccounts";
 import { useUserMainAccount } from "../../context/UserMainAccount";
-import { CogIcon, LucideHome, PlusIcon, TypeIcon, Wallet2Icon } from "lucide-react";
+import {
+  Bell,
+  ChevronsUpDownIcon,
+  CogIcon,
+  LucideHome,
+  PlusIcon,
+  SidebarClose,
+  SidebarOpen,
+  TypeIcon,
+  Wallet2Icon,
+} from "lucide-react";
 import { Button } from "../../components/ui/button";
-import AddTransactionForCurrentAccount from "./-components/AddTransactionForCurrentAccount";
+import AddTransactionForCurrentAccount from "./-index-components/AddTransactionForCurrentAccount";
 import { useUserDetails } from "../../context/UserDetails";
-import SwitchTheme from "../../components/reusable/switch/SwitchTheme";
 
 export const Route = createFileRoute("/dashboard")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [addTransactionModalOpen, setAddTransactionModalOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [walletOpen, setWalletOpen] = useState(false);
@@ -47,11 +52,21 @@ function RouteComponent() {
       });
   };
   return (
-    <div className="dashboard__grid-container">
-      <div className="flex flex-col p-4 max-h-screen sticky top-0 bg-white border-r rounded-none border-sidebar-border">
-        <h3 className="dark:text-white text-2xl font-semibold">Finovora</h3>
+    <div
+      className={`dashboard__grid-container ${!sidebarOpen && "dashboard__grid-container--sidebar-close"}`}
+    >
+      <div
+        id="dashboard__grid-container-sidebar"
+        className="overflow-hidden flex flex-col max-h-screen sticky top-0 bg-white border-r rounded-none border-sidebar-border"
+      >
+        <h3 className="border-b border-border h-[65px] grid items-center dark:text-white text-2xl font-semibold py-4 px-6">
+          {sidebarOpen ? "Finovora" : "F"}
+        </h3>
 
-        <div className="flex flex-col mt-12 gap-2">
+        <div
+          id="dashboard__grid-container-sidebar-content-wrapper"
+          className="flex flex-col gap-2 m-4"
+        >
           <IconLink
             href="/dashboard"
             icon={<LucideHome className="h-4 w-4" />}
@@ -97,10 +112,10 @@ function RouteComponent() {
 
         {/* Add user session */}
         {status !== "pending" ? (
-          <div className="mt-auto">
+          <div className="mt-auto px-4 mb-2 py-2 border-t border-border">
             <AnimateChangeInHeight className="mb-2">
               {walletOpen && (
-                <div className="py-3 rounded-md border border-border bg-white text-muted-foreground!">
+                <div className="rounded-[12px] border py-2 border-border bg-white text-muted-foreground! flex flex-col gap-1.5">
                   {data && data.length > 0 ? (
                     data?.map((account) => (
                       <div
@@ -108,7 +123,7 @@ function RouteComponent() {
                           setWalletOpen(false);
                           setUserMainAccountId(account.id);
                         }}
-                        className="mx-2 px-3 rounded-sm! py-3 flex justify-between items-center cursor-pointer hover:bg-muted"
+                        className="mx-1 px-3 py-1 rounded-[8px] flex justify-between items-center cursor-pointer hover:bg-muted-foreground/20"
                         key={account.id}
                       >
                         <div className="text-black text-sm">{account.name}</div>
@@ -125,32 +140,33 @@ function RouteComponent() {
                 </div>
               )}
             </AnimateChangeInHeight>
-            {!walletOpen && (
-              <Button
-                onClick={() => setAddTransactionModalOpen(true)}
-                className="flex items-center rounded-sm w-full cursor-pointer"
-                variant="default"
-                size="sm"
-              >
-                <PlusIcon className="size-3.5" />
-                Add transaction
-              </Button>
-            )}
+
             <div
               onClick={() => setWalletOpen(!walletOpen)}
-              className="hover:bg-muted cursor-pointer pl-2 py-2 mt-1 rounded-md  flex items-center justify-between"
+              className="hover:bg-muted-foreground/20 cursor-pointer px-3 py-2 rounded-md  flex items-center justify-between"
             >
               <p className="text-sm text-light-gray">
                 {account && account.name}
               </p>
               <div className="flex items-center gap-1 text-sm">
-                <span className="font-bold">{account && account.balance} </span>
-                <span className="font-bold">
+                <span className="font-semibold">
+                  {account && account.balance}
+                </span>
+                <span className="font-semibold">
                   {account && account.currency.symbol}
                 </span>
-                <ChevronUpDownIcon className="h-4 w-4" />
+                <ChevronsUpDownIcon className="h-4 w-4" />
               </div>
             </div>
+            <Button
+              onClick={() => setAddTransactionModalOpen(true)}
+              className="flex items-center rounded-sm w-full cursor-pointer mt-2"
+              variant="default"
+              size="sm"
+            >
+              <PlusIcon className="size-3.5" />
+              Add transaction
+            </Button>
           </div>
         ) : (
           <div className="mt-auto rounded-xl h-[40px] w-full animate-pulse bg-main"></div>
@@ -158,23 +174,36 @@ function RouteComponent() {
       </div>
 
       <div className="grow-1 bg-gray-50">
-        <div className="bg-white border-b border-sidebar-border px-6 py-3">
+        <div className="h-[65px] bg-white border-b border-sidebar-border px-4 py-3">
           <div className="flex items-center justify-between">
-            <span className="font-bold">{moment().format("DD MMM YYYY")}</span>
+            <div className="flex relative h-[37.27px] items-center gap-3">
+              <span
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="hover:bg-primary hover:text-white transition-colors rounded-full cursor-pointer p-2"
+              >
+                {sidebarOpen ? (
+                  <SidebarClose className="h-3.5 w-3.5" />
+                ) : (
+                  <SidebarOpen className="h-3.5 w-3.5" />
+                )}
+              </span>
+              <span className="font-bold">
+                {moment().format("DD MMM YYYY")}
+              </span>
+            </div>
 
             <div className="flex relative gap-2 items-center">
-              <BellAlertIcon className="h-4 w-4" />
+              <Bell className="h-4 w-4" />
 
               {user && (
                 <>
-                  <SwitchTheme />
                   <div className="mt-auto relative">
                     <div
                       onClick={() => setMenuOpen(!menuOpen)}
                       className="hover:bg-bg-main-light cursor-pointer px-4 py-2 rounded-md  flex items-center justify-between"
                     >
                       <p className="text-sm">{user?.email}</p>
-                      <ChevronUpDownIcon className="icon" />
+                      <ChevronsUpDownIcon className="w-4 h-4" />
                     </div>
 
                     <AnimateChangeInHeight className="mb-2 absolute inset-x-0">
@@ -182,11 +211,9 @@ function RouteComponent() {
                         <div className="py-2 rounded-md bg-muted">
                           <div className="flex px-4 hover:bg-white hover:text-black text-muted-foreground mx-2 rounded-md cursor-pointer py-2 items-center justify-between">
                             <div>My Profile</div>
-                            <ArrowLeftStartOnRectangleIcon className="h-5" />
                           </div>
                           <div className="flex px-4 hover:bg-white hover:text-black text-muted-foreground mx-2 rounded-md cursor-pointer py-2 items-center justify-between">
                             <div>Settings</div>
-                            <ArrowLeftStartOnRectangleIcon className="h-5" />
                           </div>
 
                           <div className="h-[1px] bg-border w-full my-2" />
@@ -194,7 +221,6 @@ function RouteComponent() {
                             <div onClick={async () => handleLogout()}>
                               Logout
                             </div>
-                            <ArrowLeftStartOnRectangleIcon className="h-5" />
                           </div>
                         </div>
                       )}

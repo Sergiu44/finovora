@@ -7,7 +7,7 @@ interface AnimateChangeInHeightProps extends PropsWithChildren {
 
 export const AnimateChangeInHeight: React.FC<AnimateChangeInHeightProps> = ({ children, className }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [height, setHeight] = useState<number | "auto">(0);
+  const [height, setHeight] = useState<number>(0);
 
   useEffect(() => {
     if (containerRef.current) {

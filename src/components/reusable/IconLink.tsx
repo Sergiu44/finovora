@@ -1,11 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import type { BaseProps } from "../../types/components/BaseProps";
-import { useState, type PropsWithChildren } from "react";
-import { ChevronRightIcon } from "@heroicons/react/16/solid";
-import { AnimatePresence, motion } from "framer-motion";
-import { AnimateChangeInHeight } from "../../utils/hoc/AnimateChangeInHeight";
+import { useState } from "react";
 
-interface IconLinkProps extends PropsWithChildren<BaseProps> {
+interface IconLinkProps extends BaseProps {
   icon: React.ReactNode;
   href?: string;
   text: string;
@@ -18,7 +15,6 @@ export default function IconLink({
   href,
   size,
   text,
-  children,
   variant = "default",
 }: IconLinkProps) {
   const [active, setActive] = useState(false);
@@ -36,19 +32,18 @@ export default function IconLink({
             }
           : {
               className:
-                "bg-primary-300 hover:bg-primary-400! text-white! transition-all ease-in-out duration-500",
+                "bg-primary-300 hover:bg-primary! text-white! transition-all ease-in-out duration-500",
             }
       }
-      className={`group font-medium select-none py-3 px-4 rounded-[32px] cursor-pointer items-center gap-2 w-full dark:text-muted-foreground ${className || ""} ${variant === "slim" ? "py-1.5! px-3! rounded-[20px]! hover:bg-primary-400 hover:text-white" : "hover:bg-gray-100 dark:hover:text-white"}`}
+      className={`group text-muted-foreground hover:text-foreground font-medium select-none py-1.5 px-4 rounded-full cursor-pointer items-center gap-2 w-full dark:text-muted-foreground ${className || ""} ${variant === "slim" ? "font-medium py-1.5! px-3! rounded-[20px]! hover:bg-primary/10" : "hover:bg-gray-100 dark:hover:text-white"}`}
     >
       {({ isActive }) => (
-        <>
           <div
             onClick={() => setActive(!active)}
-            className="flex flex-wrap items-center gap-2 w-full flex-[100%] "
+            className="flex items-center gap-2 w-full flex-[100%] whitespace-nowrap"
           >
             <span
-              className={`${variant === "slim" ? "h-3 w-3" : "h-4 w-4"} ${isActive && "text-white"}`}
+              className={`${variant === "slim" ? "hidden lg:block h-3 w-3" : "h-4 w-4"} ${isActive && "text-white"}`}
             >
               {icon}
             </span>
@@ -56,37 +51,12 @@ export default function IconLink({
               className={
                 size
                   ? `text-${size}`
-                  : `${variant === "slim" ? "text-sm" : ""}`
+                  : `${variant === "slim" ? "text-sm" : "text-xs lg:text-base"}`
               }
             >
               {text}
             </div>
-            {children && (
-              <ChevronRightIcon
-                className={`ml-auto transition-discrete ${active ? "rotate-z-[90deg]" : ""}`}
-              />
-            )}
           </div>
-          {children && (
-            <AnimatePresence>
-              <AnimateChangeInHeight>
-                {active && (
-                  <motion.div
-                    transition={{
-                      delay: 0.1,
-                      duration: 0.2,
-                    }}
-                    initial={{ y: -100 }}
-                    animate={{ y: 0 }}
-                    exit={{ y: -100 }}
-                  >
-                    <div>{children}</div>
-                  </motion.div>
-                )}
-              </AnimateChangeInHeight>
-            </AnimatePresence>
-          )}
-        </>
       )}
     </Link>
   );

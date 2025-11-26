@@ -29,6 +29,7 @@ import { Checkbox } from "../../../../components/ui/checkbox";
 import { Button } from "../../../../components/ui/button";
 import { Card } from "../../../../components/ui/card";
 import { Pencil, PlusIcon, Trash } from "lucide-react";
+import { SettingsPageLayout } from "../-components/SettingsPageHeader";
 
 export const Route = createFileRoute("/dashboard/settings/accounts/")({
   component: RouteComponent,
@@ -88,19 +89,10 @@ function RouteComponent() {
   if (status === "pending") return <div>Loading...</div>;
   if (status === "error") return <div>Error loading account types</div>;
   return location.pathname.endsWith("accounts") ? (
-    <div className="mt-2 flex flex-col gap-y-4">
-      <div className="grid grid-cols-[minmax(250px,max(20%,250px))_1fr] py-4">
-        <div className="flex items-baseline justify-between col-span-2">
-          <p className="font-semibold text-xl col-span-2">Accounts</p>
-          <Button
-            size="sm"
-            onClick={() =>
-              router.navigate({ to: "/dashboard/settings/accounts/create" })
-            }
-          >
-            <PlusIcon className="h-3 w-3" /> Add new account
-          </Button>
-        </div>
+    <SettingsPageLayout title="Accounts" description="Manage your accounts" actions={<Button size="sm" onClick={() => router.navigate({ to: "/dashboard/settings/accounts/create" })}>
+      <PlusIcon className="h-3 w-3" /> Add new account
+    </Button>}>
+       
         <Card className="w-full mt-2 col-span-2 py-2 pl-6 relative border-muted bg-card">
               <div className="grid mx-6 text-sm text-muted-foreground/40 grid-cols-[20px_50px_1fr_100px_100px_50px] pr-8">
                 <div></div>
@@ -194,7 +186,6 @@ function RouteComponent() {
             </div>
           )}
         </Card>
-      </div>
       <Separator className="col-span-2 border-border !h-[1.5px]" />
 
       <div className="grid grid-cols-[minmax(250px,max(20%,250px))_1fr_1fr] p-4">
@@ -257,7 +248,7 @@ function RouteComponent() {
           open={openDeleteAccountModal}
         />
       )}
-    </div>
+    </SettingsPageLayout>
   ) : (
     <Outlet />
   );

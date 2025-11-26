@@ -107,14 +107,13 @@ textarea:not([rows]) {
   --card-foreground: oklch(0 0 0);
   --popover: oklch(0.9911 0 0);
   --popover-foreground: oklch(0 0 0);
-  --primary: oklch(0.5393 0.2713 286.7462);
   --primary-foreground: oklch(1.0000 0 0);
   --secondary: oklch(0.9540 0.0063 255.4755);
   --secondary-foreground: oklch(0.1344 0 0);
   --muted: oklch(0.9702 0 0);
-  --muted-foreground: oklch(0.4386 0 0);
-  --accent: oklch(0.9393 0.0288 266.3680);
-  --accent-foreground: oklch(0.5445 0.1903 259.4848);
+  --muted-foreground: oklch(0.5504 0.0144 285.92);
+  --accent-foreground: oklch(0.7461 0.1411 174.66);
+  --accent: oklch(0.9797 0.0238 173.86);
   --destructive: oklch(0.6290 0.1902 23.0704);
   --destructive-foreground: oklch(1.0000 0 0);
   --border: oklch(0.9300 0.0094 286.2156);
@@ -154,17 +153,17 @@ textarea:not([rows]) {
   --spacing: 0.27rem;
 
   /* Personal colors */
-  --primary-50: 93.67% 0.036 301.44;
-    --primary-100: 87.48% 0.071 299.27;
-    --primary-200: 75.18% 0.146 297.21;
-    --primary-300: 63.68% 0.217 293.78;
-    --primary-400: 54.30% 0.271 288.06;
-    --primary-500: 48.58% 0.297 278.71;
-    --primary-600: 41.23% 0.250 279.47;
-    --primary-700: 33.44% 0.202 280.21;
-    --primary-800: 25.28% 0.150 282.36;
-    --primary-900: 16.43% 0.094 288.07;
-    --primary-950: 11.68% 0.064 295.61;
+  --primary-50: 94.27% 0.029 301;
+--primary-100: 88.42% 0.061 302.12;
+--primary-200: 77.06% 0.121 300.55;
+--primary-300: 65.97% 0.184 298.28;
+--primary: 55.93% 0.238 293.95;
+--primary-500: 48.44% 0.268 287.14;
+--primary-600: 41.28% 0.226 287.51;
+--primary-700: 33.86% 0.181 288.86;
+--primary-800: 25.96% 0.132 290.44;
+--primary-900: 17.38% 0.081 294.12;
+--primary-950: 14.65% 0.063 296.61;
 }
 
 .dark {
@@ -174,7 +173,6 @@ textarea:not([rows]) {
   --card-foreground: oklch(0.9551 0 0);
   --popover: oklch(0.2568 0.0076 274.6528);
   --popover-foreground: oklch(0.9551 0 0);
-  --primary: oklch(0.6132 0.2294 291.7437);
   --primary-foreground: oklch(1.0000 0 0);
   --secondary: oklch(0.2940 0.0130 272.9312);
   --secondary-foreground: oklch(0.9551 0 0);
@@ -219,17 +217,17 @@ textarea:not([rows]) {
   --shadow-2xl: 0px 2px 3px 0px hsl(0 0% 0% / 0.40);
 
   /* Personal colors */
-  --primary-50: 93.67% 0.036 301.44;
-    --primary-100: 87.48% 0.071 299.27;
-    --primary-200: 75.18% 0.146 297.21;
-    --primary-300: 63.68% 0.217 293.78;
-    --primary-400: 54.30% 0.271 288.06;
-    --primary-500: 48.58% 0.297 278.71;
-    --primary-600: 41.23% 0.250 279.47;
-    --primary-700: 33.44% 0.202 280.21;
-    --primary-800: 25.28% 0.150 282.36;
-    --primary-900: 16.43% 0.094 288.07;
-    --primary-950: 11.68% 0.064 295.61;
+  --primary-50: 94.27% 0.029 301;
+--primary-100: 88.42% 0.061 302.12;
+--primary-200: 77.06% 0.121 300.55;
+--primary-300: 65.97% 0.184 298.28;
+--primary: 55.93% 0.238 293.95;
+--primary-500: 48.44% 0.268 287.14;
+--primary-600: 41.28% 0.226 287.51;
+--primary-700: 33.86% 0.181 288.86;
+--primary-800: 25.96% 0.132 290.44;
+--primary-900: 17.38% 0.081 294.12;
+--primary-950: 14.65% 0.063 296.61;
 }
 
 @theme inline {
@@ -292,6 +290,7 @@ textarea:not([rows]) {
   --tracking-widest: calc(var(--tracking-normal) + 0.1em);
 
   /* Personal colors */
+  --color-primary: oklch(var(--primary));
   --color-primary-50: oklch(var(--primary-50));
   --color-primary-100: oklch(var(--primary-100));
   --color-primary-200: oklch(var(--primary-200));

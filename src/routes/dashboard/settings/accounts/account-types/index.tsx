@@ -70,7 +70,7 @@ function RouteComponent() {
           className="flex items-center gap-2 cursor-pointer"
           onClick={() => router.navigate({ to: "/dashboard/settings/accounts" })}
         >
-          <ChevronLeftIcon className="h-6 w-6" />
+          <ChevronLeftIcon className="h-4 w-4" />
           <h3>Account types</h3>
         </span>
         <Button

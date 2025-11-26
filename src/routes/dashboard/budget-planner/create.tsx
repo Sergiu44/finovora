@@ -232,7 +232,7 @@ function RouteComponent() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <ChartBarIcon className="h-5 w-5" />
+              <ChartBarIcon className="h-4 w-4" />
               Budget Summary
             </CardTitle>
           </CardHeader>
@@ -268,7 +268,7 @@ function RouteComponent() {
 
             {isOverBudget && (
               <div className="mt-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center gap-2">
-                <ExclamationTriangleIcon className="h-5 w-5 text-destructive" />
+                <ExclamationTriangleIcon className="h-4 w-4 text-destructive" />
                 <span className="text-sm text-destructive font-medium">
                   Budget exceeds income by $
                   {Math.abs(remainingIncome).toFixed(2)}
@@ -282,7 +282,7 @@ function RouteComponent() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CurrencyDollarIcon className="h-5 w-5" />
+              <CurrencyDollarIcon className="h-4 w-4" />
               Category Budgets
             </CardTitle>
           </CardHeader>

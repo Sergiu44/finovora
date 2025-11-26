@@ -7,9 +7,9 @@ export default function SwitchTheme() {
   return (
     <div className="rounded-full">
       {theme === "dark" ? (
-        <Moon onClick={() => setTheme("light")} />
+        <Moon className="h-4 w-4" onClick={() => setTheme("light")} />
       ) : (
-        <Sun onClick={() => setTheme("dark")} />
+        <Sun className="h-4 w-4" onClick={() => setTheme("dark")} />
       )}
     </div>
   );

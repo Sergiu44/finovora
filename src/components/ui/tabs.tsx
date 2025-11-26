@@ -21,12 +21,11 @@ function Tabs({
 }
 
 const tabsListVariants = cva(
-  "inline-flex h-10 w-fit items-center justify-center",
+  "inline-flex h-10 w-fit items-center justify-center bg-white rounded-[16px] border border-border",
   {
     variants: {
       variant: {
-        default: "bg-muted rounded-lg p-[3px]",
-        underline: "",
+        default: "",
       },
     },
   }
@@ -48,13 +47,11 @@ function TabsList({
 }
 
 const tabsTriggerVariants = cva(
-  "box-border border-b-2 min-w-fit border-transparent text-[14px]! cursor-pointer hover:border-light-gray data-[state=active]:border-light-gray dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 px-4 py-1 transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-black text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "box-border min-w-fit border-transparent first:rounded-l-[16px] px-2 last:rounded-r-[16px] data-[state=active]:text-foreground mx-0! font-medium text-[14px]! h-full! hover:text-muted-foreground/75  cursor-pointer data-[state=active]:border-light-gray dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 px-6 py-1 transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white text-muted-foreground/50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
-        default: "dark:data-[state=active]:bg-input/30 rounded-sm mx-0.5",
-        underline:
-          "data-[state=active]:border-b-2 data-[state=active]:border-primary hover:border-primary/30 -mb-0.5",
+        default: "dark:data-[state=active]:bg-input/30 mx-0.5",
       },
     },
     defaultVariants: {
