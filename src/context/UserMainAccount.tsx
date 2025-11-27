@@ -31,10 +31,10 @@ export const UserMainAccountProvider = (props: PropsWithChildren) => {
 
   const { data, status } = useQuery({
     queryKey: ["userMainAccount", userMainAccountId],
+    enabled: !!userMainAccountId,
     queryFn: async () => {
-      if (userMainAccountId) {
+      if(userMainAccountId)
         return getUserAccount(userMainAccountId);
-      }
     },
   });
   return (

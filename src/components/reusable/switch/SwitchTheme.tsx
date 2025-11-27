@@ -5,7 +5,7 @@ export default function SwitchTheme() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="rounded-full">
+    <div className="rounded-full" onClick={e =>e.stopPropagation()}>
       {theme === "dark" ? (
         <Moon className="h-4 w-4" onClick={() => setTheme("light")} />
       ) : (

@@ -26,6 +26,7 @@ import {
 import { Op } from "sequelize";
 import { hashPassword } from "../utils/utilities/bcrypt";
 import { generateOTP } from "../utils/utilities/otpGenerator";
+import { UserProfile } from "../features/users/userProfiles/userProfile";
 
 export type CreateAccountParams = {
   email: string;
@@ -89,7 +90,7 @@ export const loginUser = async ({
   password,
   userAgent,
 }: LoginParams) => {
-  const newUser = await User.findOne({ where: { email } });
+  const newUser = await User.findOne({ where: { email }, include: [{ model: UserProfile, as: "profile" }] });
   appAssert(newUser, NOT_FOUND, "Email/password combination does not exist");
 
   const isValid = await newUser.comparePassword(newUser, password);

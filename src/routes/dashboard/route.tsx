@@ -22,6 +22,8 @@ import {
 import { Button } from "../../components/ui/button";
 import AddTransactionForCurrentAccount from "./-index-components/AddTransactionForCurrentAccount";
 import { useUserDetails } from "../../context/UserDetails";
+import SwitchTheme from "../../components/reusable/switch/SwitchTheme";
+import SwitchApp from "./-index-components/SwitchApp";
 
 export const Route = createFileRoute("/dashboard")({
   component: RouteComponent,
@@ -59,9 +61,15 @@ function RouteComponent() {
         id="dashboard__grid-container-sidebar"
         className="overflow-hidden flex flex-col max-h-screen sticky top-0 bg-white border-r rounded-none border-sidebar-border"
       >
-        <h3 className="border-b border-border h-[65px] grid items-center dark:text-white text-2xl font-semibold py-4 px-6">
+        <div className="border-b border-border grid items-center py-4 px-4">
+
+        <h3 className="dark:text-white text-2xl font-semibold">
           {sidebarOpen ? "Finovora" : "F"}
         </h3>
+
+        <SwitchApp />
+        </div>
+
 
         <div
           id="dashboard__grid-container-sidebar-content-wrapper"
@@ -143,18 +151,24 @@ function RouteComponent() {
 
             <div
               onClick={() => setWalletOpen(!walletOpen)}
-              className="hover:bg-muted-foreground/20 cursor-pointer px-3 py-2 rounded-md  flex items-center justify-between"
+              className="hover:bg-muted-foreground/20 cursor-pointer px-3 py-2 rounded-[12px] flex flex-col gap-1"
             >
+              <div className="flex items-center justify-between gap-1">
+
               <p className="text-sm text-light-gray">
                 {account && account.name}
               </p>
-              <div className="flex items-center gap-1 text-sm">
+              <SwitchTheme />
+              </div>
+              <div className="flex gap-1 text-sm">
+                <div>
                 <span className="font-semibold">
                   {account && account.balance}
                 </span>
                 <span className="font-semibold">
                   {account && account.currency.symbol}
                 </span>
+                </div>
                 <ChevronsUpDownIcon className="h-4 w-4" />
               </div>
             </div>
@@ -173,7 +187,7 @@ function RouteComponent() {
         )}
       </div>
 
-      <div className="grow-1 bg-gray-50">
+      <div className="grow-1 bg-gray-50/50">
         <div className="h-[65px] bg-white border-b border-sidebar-border px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex relative h-[37.27px] items-center gap-3">

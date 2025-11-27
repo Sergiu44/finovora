@@ -15,6 +15,8 @@ import { UserGradient } from "../../features/users/userGradients/userGradient";
 import { HistoryCurrencyRate } from "../../features/historyCurrencyRates/historyCurrencyRate";
 import { UserHistoryCurrencyRate } from "../../features/historyCurrencyRates/user/userHistoryCurrencyRate";
 import { BudgetExpense } from "../../features/categories/categoryBudget/categoryBudget";
+import { UserProfile } from "../../features/users/userProfiles/userProfile";
+import { ProfileSetupSession } from "../../features/users/profileSetupSessions/profileSetupSession";
 
 export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
   private static instance: SequelizeDatabaseWrapper | null = null;
@@ -90,10 +92,12 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
             HistoryCurrencyRate,
             UserHistoryCurrencyRate,
             BudgetExpense,
+            UserProfile,
+            ProfileSetupSession,
           ],
         });
       default:
-        return new Sequelize("finovora", "root", "Copernic@1234", {
+        return new Sequelize("finovora", "", "", {
           port: 3306,
           host: "localhost",
           dialect: "mysql",
@@ -118,6 +122,8 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
     HistoryCurrencyRate.configInit(dbInstance);
     UserHistoryCurrencyRate.configInit(dbInstance);
     BudgetExpense.configInit(dbInstance);
+    UserProfile.configInit(dbInstance);
+    ProfileSetupSession.configInit(dbInstance);
 
     Account.associate();
     AccountType.associate();
@@ -128,5 +134,7 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
     UserHistoryCurrencyRate.associate();
     HistoryCurrencyRate.associate();
     BudgetExpense.associate();
+    UserProfile.associate();
+    ProfileSetupSession.associate();
   }
 }

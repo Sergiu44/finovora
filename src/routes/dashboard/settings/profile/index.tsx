@@ -8,14 +8,17 @@ import { SettingsPageLayout } from "../-components/SettingsPageHeader";
 import { PersonalInfoTab } from "./-components/PersonalInfoTab";
 import { AccountDetailsTab } from "./-components/AccountDetailsTab";
 import { PreferencesTab } from "./-components/PreferencesTab";
+import { useUserDetails } from "../../../../context/UserDetails";
+import { PlaceholderMissingProfile } from "../../../../components/reusable/placeholderMissingProfile/PlaceholderMissingProfile";
 
 export const Route = createFileRoute("/dashboard/settings/profile/")({
   component: RouteComponent,
 });
 
-function RouteComponent() {
+export function ProfileSettingsView() {
+  const { user, profileSetupSession, completeProfileSetupSession } =
+    useUserDetails();
   const [isEditing, setIsEditing] = useState(false);
-  const [profileImage, setProfileImage] = useState<File | null>(null);
 
   // Form validation setup
   const { values, errors, onChangeInput, handleCheckFormErrors } = useValidation(
@@ -43,21 +46,18 @@ function RouteComponent() {
       .applyCheckOnlyOnSubmit()
   );
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setProfileImage(file);
-    }
+  const handleImageUpload = () => {
+    // Future enhancement: upload preview
   };
 
   const handleSave = () => {
     if (handleCheckFormErrors()) {
       return;
     }
-
-    // Here you would typically save the data to your backend
-    console.log("Saving profile data:", { ...values, profileImage });
     setIsEditing(false);
+    if (profileSetupSession) {
+      completeProfileSetupSession(profileSetupSession.token).catch(() => {});
+    }
   };
 
   const handleCancel = () => {
@@ -65,7 +65,10 @@ function RouteComponent() {
     // Reset form to original values if needed
   };
 
-  return (
+  const canEditProfile = Boolean(user?.profile || profileSetupSession);
+  const isSetupMode = Boolean(profileSetupSession && !user?.profile);
+
+  return canEditProfile ? (
     <SettingsPageLayout
       title="Profile Settings"
       description="Manage your personal information and preferences"
@@ -74,6 +77,13 @@ function RouteComponent() {
       onSave={handleSave}
       onCancel={handleCancel}
     >
+      {isSetupMode && (
+        <div className="mb-4 rounded-xl border border-accent/40 bg-accent/10 p-4 text-sm text-accent-foreground">
+          Secure setup session active. Your link expires at{" "}
+          {new Date(profileSetupSession!.expiresAt).toLocaleString()}.
+        </div>
+      )}
+
       <Tabs defaultValue="personal" className="w-full shadow-none border-none">
         <TabsList variant="default">
           <TabsTrigger value="personal">Personal Info</TabsTrigger>
@@ -105,5 +115,11 @@ function RouteComponent() {
         </TabsContent>
       </Tabs>
     </SettingsPageLayout>
+  ) : (
+    <PlaceholderMissingProfile />
   );
+}
+
+function RouteComponent() {
+  return <ProfileSettingsView />;
 }

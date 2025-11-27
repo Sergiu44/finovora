@@ -3,6 +3,7 @@ import { HasMany, Model, Table } from "sequelize-typescript";
 import { compareValues, hashPassword } from "../../utils/utilities/bcrypt";
 import { Account } from "../accounts/account";
 import { AccountType } from "../accounts/accountTypes/accountType";
+import { ProfileSetupSession } from "./profileSetupSessions/profileSetupSession";
 
 type UserAttributes = {
   id: number;
@@ -52,6 +53,9 @@ export default class User extends Model<
 
   @HasMany(() => AccountType, "userId")
   declare accountTypes: NonAttribute<AccountType[]>;
+
+  @HasMany(() => ProfileSetupSession, "userId")
+  declare profileSetupSessions?: NonAttribute<ProfileSetupSession[]>;
 
   public omitPassword(): Omit<UserAttributes, "password"> {
     const { password, ...userWithoutPassword } = this.dataValues;

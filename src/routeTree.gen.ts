@@ -24,6 +24,7 @@ import { Route as DashboardCategoriesIndexImport } from './routes/dashboard/cate
 import { Route as DashboardBudgetPlannerIndexImport } from './routes/dashboard/budget-planner/index'
 import { Route as DashboardBillingIndexImport } from './routes/dashboard/billing/index'
 import { Route as DashboardBudgetPlannerCreateImport } from './routes/dashboard/budget-planner/create'
+import { Route as AuthProfileSetupTokenImport } from './routes/auth/profile-setup/$token'
 import { Route as AuthAuthVerifyEmailImport } from './routes/auth/_auth.verify-email'
 import { Route as AuthAuthRegisterImport } from './routes/auth/_auth.register'
 import { Route as AuthAuthLoginImport } from './routes/auth/_auth.login'
@@ -116,6 +117,12 @@ const DashboardBudgetPlannerCreateRoute =
     path: '/budget-planner/create',
     getParentRoute: () => DashboardRouteRoute,
   } as any)
+
+const AuthProfileSetupTokenRoute = AuthProfileSetupTokenImport.update({
+  id: '/profile-setup/$token',
+  path: '/profile-setup/$token',
+  getParentRoute: () => AuthRoute,
+} as any)
 
 const AuthAuthVerifyEmailRoute = AuthAuthVerifyEmailImport.update({
   id: '/verify-email',
@@ -277,6 +284,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/verify-email'
       preLoaderRoute: typeof AuthAuthVerifyEmailImport
       parentRoute: typeof AuthAuthImport
+    }
+    '/auth/profile-setup/$token': {
+      id: '/auth/profile-setup/$token'
+      path: '/profile-setup/$token'
+      fullPath: '/auth/profile-setup/$token'
+      preLoaderRoute: typeof AuthProfileSetupTokenImport
+      parentRoute: typeof AuthImport
     }
     '/dashboard/budget-planner/create': {
       id: '/dashboard/budget-planner/create'
@@ -470,10 +484,12 @@ const AuthAuthRouteWithChildren = AuthAuthRoute._addFileChildren(
 
 interface AuthRouteChildren {
   AuthAuthRoute: typeof AuthAuthRouteWithChildren
+  AuthProfileSetupTokenRoute: typeof AuthProfileSetupTokenRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthAuthRoute: AuthAuthRouteWithChildren,
+  AuthProfileSetupTokenRoute: AuthProfileSetupTokenRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -488,6 +504,7 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
   '/auth/verify-email': typeof AuthAuthVerifyEmailRoute
+  '/auth/profile-setup/$token': typeof AuthProfileSetupTokenRoute
   '/dashboard/budget-planner/create': typeof DashboardBudgetPlannerCreateRoute
   '/dashboard/billing': typeof DashboardBillingIndexRoute
   '/dashboard/budget-planner': typeof DashboardBudgetPlannerIndexRoute
@@ -514,6 +531,7 @@ export interface FileRoutesByTo {
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
   '/auth/verify-email': typeof AuthAuthVerifyEmailRoute
+  '/auth/profile-setup/$token': typeof AuthProfileSetupTokenRoute
   '/dashboard/budget-planner/create': typeof DashboardBudgetPlannerCreateRoute
   '/dashboard/billing': typeof DashboardBillingIndexRoute
   '/dashboard/budget-planner': typeof DashboardBudgetPlannerIndexRoute
@@ -543,6 +561,7 @@ export interface FileRoutesById {
   '/auth/_auth/login': typeof AuthAuthLoginRoute
   '/auth/_auth/register': typeof AuthAuthRegisterRoute
   '/auth/_auth/verify-email': typeof AuthAuthVerifyEmailRoute
+  '/auth/profile-setup/$token': typeof AuthProfileSetupTokenRoute
   '/dashboard/budget-planner/create': typeof DashboardBudgetPlannerCreateRoute
   '/dashboard/billing/': typeof DashboardBillingIndexRoute
   '/dashboard/budget-planner/': typeof DashboardBudgetPlannerIndexRoute
@@ -572,6 +591,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/auth/verify-email'
+    | '/auth/profile-setup/$token'
     | '/dashboard/budget-planner/create'
     | '/dashboard/billing'
     | '/dashboard/budget-planner'
@@ -597,6 +617,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/auth/verify-email'
+    | '/auth/profile-setup/$token'
     | '/dashboard/budget-planner/create'
     | '/dashboard/billing'
     | '/dashboard/budget-planner'
@@ -624,6 +645,7 @@ export interface FileRouteTypes {
     | '/auth/_auth/login'
     | '/auth/_auth/register'
     | '/auth/_auth/verify-email'
+    | '/auth/profile-setup/$token'
     | '/dashboard/budget-planner/create'
     | '/dashboard/billing/'
     | '/dashboard/budget-planner/'
@@ -703,7 +725,8 @@ export const routeTree = rootRoute
     "/auth": {
       "filePath": "auth",
       "children": [
-        "/auth/_auth"
+        "/auth/_auth",
+        "/auth/profile-setup/$token"
       ]
     },
     "/auth/_auth": {
@@ -735,6 +758,10 @@ export const routeTree = rootRoute
     "/auth/_auth/verify-email": {
       "filePath": "auth/_auth.verify-email.tsx",
       "parent": "/auth/_auth"
+    },
+    "/auth/profile-setup/$token": {
+      "filePath": "auth/profile-setup/$token.tsx",
+      "parent": "/auth"
     },
     "/dashboard/budget-planner/create": {
       "filePath": "dashboard/budget-planner/create.tsx",
