@@ -19,7 +19,7 @@ export default function EmptyAccountCard({
       exit={{ opacity: 0, scale: 0.8 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
     >
-      <div className="rounded-lg p-6 text-muted-foreground bg-muted/50 shadow-lg h-[200px] border-2 border-dashed border-muted-foreground/20 flex items-center justify-center">
+      <div className="rounded-base p-6 text-muted-foreground bg-muted/50 shadow-lg h-[200px] border-2 border-dashed border-muted-foreground/20 flex items-center justify-center">
         <div className="text-center">
           <PlusIcon className="w-8 h-8 mx-auto mb-2 opacity-50" />
           <p className="text-sm">Select an account to continue</p>

@@ -1,6 +1,11 @@
 import { useState } from "react";
 import Validator from "./Validator";
 
+type ValidationRule = {
+  check: (value: any) => boolean;
+  errorMessage: string;
+};
+
 export const useValidation = (validator: Validator) => {
   const formData = validator.getConfiguration();
   const checkOnlyOnSubmit = validator.getCheckOnlyOnSubmit();
@@ -42,7 +47,7 @@ export const useValidation = (validator: Validator) => {
     setErrors({
       ...errors,
       [name]: formData[name].validations.find(
-        (validation: { check: Function; errorMessage: string }) => !validation.check(inputValue)
+        (validation: ValidationRule) => !validation.check(inputValue)
       )?.errorMessage,
     });
   };
@@ -58,25 +63,41 @@ export const useValidation = (validator: Validator) => {
       return;
     }
 
+    console.log(value);
+    console.log(formData[name].validations);
+    console.log(formData[name].validations.find(
+      (validation: ValidationRule) => !validation.check(value)
+    )?.errorMessage);
+
     setErrors({
       ...errors,
       [name]: formData[name].validations.find(
-        (validation: { check: Function; errorMessage: string }) => !validation.check(value)
+        (validation: ValidationRule) => !validation.check(value)
       )?.errorMessage,
     });
   };
 
-  const handleCheckFormErrors = () => {
-    const errors = {} as { [key: string]: string };
-    Object.keys(values).map((key) => {
-      const validation = formData[key].validations.find(
-        (validation: { check: Function }) => !validation.check(values[key])
-      );
-      errors[key] = validation ? validation.errorMessage : "";
-    });
-    setErrors({ ...errors });
+  const handleCheckFormErrors = (fields?: string[]) => {
+    const keysToValidate = fields ?? Object.keys(values);
+    const updatedErrors = { ...errors };
 
-    return Object.keys(errors).filter((key) => typeof errors[key] === "string" && errors[key].trim() !== "").length > 0;
+    keysToValidate.forEach((key) => {
+      if (!formData[key]) {
+        return;
+      }
+      const validation = formData[key].validations.find(
+        (validation: ValidationRule) => !validation.check(values[key])
+      );
+      updatedErrors[key] = validation ? validation.errorMessage : "";
+    });
+
+    setErrors(updatedErrors);
+
+    return keysToValidate.some(
+      (key) =>
+        typeof updatedErrors[key] === "string" &&
+        updatedErrors[key].trim() !== ""
+    );
   };
 
   const applyErrorsFromApi = (errors: any[]) => {

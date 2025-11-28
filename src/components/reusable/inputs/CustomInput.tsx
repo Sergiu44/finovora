@@ -110,7 +110,7 @@ export default function CustomInput({
       </div>
       {errorMessage && (
         <ErrorMessage
-          wrapperClassName="ml-2 text-sm"
+          wrapperClassName="text-sm"
           errorMessage={errorMessage}
         />
       )}

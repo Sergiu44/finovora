@@ -106,7 +106,7 @@ function RouteComponent() {
                     <DropdownMenuTrigger className="btn btn-sm flex gap-1.5 items-center">
                       Actions <EllipsisVerticalIcon className="w-4 h-4" />{" "}
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="rounded-md p-2">
+                    <DropdownMenuContent className="rounded-base p-2">
                       <DropdownMenuItem>Profile</DropdownMenuItem>
                       <DropdownMenuItem>Billing</DropdownMenuItem>
                       <DropdownMenuItem>Team</DropdownMenuItem>
@@ -126,7 +126,7 @@ function RouteComponent() {
                   </DropdownMenu>
                 </div>
               </div>
-              <div className="bg-bg-main-light p-4 my-2 rounded-md ">
+              <div className="bg-bg-main-light p-4 my-2 rounded-base ">
                 <p>{data[selectedAccountType].description || "No description available."}</p>
               </div>
             </>
@@ -137,7 +137,7 @@ function RouteComponent() {
             data.map((accountType, index) => (
               <div
                 onClick={() => setSelectedAccountType(index)}
-                className={`cursor-pointer hover:border-bg-main bg-bg-main-light p-4 mb-2.5 rounded-md border-2 border-transparent  flex justify-between
+                className={`cursor-pointer hover:border-bg-main bg-bg-main-light p-4 mb-2.5 rounded-base border-2 border-transparent  flex justify-between
                   
                   ${selectedAccountType === index ? "border-2 !border-main" : ""}`}
               >

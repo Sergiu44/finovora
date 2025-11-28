@@ -20,6 +20,7 @@ interface ICachedSelectProps {
   className?: string;
   params?: Record<string, string>;
   omitIds?: string[];
+  disabled?: boolean;
 }
 
 export default function CachedSelect({
@@ -32,6 +33,7 @@ export default function CachedSelect({
   className,
   params,
   omitIds,
+  disabled,
 }: PropsWithChildren<ICachedSelectProps>) {
   const [value, setValue] = useState<string | undefined>(defaultValue ? defaultValue.toString() : undefined);
   const { data, isLoading } = useQuery({
@@ -63,7 +65,7 @@ export default function CachedSelect({
         value={value}
         defaultValue={defaultValue}
         name={name}
-        disabled={isLoading}
+        disabled={isLoading || disabled}
       >
         <SelectTrigger
           className={`h-[40px]! ${className} mt-2 data-[placeholder]:text-muted-foreground/40! text-black ${errorMessage && "border-error! focus-visible:ring-error-600! focus-visible:border-error!"}`}

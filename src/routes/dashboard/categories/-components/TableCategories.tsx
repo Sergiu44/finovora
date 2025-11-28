@@ -145,7 +145,7 @@ export default function TableCategories({
   });
 
   return (
-    <div className="rounded-[12px] overflow-hidden border border-input">
+    <div className="rounded-base overflow-hidden border border-input">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

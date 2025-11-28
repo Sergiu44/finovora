@@ -21,6 +21,8 @@ import { verifyToken } from "../utils/utilities/jwt";
 import { Session } from "./sessions/session";
 import appAssert from "../utils/utilities/appAssert";
 import catchErrors from "../utils/utilities/catchErrors";
+import { UserProfile } from "../features/users/userProfiles/userProfile";
+import { createProfileSetupSession } from "../features/users/profileSetupSessions/profileSetupSession.service";
 
 export const registerHandler = catchErrors(
   async (req: Request, res: Response) => {
@@ -31,9 +33,15 @@ export const registerHandler = catchErrors(
 
     const { user, accessToken, refreshToken } = await createAccount(request);
 
+    // New users don't have a profile yet
+    const userWithProfile = {
+      ...user,
+      hasProfile: false,
+    };
+
     return setAuthCookies({ res, accessToken, refreshToken })
       .status(CREATED)
-      .json(user);
+      .json(userWithProfile);
   }
 );
 
@@ -44,10 +52,21 @@ export const loginHandler = catchErrors(async (req: Request, res: Response) => {
   });
 
   const { accessToken, refreshToken, user } = await loginUser(request);
+  const userProfile = await UserProfile.findOne({ where: { userId: user.id } });
+
+  let sessionSetupToken = null;
+  if(!userProfile)
+    sessionSetupToken = await createProfileSetupSession(user.id);
+
+  // Add hasProfile field to user object
+  const userWithProfile = {
+    ...user,
+    hasProfile: Boolean(userProfile),
+  };
 
   return setAuthCookies({ res, accessToken, refreshToken })
     .status(CREATED)
-    .json({ user, message: "Login succesful" });
+    .json({ user: userWithProfile, message: "Login succesful", redirectTo: userProfile ? "/dashboard" : `/auth/profile-setup/${sessionSetupToken?.token}` });
 });
 
 export const logoutHandler = catchErrors(

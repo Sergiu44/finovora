@@ -4,7 +4,8 @@ const betweenLength = (length: number) => (value: string) => minLength(length)(v
 const isNumeric = (value: string) => value.match(/^[0-9]+$/i);
 const isLowercase = (value: string) => value.match(/^[a-z]+$/i);
 const isUppercase = (value: string) => value.match(/^[A-Z]+$/i);
-const isAlphanumeric = (value: string) => isNumeric(value) && isLowercase(value) && isUppercase(value);
+const isAlphanumeric = (value: string) => value.match(/^[0-9a-zA-Z ]+$/i);
+const isText = (value: string) => value.match(/^[0-9a-zA-Z!@#$%^&*()_+-=~`[\]{}|;':",./<>? ]+$/i);
 
 // Enhanced email validation with RFC 5322 standard
 const isEmail = (value: string) =>
@@ -48,6 +49,7 @@ const VALIDATIONS = {
   isAlphanumeric,
   isEmail,
   isRequired,
+  isText,
   // New validations
   hasMinPasswordLength,
   hasUppercase,

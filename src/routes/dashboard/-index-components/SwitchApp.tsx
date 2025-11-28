@@ -22,13 +22,13 @@ function SwitchApp() {
         <DropdownMenuTrigger className='focus:outline-none focus:ring-0 focus:ring-offset-0 mt-3'>
         <div
                 onClick={() => setIsCollapsed(!isCollapsed)}
-                className={`group flex items-center justify-between cursor-pointer rounded-[12px] overflow-hidden px-1.5 py-1`}
+                className={`group flex items-center justify-between cursor-pointer rounded-base overflow-hidden px-1.5 py-1`}
               >
                 <div className='flex items-center gap-2'>
 
                 <div className={`relative flex h-6 w-6 items-center justify-center `}>
                   <activeApp.icon className={`h-3! w-3! ${activeApp.colors.text} z-10`} />
-                  <span className={`rounded-[12px] absolute inset-0 ${activeApp.colors.bg} group-hover:translate-x-[250%] group-hover:scale-x-[1500%] group-hover:scale-y-[200%] transition-all duration-500 delay-[0.1s]`} />
+                  <span className={`rounded-base absolute inset-0 ${activeApp.colors.bg} group-hover:translate-x-[250%] group-hover:scale-x-[1500%] group-hover:scale-y-[200%] transition-all duration-500 delay-[0.1s]`} />
                 </div>
                 <div className="z-10 flex flex-col items-start">
                   <div className="text-sm font-medium transition-colors delay-250">{activeApp.label}</div>

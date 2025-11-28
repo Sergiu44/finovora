@@ -85,7 +85,7 @@ export default function CreateNewUserGrandient(
         <div
           className={`group relative cursor-pointer rounded-lg p-4 transition-all duration-200`}
         >
-          <div className="h-24 rounded-md mb-2 border border-muted-foreground/25 hover:border-muted-foreground border-dashed grid place-items-center">
+          <div className="h-24 rounded-base mb-2 border border-muted-foreground/25 hover:border-muted-foreground border-dashed grid place-items-center">
             <Plus className="w-4 h-4 text-gray-500 group-hover:text-gray-800" />
           </div>
           <div className="text-sm font-medium text-gray-800">
@@ -101,7 +101,7 @@ export default function CreateNewUserGrandient(
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Preview Card */}
           <div className="relative cursor-pointer rounded-lg p-4 transition-all duration-200">
-            <div className="h-24 rounded-md mb-2" style={gradientStyle} />
+            <div className="h-24 rounded-base mb-2" style={gradientStyle} />
             <div className="text-sm font-medium text-gray-800">
               {values.name || "New Gradient"}
             </div>

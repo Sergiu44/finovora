@@ -147,7 +147,7 @@ const AccordionTransactionGroupedByDate = ({
                   <div
                   onClick={() => setSelectedTransactionId(transaction.id)}
                     key={transaction.id}
-                    className="flex items-center justify-between p-3 bg-white rounded-[12px] border border-gray-200 hover:border-primary/30 hover:bg-white transition-colors"
+                    className="flex items-center justify-between p-3 bg-white rounded-base border border-gray-200 hover:border-primary/30 hover:bg-white transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex items-center justify-center w-8 h-8 bg-gray-50 rounded-full border border-gray-200">

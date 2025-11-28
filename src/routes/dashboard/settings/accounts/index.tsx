@@ -197,10 +197,10 @@ function RouteComponent() {
           </span>
         </div>
         <div className="flex flex-col">
-          <div className="w-full bg-bg-main rounded-md px-4 py-2 h-[350px] overflow-y-auto">
+          <div className="w-full bg-bg-main rounded-base px-4 py-2 h-[350px] overflow-y-auto">
             {data[0].length > 0 &&
               data[0].map((accountType) => (
-                <div className="bg-muted p-4 my-2 rounded-md  flex justify-between">
+                <div className="bg-muted p-4 my-2 rounded-base  flex justify-between">
                   <div>{accountType.name}</div>
                   {!accountType.userId && (
                     <LockClosedIcon className="h-4 w-4" />

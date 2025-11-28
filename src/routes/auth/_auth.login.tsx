@@ -56,7 +56,7 @@ function RouteComponent() {
                 }
               )
               .then(({ data }) => {
-                const { user } = data;
+                const { user, redirectTo } = data;
 
                 if (!user.verified)
                   return createEnhancedAxios()
@@ -74,7 +74,7 @@ function RouteComponent() {
 
                 setUserMainAccountId(user.primaryAccountId);
                 localStorage.setItem("user", JSON.stringify(user));
-                router.navigate({ to: "/dashboard" });
+                router.navigate({ to: redirectTo });
               });
           }}
         >

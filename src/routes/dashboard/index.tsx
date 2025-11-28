@@ -18,6 +18,7 @@ import ConfirmationModal from "../../components/reusable/dialogs/ConfirmationMod
 import BaseWrapper from "../../components/reusable/layouts/BaseWrapper";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import SelectedCardTransactions from "./-index-components/Home/SelectedCardTransactions";
+import { CreditCard } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/")({
   component: RouteComponent,
@@ -86,7 +87,7 @@ function RouteComponent() {
             </CardContent>
           </Card>
       <div className="grid grid-cols-[minmax(250px,350px)_1fr_1fr] gap-4 mt-4">
-          <div className={`rounded-[12px] shadow-lg relative`}>
+          <div className={`rounded-base shadow-lg relative`}>
             <AnimatePresence mode="wait">
               {account ? (
                 <AccountPreviewCard
@@ -189,11 +190,11 @@ function RouteComponent() {
             )}
           </div>
 
-          <Card className="border border-border pt-4 pb-0 h-[200px]">
-            <CardContent>
-              <h3 className="font-bold mb-2 block">Account information</h3>
+          <Card className="border border-border py-4 h-[200px]">
+            <CardContent className="h-full flex flex-col">
+              <h3 className="font-bold block">Account information</h3>
 
-              <div className="mt-4 grid grid-cols-[2fr_1fr] gap-1">
+              {account ? <div className="grid grid-cols-[2fr_1fr] gap-1 mt-6">
                 <span className="text-sm font-semibold text-muted-foreground">
                   Account name
                 </span>
@@ -223,17 +224,22 @@ function RouteComponent() {
                     ? new Date(account.createdAt).toLocaleDateString()
                     : ""}
                 </span>
-              </div>
+              </div> : <div className="my-auto">
+              <CreditCard className="w-10 h-10 mx-auto opacity-50" />
+              <p className="text-sm text-muted-foreground text-center mt-4">Please select an account</p>
+              </div>}
             </CardContent>
           </Card>
 
-          <Card className="border border-border">
-            <CardContent>
-              <h3 className="font-bold mb-2 block">Billing details</h3>
-              <p className="text-xs">
+          <Card className="border border-border py-4">
+            <CardContent className="h-full flex flex-col">
+              <h3 className="font-bold block">Billing details</h3>
+
+              <p className="text-xs text-muted-foreground">
                 The percentages are relative to last month
               </p>
 
+{account ?
               <div className="grid grid-cols-2 gap-4 mt-6">
                 <div className="flex flex-col items-center">
                   <div className="flex flex-col gap-2">
@@ -241,7 +247,7 @@ function RouteComponent() {
                       {income?.toFixed(2)}
                     </h3>
                     {!!account?.incomePercentage && (
-                      <span className="grid items-center text-center h-full rounded-md px-1.5 py-2 text-xs text-green-800 bg-green-300">
+                      <span className="grid items-center text-center h-full rounded-base px-1.5 py-2 text-xs text-green-800 bg-green-300">
                         {account?.incomePercentage > 0 && "+"}
                         {account?.incomePercentage?.toFixed(2)}%
                       </span>
@@ -256,7 +262,7 @@ function RouteComponent() {
                       {expenses?.toFixed(2)}
                     </h3>
                     {!!account?.expensePercentage && (
-                      <span className="grid items-center h-full rounded-md px-1.5 text-xs text-error-300 bg-error-700">
+                      <span className="grid items-center h-full rounded-base px-1.5 text-xs text-error-300 bg-error-700">
                         {account?.expensePercentage > 0 && "+"}
                         {account?.expensePercentage.toFixed(2)}%
                       </span>
@@ -264,7 +270,10 @@ function RouteComponent() {
                   </div>
                   <p className="text-sm text-muted-foreground mt-4">Expenses</p>
                 </div>
-              </div>
+              </div> : <div className="my-auto">
+              <CreditCard className="w-10 h-10 mx-auto opacity-50" />
+              <p className="text-sm text-muted-foreground text-center mt-4">Please select an account</p>
+              </div>}
             </CardContent>
           </Card>
 

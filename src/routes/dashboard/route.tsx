@@ -123,7 +123,7 @@ function RouteComponent() {
           <div className="mt-auto px-4 mb-2 py-2 border-t border-border">
             <AnimateChangeInHeight className="mb-2">
               {walletOpen && (
-                <div className="rounded-[12px] border py-2 border-border bg-white text-muted-foreground! flex flex-col gap-1.5">
+                <div className="rounded-base border py-2 border-border bg-white text-muted-foreground! flex flex-col gap-1.5">
                   {data && data.length > 0 ? (
                     data?.map((account) => (
                       <div
@@ -151,7 +151,7 @@ function RouteComponent() {
 
             <div
               onClick={() => setWalletOpen(!walletOpen)}
-              className="hover:bg-muted-foreground/20 cursor-pointer px-3 py-2 rounded-[12px] flex flex-col gap-1"
+              className="hover:bg-muted-foreground/20 cursor-pointer px-3 py-2 rounded-base flex flex-col gap-1"
             >
               <div className="flex items-center justify-between gap-1">
 
@@ -214,24 +214,24 @@ function RouteComponent() {
                   <div className="mt-auto relative">
                     <div
                       onClick={() => setMenuOpen(!menuOpen)}
-                      className="hover:bg-bg-main-light cursor-pointer px-4 py-2 rounded-md  flex items-center justify-between"
+                      className="hover:bg-bg-main-light cursor-pointer px-4 py-2 rounded-base  flex items-center justify-between"
                     >
                       <p className="text-sm">{user?.email}</p>
                       <ChevronsUpDownIcon className="w-4 h-4" />
                     </div>
 
-                    <AnimateChangeInHeight className="mb-2 absolute inset-x-0">
+                    <AnimateChangeInHeight className="z-10 mb-2 absolute inset-x-0">
                       {menuOpen && (
-                        <div className="py-2 rounded-md bg-muted">
-                          <div className="flex px-4 hover:bg-white hover:text-black text-muted-foreground mx-2 rounded-md cursor-pointer py-2 items-center justify-between">
+                        <div className="py-2 rounded-base bg-muted">
+                          <div className="flex px-4 hover:bg-white hover:text-black text-muted-foreground mx-2 rounded-base cursor-pointer py-2 items-center justify-between">
                             <div>My Profile</div>
                           </div>
-                          <div className="flex px-4 hover:bg-white hover:text-black text-muted-foreground mx-2 rounded-md cursor-pointer py-2 items-center justify-between">
+                          <div className="flex px-4 hover:bg-white hover:text-black text-muted-foreground mx-2 rounded-base cursor-pointer py-2 items-center justify-between">
                             <div>Settings</div>
                           </div>
 
                           <div className="h-[1px] bg-border w-full my-2" />
-                          <div className="flex px-4 hover:bg-white hover:text-black text-muted-foreground mx-2 rounded-md cursor-pointer  py-2 items-center justify-between">
+                          <div className="flex px-4 hover:bg-white hover:text-black text-muted-foreground mx-2 rounded-base cursor-pointer  py-2 items-center justify-between">
                             <div onClick={async () => handleLogout()}>
                               Logout
                             </div>
