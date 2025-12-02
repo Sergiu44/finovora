@@ -63,7 +63,54 @@ function RouteComponent() {
   const expenses = useMemo(() => {
     return account?.transactions
       ?.filter((transaction) => transaction.transactionType.name === "Expense")
-      .reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
+      .reduce((acc, transaction) => {
+        const amount = parseFloat(transaction.amount);
+        // Get absolute value for expenses total (always positive for display)
+        return acc + Math.abs(amount);
+      }, 0);
+  }, [account?.transactions]);
+
+  // This month's net (income - expenses for current month only)
+  const thisMonthNet = useMemo(() => {
+    return (income || 0) - (expenses || 0);
+  }, [income, expenses]);
+
+  // Format balance for display
+  const formattedBalance = useMemo(() => {
+    if (!account) return null;
+    return parseFloat(account.balance.toString()).toFixed(2);
+  }, [account]);
+
+  const topSpendingCategory = useMemo(() => {
+    if (!account?.transactions) return null;
+
+    const expenseTransactions = account.transactions.filter(
+      (transaction) => transaction.transactionType.name === "Expense"
+    );
+
+    const categoryTotals = expenseTransactions.reduce(
+      (acc, transaction) => {
+        if (!transaction.category) return acc;
+        const categoryName = transaction.category.name;
+        const amount = Math.abs(parseFloat(transaction.amount));
+
+        if (!acc[categoryName]) {
+          acc[categoryName] = 0;
+        }
+        acc[categoryName] += amount;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+
+    const entries = Object.entries(categoryTotals);
+    if (entries.length === 0) return null;
+
+    const [topCategory, topAmount] = entries.reduce((max, [name, amount]) =>
+      amount > max[1] ? [name, amount] : max
+    );
+
+    return { name: topCategory, amount: topAmount };
   }, [account?.transactions]);
 
   return (
@@ -73,23 +120,26 @@ function RouteComponent() {
         Easy way to manage your finances
       </p>
 
-      <Card className="border-border mt-4 py-2">
-            <CardContent className="px-2">
-              <Button
-                type="button"
-                variant="ghost-destructive"
-                className="w-full justify-start transition-none rounded-[8px]!"
-                size="xs"
-                onClick={() => setOpenDeleteAccountModal(true)}
-              >
-                <TrashIcon /> Delete account
-              </Button>
-            </CardContent>
-          </Card>
-      <div className="grid grid-cols-[minmax(250px,350px)_1fr_1fr] gap-4 mt-4">
-          <div className={`rounded-base shadow-lg relative`}>
-            <AnimatePresence mode="wait">
-              {account ? (
+      {account && (
+        <Card className="border-border mt-4 py-2">
+          <CardContent className="px-2">
+            <Button
+              type="button"
+              variant="ghost-destructive"
+              className="w-full justify-start transition-none rounded-[8px]!"
+              size="xs"
+              onClick={() => setOpenDeleteAccountModal(true)}
+            >
+              <TrashIcon className="w-4 h-4 mr-2" /> Delete account
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+      <div className="grid grid-cols-[minmax(250px,350px)_1fr_1fr] grid-rows-[auto_auto_auto] gap-4 mt-4">
+        <div className={`grow relative`}>
+          <AnimatePresence mode="wait">
+            {account ? (
+              <div className="relative">
                 <AccountPreviewCard
                   isRemoving={isRemoving}
                   onClick={() => setOpenAccountsDialog(!openAccountsDialog)}
@@ -128,156 +178,244 @@ function RouteComponent() {
                     };
                   })()}
                 />
-              ) : (
-                <EmptyAccountCard
-                  onClick={() => setOpenAccountsDialog(!openAccountsDialog)}
-                  wrapperClassName="z-10 cursor-pointer relative"
-                />
-              )}
-            </AnimatePresence>
-            {userAccounts && (
-              <div
-                className={`absolute inset-0 left-0 top-full my-4 space-y-4 ${openAccountsDialog ? "z-10" : "-z-10"}`}
-              >
-                {userAccounts
-                  .filter((acc) => acc.id !== account?.id)
-                  .map((account, index) => (
-                    <AccountPreviewCard
-                      onClick={() => {
-                        setUserMainAccountId(account.id);
-                        setOpenAccountsDialog(false);
-                      }}
-                      wrapperClassName={`cursor-pointer transition-all duration-500 delay-[${index * 100}ms] ${openAccountsDialog ? "opacity-100 scale-105" : "opacity-0! scale-100"}`}
-                      key={account.id}
-                      name={account.name}
-                      description={account.description || ""}
-                      accountType={account.accountType.name}
-                      currency={account.currency.code}
-                      gradient={(() => {
-                        return {
-                          type: "default",
-                          id:
-                            account.defaultGradient?.id ||
-                            account.userGradient?.id ||
-                            0,
-                          name:
-                            account.defaultGradient?.name ||
-                            account.userGradient?.name ||
-                            "",
-                          slug:
-                            account.defaultGradient?.slug ||
-                            account.userGradient?.slug ||
-                            "",
-                          colors: isDefaultGradientItem(
-                            account.defaultGradient || account.userGradient
-                          )
-                            ? [
-                                account.defaultGradient.color1,
-                                account.defaultGradient.color2,
-                                account.defaultGradient.color3,
-                                account.defaultGradient.color4,
-                                account.defaultGradient.color5,
-                              ]
-                            : [
-                                account.userGradient.to,
-                                account.userGradient.from,
-                              ],
-                        };
-                      })()}
-                    />
-                  ))}
+                {userAccounts && (
+                  <div
+                    className={`absolute inset-0 left-0 top-full my-4 space-y-4 ${openAccountsDialog ? "z-10" : "-z-10"}`}
+                  >
+                    {userAccounts
+                      .filter((acc) => acc.id !== account?.id)
+                      .map((account, index) => (
+                        <AccountPreviewCard
+                          onClick={() => {
+                            setUserMainAccountId(account.id);
+                            setOpenAccountsDialog(false);
+                          }}
+                          wrapperClassName={`cursor-pointer transition-all duration-500 delay-[${index * 100}ms] ${openAccountsDialog ? "opacity-100 scale-105" : "opacity-0! scale-100"}`}
+                          key={account.id}
+                          name={account.name}
+                          description={account.description || ""}
+                          accountType={account.accountType.name}
+                          currency={account.currency.code}
+                          gradient={(() => {
+                            return {
+                              type: "default",
+                              id:
+                                account.defaultGradient?.id ||
+                                account.userGradient?.id ||
+                                0,
+                              name:
+                                account.defaultGradient?.name ||
+                                account.userGradient?.name ||
+                                "",
+                              slug:
+                                account.defaultGradient?.slug ||
+                                account.userGradient?.slug ||
+                                "",
+                              colors: isDefaultGradientItem(
+                                account.defaultGradient || account.userGradient
+                              )
+                                ? [
+                                    account.defaultGradient.color1,
+                                    account.defaultGradient.color2,
+                                    account.defaultGradient.color3,
+                                    account.defaultGradient.color4,
+                                    account.defaultGradient.color5,
+                                  ]
+                                : [
+                                    account.userGradient.to,
+                                    account.userGradient.from,
+                                  ],
+                            };
+                          })()}
+                        />
+                      ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <EmptyAccountCard
+                onClick={() => setOpenAccountsDialog(!openAccountsDialog)}
+                wrapperClassName="z-10 cursor-pointer relative"
+              />
+            )}
+          </AnimatePresence>
+        </div>
+
+        <Card className="grow border border-border py-4">
+          <CardContent className="h-full flex flex-col">
+            <h3 className="font-bold text-base mb-4">Account Information</h3>
+
+            {account ? (
+              <div className="flex-1 mt-3">
+                <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-0.5">
+                  <span className="text-sm font-semibold text-muted-foreground">
+                    Name:
+                  </span>
+                  <span className="text-sm text-foreground font-medium">
+                    {account.name}
+                  </span>
+
+                  {account.description && (
+                    <>
+                      <span className="text-sm font-semibold text-muted-foreground">
+                        Description:
+                      </span>
+                      <span className="text-sm text-foreground">
+                        {account.description}
+                      </span>
+                    </>
+                  )}
+
+                  <span className="text-sm font-semibold text-muted-foreground">
+                    Type:
+                  </span>
+                  <span className="text-sm text-foreground">
+                    {account.accountType.name}
+                  </span>
+
+                  <span className="text-sm font-semibold text-muted-foreground">
+                    Currency:
+                  </span>
+                  <span className="text-sm text-foreground">
+                    {account.currency.code} ({account.currency.symbol})
+                  </span>
+
+                  <span className="text-sm font-semibold text-muted-foreground">
+                    Balance:
+                  </span>
+                  <span className="text-sm text-foreground font-semibold">
+                    {formattedBalance} {account.currency.symbol}
+                  </span>
+
+                  <span className="text-sm font-semibold text-muted-foreground">
+                    Created:
+                  </span>
+                  <span className="text-sm text-foreground">
+                    {account.createdAt
+                      ? new Date(account.createdAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          }
+                        )
+                      : "N/A"}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="my-auto flex flex-col items-center justify-center py-8">
+                <CreditCard className="w-10 h-10 mx-auto opacity-50 text-muted-foreground" />
+                <p className="text-sm text-muted-foreground text-center mt-4">
+                  Please select an account
+                </p>
               </div>
             )}
-          </div>
+          </CardContent>
+        </Card>
 
-          <Card className="border border-border py-4 h-[200px]">
-            <CardContent className="h-full flex flex-col">
-              <h3 className="font-bold block">Account information</h3>
+        {/* Net This Month Card */}
+        <Card className="grow border border-border py-4">
+          <CardContent className="h-full flex flex-col justify-center">
+            {account ? (
+              <div className="flex flex-col items-center justify-center py-2">
+                <p className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wide">
+                  Net This Month
+                </p>
+                <h3
+                  className={`text-3xl font-bold ${
+                    thisMonthNet >= 0 ? "text-green-500" : "text-error-600"
+                  }`}
+                >
+                  {thisMonthNet >= 0 ? "+" : ""}
+                  {thisMonthNet.toFixed(2)} {account.currency.symbol}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Income - Expenses
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-8">
+                <CreditCard className="w-8 h-8 opacity-50 text-muted-foreground" />
+                <p className="text-xs text-muted-foreground mt-2">
+                  Select account
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-              {account ? <div className="grid grid-cols-[2fr_1fr] gap-1 mt-6">
-                <span className="text-sm font-semibold text-muted-foreground">
-                  Account name
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {account?.name}
-                </span>
+        {/* Income Card */}
+        <Card className="grow border border-border py-4">
+          <CardContent className="h-full flex flex-col justify-center">
+            {account ? (
+              <div className="flex flex-col items-center justify-center py-2">
+                <p className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wide">
+                  Income
+                </p>
+                <h3 className="text-2xl font-bold text-green-500">
+                  {income?.toFixed(2) || "0.00"} {account.currency.symbol}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-2">This month</p>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-8">
+                <CreditCard className="w-8 h-8 opacity-50 text-muted-foreground" />
+                <p className="text-xs text-muted-foreground mt-2">
+                  Select account
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-                <span className="text-sm font-semibold text-muted-foreground">
-                  Account type
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {account?.accountType.name}
-                </span>
+        {/* Expenses Card */}
+        <Card className="grow border border-border py-4">
+          <CardContent className="h-full flex flex-col justify-center">
+            {account ? (
+              <div className="flex flex-col items-center justify-center py-2">
+                <p className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wide">
+                  Expenses
+                </p>
+                <h3 className="text-2xl font-bold text-error-600">
+                  {Math.abs(expenses || 0).toFixed(2)} {account.currency.symbol}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-2">This month</p>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-8">
+                <CreditCard className="w-8 h-8 opacity-50 text-muted-foreground" />
+                <p className="text-xs text-muted-foreground mt-2">
+                  Select account
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-                <span className="text-sm font-semibold text-muted-foreground">
-                  Currency
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {account?.currency.code} ({account?.currency.symbol})
-                </span>
-
-                <span className="text-sm font-semibold text-muted-foreground">
-                  Created at
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {account?.createdAt
-                    ? new Date(account.createdAt).toLocaleDateString()
-                    : ""}
-                </span>
-              </div> : <div className="my-auto">
-              <CreditCard className="w-10 h-10 mx-auto opacity-50" />
-              <p className="text-sm text-muted-foreground text-center mt-4">Please select an account</p>
-              </div>}
+        {/* Top Spending Category Card */}
+        {topSpendingCategory && account && (
+          <Card className="grow border border-border py-4">
+            <CardContent className="h-full flex flex-col justify-center">
+              <div className="flex flex-col items-center justify-center py-2">
+                <p className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wide">
+                  Top Spending Category
+                </p>
+                <p className="text-sm font-semibold mb-2 text-foreground">
+                  {topSpendingCategory.name}
+                </p>
+                <h3 className="text-xl font-bold text-error-600">
+                  {topSpendingCategory.amount.toFixed(2)}{" "}
+                  {account.currency.symbol}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-2">This month</p>
+              </div>
             </CardContent>
           </Card>
+        )}
 
-          <Card className="border border-border py-4">
-            <CardContent className="h-full flex flex-col">
-              <h3 className="font-bold block">Billing details</h3>
-
-              <p className="text-xs text-muted-foreground">
-                The percentages are relative to last month
-              </p>
-
-{account ?
-              <div className="grid grid-cols-2 gap-4 mt-6">
-                <div className="flex flex-col items-center">
-                  <div className="flex flex-col gap-2">
-                    <h3 className="text-xl font-bold text-green-500">
-                      {income?.toFixed(2)}
-                    </h3>
-                    {!!account?.incomePercentage && (
-                      <span className="grid items-center text-center h-full rounded-base px-1.5 py-2 text-xs text-green-800 bg-green-300">
-                        {account?.incomePercentage > 0 && "+"}
-                        {account?.incomePercentage?.toFixed(2)}%
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-4">Income</p>
-                </div>
-
-                <div className="flex flex-col items-center">
-                  <div className="flex gap-2">
-                    <h3 className="text-xl font-bold text-error-600">
-                      {expenses?.toFixed(2)}
-                    </h3>
-                    {!!account?.expensePercentage && (
-                      <span className="grid items-center h-full rounded-base px-1.5 text-xs text-error-300 bg-error-700">
-                        {account?.expensePercentage > 0 && "+"}
-                        {account?.expensePercentage.toFixed(2)}%
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-4">Expenses</p>
-                </div>
-              </div> : <div className="my-auto">
-              <CreditCard className="w-10 h-10 mx-auto opacity-50" />
-              <p className="text-sm text-muted-foreground text-center mt-4">Please select an account</p>
-              </div>}
-            </CardContent>
-          </Card>
-
-        <div className="col-span-3">
+        <div className="col-span-3 w-full mt-2">
           {/* <SelectedCardDetails /> */}
           <SelectedCardTransactions />
         </div>

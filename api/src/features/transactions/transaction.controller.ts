@@ -83,3 +83,16 @@ export const getTransactionHandler = catchErrors(async (req: Request, res: Respo
   appAssert(transaction, NOT_FOUND, "Transaction not found");
   return res.status(200).json(transaction);
 })
+
+export const deleteTransactionHandler = catchErrors(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const transaction = await Transaction.findOne({
+    where: {
+      id: Number.parseInt(id),
+      userId: req.userId,
+    },
+  });
+  appAssert(transaction, NOT_FOUND, "Transaction not found");
+  await transaction.destroy();
+  return res.status(200).json({ message: "Transaction deleted successfully" });
+})

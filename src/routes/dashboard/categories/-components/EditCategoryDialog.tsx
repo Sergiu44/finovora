@@ -1,3 +1,5 @@
+// NOT USED CURRENTLY
+
 import {
   Dialog,
   DialogClose,
@@ -18,7 +20,7 @@ export default function EditCategoryDialog({
   category,
   onClose,
 }: {
-  category: { id: string; name: string; fixed?: boolean };
+  category: { id: number; name: string; fixed?: boolean };
   onClose: () => void;
 }) {
   const queryClient = useQueryClient();

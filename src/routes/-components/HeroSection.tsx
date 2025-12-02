@@ -1,74 +1,63 @@
-import { useCallback, useRef, useState } from 'react';
-
-const ROWS = 6;
-const COLS = 12;
-const DEFAULT_FOCUS_POINT = { row: ROWS / 2, col: (COLS / 2) + 1 }; // slightly right of center
-const MAX_DISTANCE = Math.hypot(ROWS, COLS);
+import { useRef } from "react";
+import { Button } from "../../components/ui/button";
+import {
+  SectionBand,
+  SectionInner,
+} from "../../components/reusable/layouts/SectionLayout";
 
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [focusPoint, setFocusPoint] = useState(DEFAULT_FOCUS_POINT);
-
-  const handlePointerMove = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const relativeX = Math.min(Math.max(event.clientX - rect.left, 0), rect.width);
-    const relativeY = Math.min(Math.max(event.clientY - rect.top, 0), rect.height);
-
-    setFocusPoint({
-      row: (relativeY / rect.height) * ROWS,
-      col: (relativeX / rect.width) * COLS,
-    });
-  }, []);
-
-  const handlePointerLeave = useCallback(() => {
-    setFocusPoint(DEFAULT_FOCUS_POINT);
-  }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="relative h-[700px] p-12"
-      onMouseOver={handlePointerMove}
-      onMouseLeave={handlePointerLeave}
-    >
-      <div className="grid grid-cols-12 grid-rows-6 h-full bg-gradient-to-b from-primary-50/10 to-white">
-        {Array.from({ length: ROWS }).map((_, rowIndex) =>
-          Array.from({ length: COLS }).map((_, colIndex) => {
-            const distance = Math.hypot(
-              rowIndex - focusPoint.row,
-              colIndex - focusPoint.col
-            );
-            const proximity = Math.max(0, 1 - (distance / MAX_DISTANCE)); // closer → 1, farther → 0
-            const opacity = proximity * 0.5;
-            const scale = 0.9 + proximity * 0.1;
-            const borderAlpha = proximity * 0.1;
+    <>
+      <SectionBand ref={containerRef} className="relative">
+        <SectionInner>
+          <div className="grid grid-cols-3 gap-10">
+            <div className="flex flex-col col-span-2 gap-4">
+              <h1 className="text-5xl font-bold">
+                Monitor your money in real time
+              </h1>
+              <h2 className="text-2xl text-muted-foreground">
+                Bring all your accounts, budgets, and insights into one elegant
+                workspace designed to help you grow long-term wealth.
+              </h2>
+              <div className="flex gap-2">
+                <Button size="lg" className="rounded-xl" variant="default">
+                  Get Started
+                </Button>
+                <Button size="lg" className="rounded-xl" variant="outline">
+                  Learn More
+                </Button>
+              </div>
 
-            return (
-              <div
-                key={`${rowIndex}-${colIndex}`}
-                className="flex items-center justify-center transition-all duration-500"
-                style={{
-                  border: `1px solid color-mix(in oklab, var(--muted-foreground) ${borderAlpha * 100}%, transparent)`,
-                  opacity,
-                  transform: `scale(${scale})`,
-                  backgroundColor: `color-mix(in srgb, var(--primary) ${proximity *
-                    20}%, transparent)`,
-                }}
-                aria-hidden="true"
-              />
-            );
-          })
-        )}
-      </div>
-
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[100%] lg:w-[75%] inset-x-0 mx-auto">
-        <div className='grid grid-cols-2 gap-10'>
-            <div className='flex flex-col gap-4'>
-                <h1 className='text-4xl font-bold'>Monitor Earnings Spending Savings in real time</h1>
+              <div className="mt-8 flex gap-6 items-center">
+                <div className="flex -space-x-1">
+                  <span className="bg-[#8244ee] h-7 w-7 rounded-full outline-2 outline-white"></span>
+                  <span className="bg-[#0080ff] h-7 w-7 rounded-full outline-2 outline-white"></span>
+                  <span className="bg-[#009ff8] h-7 w-7 rounded-full outline-2 outline-white"></span>
+                  <span className="bg-[#00b2cd] h-7 w-7 rounded-full outline-2 outline-white"></span>
+                  <span className="bg-[#3abeaa] h-7 w-7 rounded-full outline-2 outline-white z-10"></span>
+                </div>
+                <div className="flex flex-col">
+                  <div className="text-sm font-bold">50,000+ users</div>
+                  <div className="text-xs text-muted-foreground">
+                    Growing wealth together
+                  </div>
+                </div>
+              </div>
             </div>
-        </div>
-      </div>
-    </div>
+            <div className="flex flex-col gap-4">
+              <span>TO BE DONE</span>
+            </div>
+          </div>
+        </SectionInner>
+      </SectionBand>
+
+      <SectionBand className="w-full h-full bg-primary-300">
+        <SectionInner className="text-white">
+          <div className="grid grid-cols-3 gap-10">test</div>
+        </SectionInner>
+      </SectionBand>
+    </>
   );
 }

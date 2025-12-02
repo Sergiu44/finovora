@@ -61,15 +61,15 @@ function RouteComponent() {
         id="dashboard__grid-container-sidebar"
         className="overflow-hidden flex flex-col max-h-screen sticky top-0 bg-white border-r rounded-none border-sidebar-border"
       >
-        <div className="border-b border-border grid items-center py-4 px-4">
+        <div
+          className={`border-b border-border grid items-center py-4 ${sidebarOpen ? "px-4" : "px-0"}`}
+        >
+          <h3 className="dark:text-white text-2xl font-semibold">
+            {sidebarOpen ? "Finovora" : "F"}
+          </h3>
 
-        <h3 className="dark:text-white text-2xl font-semibold">
-          {sidebarOpen ? "Finovora" : "F"}
-        </h3>
-
-        <SwitchApp />
+          <SwitchApp sidebarOpen={sidebarOpen} />
         </div>
-
 
         <div
           id="dashboard__grid-container-sidebar-content-wrapper"
@@ -154,20 +154,19 @@ function RouteComponent() {
               className="hover:bg-muted-foreground/20 cursor-pointer px-3 py-2 rounded-base flex flex-col gap-1"
             >
               <div className="flex items-center justify-between gap-1">
-
-              <p className="text-sm text-light-gray">
-                {account && account.name}
-              </p>
-              <SwitchTheme />
+                <p className="text-sm text-light-gray">
+                  {account && account.name}
+                </p>
+                <SwitchTheme />
               </div>
               <div className="flex gap-1 text-sm">
                 <div>
-                <span className="font-semibold">
-                  {account && account.balance}
-                </span>
-                <span className="font-semibold">
-                  {account && account.currency.symbol}
-                </span>
+                  <span className="font-semibold">
+                    {account && account.balance}
+                  </span>
+                  <span className="font-semibold">
+                    {account && account.currency.symbol}
+                  </span>
                 </div>
                 <ChevronsUpDownIcon className="h-4 w-4" />
               </div>

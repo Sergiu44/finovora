@@ -38,6 +38,31 @@ export async function createTransactionAsync(
   return data;
 }
 
+export interface EditTransactionAttributes extends CreateTransactionAttributes {
+  id: number;
+}
+
+export async function editTransactionAsync(transaction: EditTransactionAttributes) {
+  const { data } = await createEnhancedAxios().put(
+    `${import.meta.env.VITE_API_URL}/transactions/${transaction.id}`,
+    transaction,
+    {
+      withCredentials: true,
+    }
+  );
+  return data;
+}
+
+export async function deleteTransactionAsync(transactionId: number) {
+  const { data } = await createEnhancedAxios().delete(
+    `${import.meta.env.VITE_API_URL}/transactions/${transactionId}`,
+    {
+      withCredentials: true,
+    }
+  );
+  return data;
+}
+
 export async function getTransactionsForAccountAsync(
   accountId: number,
   startDate?: string,

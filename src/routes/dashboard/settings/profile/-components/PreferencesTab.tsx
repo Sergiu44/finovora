@@ -1,7 +1,19 @@
 import CachedSelect from "../../../../../components/reusable/selects/CachedSelect";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../../../../../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "../../../../../components/ui/card";
 import { Label } from "../../../../../components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../../components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../../../components/ui/select";
 import { ChatBubbleLeftRightIcon } from "@heroicons/react/20/solid";
 
 export interface PreferencesTabProps {
@@ -11,7 +23,12 @@ export interface PreferencesTabProps {
   isEditing: boolean;
 }
 
-export function PreferencesTab({ values, errors, onChangeValue, isEditing }: PreferencesTabProps) {
+export function PreferencesTab({
+  values,
+  errors,
+  onChangeValue,
+  isEditing,
+}: PreferencesTabProps) {
   return (
     <Card>
       <CardHeader className="mb-4">
@@ -19,34 +36,43 @@ export function PreferencesTab({ values, errors, onChangeValue, isEditing }: Pre
           <ChatBubbleLeftRightIcon className="w-5 h-5" />
           Preferences
         </CardTitle>
-        <CardDescription className="text-sm text-muted-foreground">Customize your experience and notification settings</CardDescription>
+        <CardDescription className="text-sm text-muted-foreground">
+          Customize your experience and notification settings
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-          <Label htmlFor="preferredCurrency">Preferred Currency</Label>
-          <CachedSelect
-            disabled={!isEditing}
-            entityName="currencies"
-            placeholder="Select currency"
-            name="preferredCurrency"
-            onChange={(e: string) => onChangeValue("preferredCurrency", e)}
-            defaultValue={values.preferredCurrency}
-            errorMessage={errors.preferredCurrency}
-            className="w-full"
-          />
+            <Label htmlFor="preferredCurrency">Preferred Currency</Label>
+            <CachedSelect
+              disabled={!isEditing}
+              entityName="currencies"
+              placeholder="Select currency"
+              name="preferredCurrency"
+              onChange={(e: string) => onChangeValue("preferredCurrency", e)}
+              defaultValue={values.preferredCurrency}
+              errorMessage={errors.preferredCurrency}
+              className="w-full"
+            />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="startDay">Start Day</Label>
-            <Select disabled={!isEditing} name="preferredStartDayOfMonth" value={values.preferredStartDayOfMonth} onValueChange={(e: string) => onChangeValue("preferredStartDayOfMonth", e)}>
+            <Select
+              disabled={!isEditing}
+              name="preferredStartDayOfMonth"
+              value={values.preferredStartDayOfMonth}
+              onValueChange={(e: string) =>
+                onChangeValue("preferredStartDayOfMonth", e)
+              }
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select start day" />
               </SelectTrigger>
               <SelectContent>
                 {Array.from({ length: 15 }, (_, index) => (
-                  <SelectItem key={index+1} value={(index+1).toString()}>
-                    {index+1}
+                  <SelectItem key={index + 1} value={(index + 1).toString()}>
+                    {index + 1}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -57,5 +83,3 @@ export function PreferencesTab({ values, errors, onChangeValue, isEditing }: Pre
     </Card>
   );
 }
-
-
