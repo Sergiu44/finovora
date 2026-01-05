@@ -19,6 +19,9 @@ import { CLIENT_APP_ORIGIN, NODE_ENV, PORT } from "./utils/constants/env";
 import path from "path";
 import userGradientRoutes from "./features/users/userGradients/userGradient.routes";
 import profileSetupSessionRoutes from "./features/users/profileSetupSessions/profileSetupSession.routes";
+import cron from "node-cron";
+import { jobs } from "../jobs";
+import userCurrenciesRoutes from "./features/users/userCurrencies/userCurrencies.routes";
 
 dotenv.config({ path: path.join(__dirname, ".env") });
 
@@ -49,6 +52,7 @@ app.use("/transactions", transactionRoutes);
 app.use("/nomenclatures", nomenclatureRoutes);
 app.use("/user-gradients", userGradientRoutes);
 app.use("/profile-setup-sessions", profileSetupSessionRoutes);
+app.use("/user-currencies", userCurrenciesRoutes);
 
 app.use(errorHandler);
 
@@ -65,3 +69,8 @@ db.connectToDatabase()
     console.error("Failed to start server:", error);
     process.exit(1);
   });
+
+
+jobs.forEach(job => {
+  cron.schedule(job.rate, job.fn);
+})

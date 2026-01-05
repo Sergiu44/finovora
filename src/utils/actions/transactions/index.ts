@@ -87,3 +87,10 @@ export async function getTransactionAsync(transactionId: number) {
   });
   return data;
 }
+
+export async function getUserCurrencyRateByCurrencyId(currencyId: number) {
+  const { data } = await createEnhancedAxios().get(`${import.meta.env.VITE_API_URL}/user-currencies/${currencyId}/rate`, {
+    withCredentials: true,
+  });
+  return data;
+}

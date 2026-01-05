@@ -24,11 +24,13 @@ import {
   createTransactionAsync,
   editTransactionAsync,
   getTransactionAsync,
+  getUserCurrencyRateByCurrencyId,
 } from "../../../utils/actions/transactions";
 import moment from "moment";
 import { ArrowLeftRight, TrendingDown, TrendingUp } from "lucide-react";
 import { useUserDetails } from "../../../context/UserDetails";
 import useCreateEditMutation from "../../../utils/hooks/useCreateEditMutation/useCreateEditMutation";
+import { formatCurrency } from "../../../utils/currencies/formatCurrency";
 
 const TransactionTypeIcons = {
   Income: <TrendingUp className="size-3" />,
@@ -46,6 +48,8 @@ export default function AddTransactionForCurrentAccount(
   props: IAddTransactionForCurrentAccount
 ) {
   const { user } = useUserDetails();
+  const { account } = useUserMainAccount();
+
   const func = useCreateEditMutation({
     id: props.transactionId?.toString(),
     basePath: "transactions",
@@ -57,7 +61,16 @@ export default function AddTransactionForCurrentAccount(
     queryFn: () => getTransactionAsync(props.transactionId!),
     enabled: !!props.transactionId,
   });
-  const { account } = useUserMainAccount();
+  const { data: currencyRate } = useQuery({
+    queryKey: ["user-currency-rate", account?.currency.id],
+    queryFn: () => {
+      if (account && account.currency.id) {
+        return getUserCurrencyRateByCurrencyId(account.currency.id);
+      }
+      return null;
+    },
+    enabled: !!account?.currency.id,
+  });
   const [transactionType, setTransactionType] = useState<TransactionTypes>(
     TransactionTypes.Expense
   );
@@ -96,7 +109,7 @@ export default function AddTransactionForCurrentAccount(
       .check(VALIDATIONS.isRequired, "Date is required.")
       .forProperty("accountId", account?.id.toString())
       .check(VALIDATIONS.isRequired, "Account is required.")
-      .forProperty("currencyId")
+      .forProperty("currencyId", account?.currency.id.toString())
       .check(VALIDATIONS.isRequired, "Currency is required.")
       .applyCheckOnlyOnSubmit()
       .forProperty("destinationAccountId")
@@ -210,8 +223,11 @@ export default function AddTransactionForCurrentAccount(
   };
 
   return (
-    <Dialog open={props.open}>
-      <DialogContent className="max-w-[900px] sm:max-w-[800px] p-6">
+    <Dialog open={props.open} onOpenChange={props.setOpen}>
+      <DialogContent
+        showCloseButton={true}
+        className="max-w-[900px] sm:max-w-[800px] p-6"
+      >
         <form onSubmit={handleSubmit} className="space-y-3">
           {/* Header */}
           <div className="space-y-2">
@@ -291,13 +307,22 @@ export default function AddTransactionForCurrentAccount(
                       entityName="currencies"
                       placeholder="Currency"
                       name="currencyId"
-                      defaultValue={values.currencyId}
+                      defaultValue={account?.currency.id.toString()}
+                      disabled={true}
                       onChange={(value) => onChangeValue("currencyId", value)}
                     />
                   }
                   className="pl-[116px]!"
                 />
               </div>
+
+              {currencyRate?.item && (
+                <span className="text-xs font-semibold text-muted-foreground mt-1 ml-1">
+                  {currencyRate?.item
+                    ? `${values.amount || 0} ${currencyRate.item.baseCurrencyCode} = ${formatCurrency(currencyRate.item.rate * values.amount, 3)} ${currencyRate.item.targetCurrencyCode}`
+                    : ""}
+                </span>
+              )}
             </div>
 
             {/* Date - 1 column */}

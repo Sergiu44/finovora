@@ -26,14 +26,19 @@ export interface UpdateUserProfilePayload {
 }
 
 export async function getUserProfile(): Promise<UserProfileDTO> {
-    const res = await createEnhancedAxios().get(`${import.meta.env.VITE_API_URL}/user/profile`);
+    const res = await createEnhancedAxios().get(`${import.meta.env.VITE_API_URL}/user/profile`, {
+        withCredentials: true,
+    });
     return res.data as UserProfileDTO;
 }
 
 export async function updateUserProfile(payload: UpdateUserProfilePayload): Promise<UserProfileDTO> {
     const res = await createEnhancedAxios().put(
         `${import.meta.env.VITE_API_URL}/user/profile`,
-        payload
+        payload,
+        {
+            withCredentials: true,
+        }
     );
     return res.data.profile as UserProfileDTO;
 }

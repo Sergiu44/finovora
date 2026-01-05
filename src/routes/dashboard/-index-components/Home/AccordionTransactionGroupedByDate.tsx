@@ -220,11 +220,13 @@ const AccordionTransactionGroupedByDate = ({
         })}
       </Accordion>
 
-      <AddTransactionForCurrentAccount
-        open={!!selectedTransactionId}
-        setOpen={() => setSelectedTransactionId(undefined)}
-        transactionId={selectedTransactionId}
-      />
+      {selectedTransactionId && (
+        <AddTransactionForCurrentAccount
+          open={!!selectedTransactionId}
+          setOpen={() => setSelectedTransactionId(undefined)}
+          transactionId={selectedTransactionId}
+        />
+      )}
     </div>
   );
 };

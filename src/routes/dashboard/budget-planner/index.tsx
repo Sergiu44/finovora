@@ -6,11 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  type ChartConfig,
-} from "../../../components/ui/chart";
+import { ChartTooltip } from "../../../components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { Button } from "../../../components/ui/button";
 import { ArrowRightIcon, PlusIcon } from "@heroicons/react/16/solid";
@@ -140,11 +136,9 @@ function RouteComponent() {
           </div>
 
           <Card>
-            <CardContent className="flex flex-col items-center justify-center py-12">
+            <CardContent className="flex flex-col items-center justify-center py-10">
               <div className="text-center space-y-4">
-                <h3 className="text-lg font-semibold">
-                  No budgets created yet
-                </h3>
+                <h3 className="text-lg font-semibold">No budget created yet</h3>
                 <p className="text-muted-foreground">
                   Create your first budget to start tracking your spending
                 </p>
@@ -152,7 +146,8 @@ function RouteComponent() {
                   onClick={() =>
                     router.navigate({ to: "/dashboard/budget-planner/create" })
                   }
-                  className="flex items-center gap-2"
+                  className="rounded-[16px]! flex items-center gap-1 mx-auto mt-4 px-5!"
+                  size="sm"
                 >
                   <PlusIcon className="w-4 h-4" />
                   Create Budget

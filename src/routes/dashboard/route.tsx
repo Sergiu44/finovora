@@ -19,6 +19,7 @@ import {
   TypeIcon,
   Wallet2Icon,
 } from "lucide-react";
+import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
 import { Button } from "../../components/ui/button";
 import AddTransactionForCurrentAccount from "./-index-components/AddTransactionForCurrentAccount";
 import { useUserDetails } from "../../context/UserDetails";
@@ -73,7 +74,7 @@ function RouteComponent() {
 
         <div
           id="dashboard__grid-container-sidebar-content-wrapper"
-          className="flex flex-col gap-2 m-4"
+          className="flex flex-col gap-1 m-4"
         >
           <IconLink
             href="/dashboard"
@@ -98,16 +99,23 @@ function RouteComponent() {
 
           <IconLink
             size="sm"
-            href="/dashboard/categories"
-            icon={<TypeIcon className="h-4 w-4" />}
-            text="Categories"
+            href="/dashboard/budget-planner"
+            icon={<Wallet2Icon className="h-4 w-4" />}
+            text="Budget Planner"
           />
 
           <IconLink
             size="sm"
-            href="/dashboard/budget-planner"
-            icon={<Wallet2Icon className="h-4 w-4" />}
-            text="Budget Planner"
+            href="/dashboard/currencies"
+            icon={<CurrencyDollarIcon className="h-4 w-4" />}
+            text="Currencies"
+          />
+
+          <IconLink
+            size="sm"
+            href="/dashboard/categories"
+            icon={<TypeIcon className="h-4 w-4" />}
+            text="Categories"
           />
 
           <IconLink
@@ -173,7 +181,7 @@ function RouteComponent() {
             </div>
             <Button
               onClick={() => setAddTransactionModalOpen(true)}
-              className="flex items-center rounded-sm w-full cursor-pointer mt-2"
+              className="flex items-center w-full cursor-pointer mt-2"
               variant="default"
               size="sm"
             >
@@ -247,10 +255,12 @@ function RouteComponent() {
         <Outlet />
       </div>
 
-      <AddTransactionForCurrentAccount
-        open={addTransactionModalOpen}
-        setOpen={setAddTransactionModalOpen}
-      />
+      {addTransactionModalOpen && (
+        <AddTransactionForCurrentAccount
+          open={addTransactionModalOpen}
+          setOpen={setAddTransactionModalOpen}
+        />
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import IconLink from "../../../components/reusable/IconLink";
-import { ArrowPathRoundedSquareIcon } from "@heroicons/react/16/solid";
+import { ArrowPathRoundedSquareIcon, CurrencyDollarIcon } from "@heroicons/react/16/solid";
 import { BellPlus, CreditCard, File, UserCircle, Wrench } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/settings")({
@@ -36,7 +36,7 @@ function RouteComponent() {
         </div>
 
         <h3 className="text-sm font-semibold text-left mt-4 pl-2">
-          Accounts Mangement
+          Accounts Management
         </h3>
         <div className="flex flex-col items-center gap-1 mt-2">
           <IconLink

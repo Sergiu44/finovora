@@ -8,7 +8,7 @@ import {
 } from "../../utils/actions/accounts/userAccounts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AccountPreviewCard from "./settings/accounts/-components/AccountPreviewCard";
-import EmptyAccountCard from "./settings/accounts/-components/EmptyAccountCard";
+import EmptyAccountCard from "./settings/accounts/-components/EmptyCard";
 import { isDefaultGradientItem } from "../../utils/actions/nomenclatures/defaultGradient";
 import { useMemo, useState } from "react";
 import { AnimatePresence } from "framer-motion";

@@ -1,4 +1,4 @@
-import { DataTypes, Optional, Sequelize } from "sequelize";
+import { DataTypes, Optional, Sequelize, NonAttribute } from "sequelize";
 import { Model, Table } from "sequelize-typescript";
 
 type CurrencyAttributes = {
@@ -6,6 +6,7 @@ type CurrencyAttributes = {
   code: string;
   name: string;
   symbol: string;
+  countryCode: string;
 };
 
 type CurrencyCreationAttributes = Optional<CurrencyAttributes, "id">;
@@ -19,6 +20,7 @@ export class Currency extends Model<CurrencyAttributes, CurrencyCreationAttribut
   declare code: string;
   declare name: string;
   declare symbol: string;
+  declare countryCode: string;
 
   public static configInit(SequelizeInstance: Sequelize) {
     Currency.init(
@@ -31,6 +33,11 @@ export class Currency extends Model<CurrencyAttributes, CurrencyCreationAttribut
         },
         code: {
           type: DataTypes.STRING(10), // e.g., 'USD', 'EUR'
+          allowNull: false,
+          unique: true,
+        },
+        countryCode: {
+          type: DataTypes.STRING(2),
           allowNull: false,
           unique: true,
         },

@@ -1,3 +1,33 @@
+/**
+ * Budget Planner Create Component
+ *
+ * This component allows users to create and manage budgets for expense categories.
+ * Users have three options for setting budgets:
+ *
+ * 1. **Income-Based Budget**: Set budgets based on a percentage of total income.
+ *    - Users can drag/click the interactive bar to allocate a percentage of their income
+ *    - The budget amount is calculated automatically based on total income
+ *    - Visual feedback shows the percentage allocation
+ *
+ * 2. **Manual Budget Entry**: Manually input budget amounts for each category.
+ *    - Users can type any amount directly into the input field
+ *    - No restrictions on budget amounts (can exceed income)
+ *    - Amounts are rounded to nearest $50 increment
+ *
+ * 3. **AI-Powered Budget Calculation** (Premium Feature):
+ *    - Uses artificial intelligence to analyze spending patterns and suggest optimal budgets
+ *    - Automatically calculates budget allocations based on historical data and financial goals
+ *    - This feature is PREMIUM and requires an active subscription
+ *    - If no subscription exists, this option will be blocked/disabled
+ *
+ * Features:
+ * - Interactive drag-to-set budget bars
+ * - Manual input with $50 increment rounding
+ * - Real-time budget summary (Total Income, Total Budget, Remaining)
+ * - Visual warnings when budget exceeds income (informational only, not restrictive)
+ * - Save budgets to persist across sessions
+ */
+
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import BaseWrapper from "../../../components/reusable/layouts/BaseWrapper";
 import { TransactionTypes } from "../../../types/enums/TransactionTypes";

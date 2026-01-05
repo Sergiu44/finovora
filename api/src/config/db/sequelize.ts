@@ -12,11 +12,11 @@ import { TransactionType } from "../../features/transactions/transactionTypes/tr
 import { Transaction } from "../../features/transactions/transaction";
 import { DefaultGradient } from "../../features/nomenclatures/defaultGradients/defaultGradient";
 import { UserGradient } from "../../features/users/userGradients/userGradient";
-import { HistoryCurrencyRate } from "../../features/historyCurrencyRates/historyCurrencyRate";
-import { UserHistoryCurrencyRate } from "../../features/historyCurrencyRates/user/userHistoryCurrencyRate";
 import { BudgetExpense } from "../../features/categories/categoryBudget/categoryBudget";
 import { UserProfile } from "../../features/users/userProfiles/userProfile";
 import { ProfileSetupSession } from "../../features/users/profileSetupSessions/profileSetupSession";
+import { CurrencyExchange } from "../../features/currencies/exchange/currencyExchange";
+import { UserCurrency } from "../../features/currencies/user-currencies/userCurrency";
 
 export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
   private static instance: SequelizeDatabaseWrapper | null = null;
@@ -89,11 +89,11 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
             Transaction,
             DefaultGradient,
             UserGradient,
-            HistoryCurrencyRate,
-            UserHistoryCurrencyRate,
             BudgetExpense,
             UserProfile,
             ProfileSetupSession,
+            CurrencyExchange,
+            UserCurrency,
           ],
         });
       default:
@@ -119,11 +119,11 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
     Transaction.configInit(dbInstance);
     DefaultGradient.configInit(dbInstance);
     UserGradient.configInit(dbInstance);
-    HistoryCurrencyRate.configInit(dbInstance);
-    UserHistoryCurrencyRate.configInit(dbInstance);
     BudgetExpense.configInit(dbInstance);
     UserProfile.configInit(dbInstance);
     ProfileSetupSession.configInit(dbInstance);
+    CurrencyExchange.configInit(dbInstance);
+    UserCurrency.configInit(dbInstance);
 
     Account.associate();
     AccountType.associate();
@@ -131,10 +131,10 @@ export default class SequelizeDatabaseWrapper implements IDatabaseConnection {
     TransactionType.associate();
     Transaction.associate();
     UserGradient.associate();
-    UserHistoryCurrencyRate.associate();
-    HistoryCurrencyRate.associate();
     BudgetExpense.associate();
     UserProfile.associate();
     ProfileSetupSession.associate();
+    CurrencyExchange.associate();
+    UserCurrency.associate();
   }
 }

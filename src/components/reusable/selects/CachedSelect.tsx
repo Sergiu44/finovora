@@ -123,7 +123,7 @@ export default function CachedSelect({
         <SelectContent className={`${errorMessage && "input-error"}`}>
           {filteredData?.map((item: any) => (
             <SelectItem
-              className="text-shadow-black"
+              className="text-shadow-black rounded-[8px]! pl-3"
               key={item.id}
               value={item.id.toString()}
             >

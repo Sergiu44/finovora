@@ -22,6 +22,7 @@ export interface UserEntity {
   email: string;
   verified: boolean;
   primaryAccountId?: number | null;
+  primaryCurrencyId?: number | null;
   createdAt: string;
   updatedAt: string;
   deletedAt?: string | null;
@@ -36,8 +37,12 @@ interface UserDetailsContextState {
   isAuthenticated: boolean;
   logout: () => void;
   profileSetupSession: ProfileSetupSessionState | null;
-  startProfileSetupSession: (options?: { forceNew?: boolean }) => Promise<ProfileSetupSessionState>;
-  validateProfileSetupSession: (token: string) => Promise<ProfileSetupSessionState>;
+  startProfileSetupSession: (options?: {
+    forceNew?: boolean;
+  }) => Promise<ProfileSetupSessionState>;
+  validateProfileSetupSession: (
+    token: string
+  ) => Promise<ProfileSetupSessionState>;
 }
 
 const UserDetailsContext = createContext<UserDetailsContextState>({
@@ -122,14 +127,11 @@ export const UserDetailsProvider = (props: PropsWithChildren) => {
     []
   );
 
-  const validateProfileSetupSession = useCallback(
-    async (token: string) => {
-      const payload = await validateSessionAction(token);
-      setProfileSetupSession(payload);
-      return payload;
-    },
-    []
-  );
+  const validateProfileSetupSession = useCallback(async (token: string) => {
+    const payload = await validateSessionAction(token);
+    setProfileSetupSession(payload);
+    return payload;
+  }, []);
 
   // Sync with localStorage changes from other tabs/windows
   useEffect(() => {
