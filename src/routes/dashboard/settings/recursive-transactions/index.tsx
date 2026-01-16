@@ -31,7 +31,7 @@ export const Route = createFileRoute(
 
 function RouteComponent() {
   const { theme } = useTheme();
-  const { data, status } = useQuery({
+  const { status } = useQuery({
     queryKey: ["recursive-transactions"],
     queryFn: getRecursiveTransactionsAsync,
   });

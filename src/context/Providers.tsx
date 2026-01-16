@@ -1,9 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React, { type PropsWithChildren } from "react";
-import { UserMainAccountProvider } from "./UserMainAccount";
 import { UserDetailsProvider } from "./UserDetails";
 
-export default function Providers(props: PropsWithChildren) {
+export default function Providers(props: Readonly<PropsWithChildren>) {
   const [queryClient] = React.useState(
     () =>
       new QueryClient({
@@ -17,9 +16,7 @@ export default function Providers(props: PropsWithChildren) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <UserDetailsProvider>
-        <UserMainAccountProvider>{props.children}</UserMainAccountProvider>
-      </UserDetailsProvider>
+      <UserDetailsProvider>{props.children}</UserDetailsProvider>
     </QueryClientProvider>
   );
 }

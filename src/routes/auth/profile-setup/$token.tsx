@@ -4,7 +4,15 @@ import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { Label } from "../../../components/ui/label";
 import { Textarea } from "../../../components/ui/textarea";
-import { ArrowRight, ArrowLeft, Wallet, PiggyBank, LineChart, Camera, Upload } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowLeft,
+  Wallet,
+  PiggyBank,
+  LineChart,
+  Camera,
+  Upload,
+} from "lucide-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import Logo from "../../dashboard/-index-components/Logo";
 import { useValidation } from "../../../utils/hooks/useValidation/useValidation";
@@ -42,50 +50,63 @@ export default function ProfileSetup() {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [isValidatingSession, setIsValidatingSession] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  
-  const { values, onChangeInput, handleCheckFormErrors, onChangeValue, errors } =
-    useValidation(
-      new Validator()
-        .forProperty("username", "")
-        .check(VALIDATIONS.isRequired, "Username is required.")
-        .check(VALIDATIONS.minLength(3), "Username must be at least 3 characters.")
-        .check(
-          VALIDATIONS.isText,
-          "Username can only contain letters, numbers and special characters."
-        )
-        .forProperty("firstName", "")
-        .check(VALIDATIONS.isRequired, "First name is required.")
-        .check(VALIDATIONS.minLength(2), "First name must be at least 2 characters.")
-        .forProperty("lastName", "")
-        .check(VALIDATIONS.isRequired, "Last name is required.")
-        .check(VALIDATIONS.minLength(2), "Last name must be at least 2 characters.")
-        .forProperty("bio", "")
-        .check(VALIDATIONS.isRequired, "Bio is required.")
-        .check(VALIDATIONS.maxLength(500), "Bio must be less than 500 characters.")
-        .forProperty("dateOfBirth", "")
-        .check(VALIDATIONS.isRequired, "Date of birth is required.")
-        .forProperty("statusMessage", "")
-        .check(
-          VALIDATIONS.maxLength(255),
-          "Status message must be less than 255 characters."
-        )
-        .forProperty("avatarUrl", "")
-        .forProperty("preferredStartDayOfMonth", "1")
-        .check(
-          (value: string) => {
-            const day = Number(value);
-            return !Number.isNaN(day) && day >= 1 && day <= 15;
-          },
-          "Day must be between 1 and 15."
-        )
-        .forProperty("themePreference", "system")
-        .check(VALIDATIONS.isRequired, "Theme preference is required.")
-        .forProperty("preferredCurrency", "")
-        .check(VALIDATIONS.isRequired, "Preferred currency is required.")
-        
-    );
+
+  const {
+    values,
+    onChangeInput,
+    handleCheckFormErrors,
+    onChangeValue,
+    errors,
+  } = useValidation(
+    new Validator()
+      .forProperty("username", "")
+      .check(VALIDATIONS.isRequired, "Username is required.")
+      .check(
+        VALIDATIONS.minLength(3),
+        "Username must be at least 3 characters."
+      )
+      .check(
+        VALIDATIONS.isText,
+        "Username can only contain letters, numbers and special characters."
+      )
+      .forProperty("firstName", "")
+      .check(VALIDATIONS.isRequired, "First name is required.")
+      .check(
+        VALIDATIONS.minLength(2),
+        "First name must be at least 2 characters."
+      )
+      .forProperty("lastName", "")
+      .check(VALIDATIONS.isRequired, "Last name is required.")
+      .check(
+        VALIDATIONS.minLength(2),
+        "Last name must be at least 2 characters."
+      )
+      .forProperty("bio", "")
+      .check(VALIDATIONS.isRequired, "Bio is required.")
+      .check(
+        VALIDATIONS.maxLength(500),
+        "Bio must be less than 500 characters."
+      )
+      .forProperty("dateOfBirth", "")
+      .check(VALIDATIONS.isRequired, "Date of birth is required.")
+      .forProperty("statusMessage", "")
+      .check(
+        VALIDATIONS.maxLength(255),
+        "Status message must be less than 255 characters."
+      )
+      .forProperty("avatarUrl", "")
+      .forProperty("preferredStartDayOfMonth", "1")
+      .check((value: string) => {
+        const day = Number(value);
+        return !Number.isNaN(day) && day >= 1 && day <= 15;
+      }, "Day must be between 1 and 15.")
+      .forProperty("themePreference", "system")
+      .check(VALIDATIONS.isRequired, "Theme preference is required.")
+      .forProperty("preferredCurrency", "")
+      .check(VALIDATIONS.isRequired, "Preferred currency is required.")
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -160,10 +181,13 @@ export default function ProfileSetup() {
           statusMessage: values.statusMessage || undefined,
           avatarUrl: values.avatarUrl || undefined,
           preferredStartDayOfMonth: Number(values.preferredStartDayOfMonth),
-          themePreference: values.themePreference as "light" | "dark" | "system",
+          themePreference: values.themePreference as
+            | "light"
+            | "dark"
+            | "system",
           preferredCurrency: values.preferredCurrency,
         });
-        
+
         // Update UserDetails context - set hasProfile to true
         if (user) {
           setUser({
@@ -171,11 +195,14 @@ export default function ProfileSetup() {
             hasProfile: true,
           });
         }
-        
+
         toast.success(message);
         navigate({ to: "/dashboard" });
       } catch (error: any) {
-        toast.error(error?.response?.data?.message || "Failed to create profile. Please try again.");
+        toast.error(
+          error?.response?.data?.message ||
+            "Failed to create profile. Please try again."
+        );
       } finally {
         setIsSubmitting(false);
       }
@@ -188,11 +215,12 @@ export default function ProfileSetup() {
     }
   };
 
-  const hasErrorsOnCurrentStep = (fieldGroups[currentStep] ?? []).some((field) => {
-    const errorValue = errors[field];
-    console.log(errorValue);
-    return typeof errorValue === "string" && errorValue.trim().length > 0;
-  });
+  const hasErrorsOnCurrentStep = (fieldGroups[currentStep] ?? []).some(
+    (field) => {
+      const errorValue = errors[field];
+      return typeof errorValue === "string" && errorValue.trim().length > 0;
+    }
+  );
 
   const renderStepContent = () => {
     switch (currentStep) {
@@ -221,7 +249,10 @@ export default function ProfileSetup() {
               )}
             </div>
             <div className="space-y-1">
-              <Label htmlFor="firstName" className="text-foreground font-medium">
+              <Label
+                htmlFor="firstName"
+                className="text-foreground font-medium"
+              >
                 First Name
               </Label>
               <CustomInput
@@ -247,7 +278,6 @@ export default function ProfileSetup() {
                 onChange={onChangeInput}
                 className="bg-background border-border focus:border-primary focus:ring-primary"
               />
-             
             </div>
             <div className="col-span-2 space-y-1">
               <Label htmlFor="bio" className="text-foreground font-medium">
@@ -265,8 +295,8 @@ export default function ProfileSetup() {
               />
               {errors.bio && (
                 <span className="flex items-center gap-1">
-                <ExclamationCircleIcon className="w-4 h-4 text-destructive" />
-                <p className="text-xs text-destructive">{errors.bio}</p>
+                  <ExclamationCircleIcon className="w-4 h-4 text-destructive" />
+                  <p className="text-xs text-destructive">{errors.bio}</p>
                 </span>
               )}
             </div>
@@ -316,7 +346,9 @@ export default function ProfileSetup() {
               </div>
             </div>
             <div className="space-y-3">
-              <Label className="text-foreground font-medium">Profile Photo</Label>
+              <Label className="text-foreground font-medium">
+                Profile Photo
+              </Label>
               <div className="flex items-start gap-6">
                 <div className="relative group">
                   <div className="h-28 w-28 rounded-[16px] bg-gradient-to-br from-primary/10 to-accent/10 border-2 border-border overflow-hidden flex items-center justify-center shadow-sm transition-all duration-200 group-hover:border-primary/50 group-hover:shadow-md">
@@ -329,7 +361,9 @@ export default function ProfileSetup() {
                     ) : (
                       <div className="flex flex-col items-center justify-center gap-2">
                         <Camera className="w-8 h-8 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground font-medium">No photo</span>
+                        <span className="text-xs text-muted-foreground font-medium">
+                          No photo
+                        </span>
                       </div>
                     )}
                   </div>
@@ -382,7 +416,7 @@ export default function ProfileSetup() {
                   Preferred Start Day of Month
                 </Label>
                 <CustomInput
-                errorMessage={errors.preferredStartDayOfMonth}
+                  errorMessage={errors.preferredStartDayOfMonth}
                   id="preferredStartDayOfMonth"
                   name="preferredStartDayOfMonth"
                   type="number"
@@ -391,12 +425,10 @@ export default function ProfileSetup() {
                   value={values.preferredStartDayOfMonth}
                   onChange={onChangeInput}
                   className="bg-background border-border focus:border-primary focus:ring-primary"
-                  
                 />
                 <p className="text-xs text-muted-foreground">
                   Sets when your monthly budgets and reports reset.
                 </p>
-               
               </div>
               <div className="space-y-1">
                 <Label className="text-foreground font-medium">
@@ -434,7 +466,7 @@ export default function ProfileSetup() {
                 placeholder="Select currency"
                 name="preferredCurrency"
                 onChange={(e: string) => onChangeValue("preferredCurrency", e)}
-                defaultValue={values.preferredCurrency}
+                value={values.preferredCurrency}
                 errorMessage={errors.preferredCurrency}
                 className="w-full"
               />

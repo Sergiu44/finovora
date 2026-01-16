@@ -33,18 +33,17 @@ export const UserMainAccountProvider = (props: PropsWithChildren) => {
   const { data, status } = useQuery({
     queryKey: ["userMainAccount", userMainAccountId],
     enabled: !!userMainAccountId,
-    queryFn: () => {
-      if(userMainAccountId)
-        return getUserAccount(userMainAccountId);
+    queryFn: async () => {
+      if (userMainAccountId) return await getUserAccount(userMainAccountId);
     },
   });
 
   useEffect(() => {
-    if(window && window.localStorage.getItem("user")) {
-      const user = JSON.parse(window.localStorage.getItem("user") || "{}");
+    if (globalThis?.localStorage.getItem("user")) {
+      const user = JSON.parse(globalThis.localStorage.getItem("user") || "{}");
       setUserMainAccountId(user.primaryAccountId);
     }
-  }, [])
+  }, []);
 
   return (
     <UserMainAccountContext.Provider

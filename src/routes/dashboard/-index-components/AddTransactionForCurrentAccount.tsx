@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
@@ -90,7 +90,7 @@ export default function AddTransactionForCurrentAccount(
       .forProperty("amount")
       .check(VALIDATIONS.isRequired, "Amount is required.")
       .check(
-        (value: string) => !isNaN(Number(value)) && Number(value) > 0,
+        (value: string) => !Number.isNaN(Number(value)) && Number(value) > 0,
         "Amount must be a positive number."
       )
       .forProperty("description")
@@ -103,6 +103,12 @@ export default function AddTransactionForCurrentAccount(
       .check(
         VALIDATIONS.isRequired,
         "Category is required.",
+        transactionType === TransactionTypes.Transfer
+      )
+      .forProperty("subCategoryId")
+      .check(
+        VALIDATIONS.isRequired,
+        "Subcategory is required.",
         transactionType === TransactionTypes.Transfer
       )
       .forProperty("date", moment().format("YYYY-MM-DD"))
@@ -125,7 +131,7 @@ export default function AddTransactionForCurrentAccount(
       )
   );
 
-  const resetErrors = () => {
+  const resetErrors = useCallback(() => {
     setErrors({
       amount: "",
       description: "",
@@ -135,21 +141,27 @@ export default function AddTransactionForCurrentAccount(
       currencyId: "",
       accountId: "",
     });
-  };
+  }, [setErrors]);
 
-  const resetFormState = () => {
+  const resetFormState = useCallback(() => {
     setValues((prev) => ({
       ...prev,
       amount: "",
       description: "",
       date: moment().format("YYYY-MM-DD"),
       categoryId: "",
+      subCategoryId: "",
       destinationAccountId: "",
       currencyId: account?.currency.id,
       accountId: account?.id.toString(),
     }));
+    console.log(values, "values");
     resetErrors();
-  };
+  }, [account?.currency.id, account?.id, setValues, resetErrors]);
+
+  useEffect(() => {
+    resetFormState();
+  }, [transactionType, resetFormState]);
 
   useEffect(() => {
     if (transactionData) {
@@ -295,7 +307,6 @@ export default function AddTransactionForCurrentAccount(
                   value={values.amount}
                   onChange={onChangeInput}
                   errorMessage={errors.amount || errors.currencyId}
-                  defaultValue={values.currencyId}
                   type="number"
                   step="0.01"
                   min="0"
@@ -307,7 +318,7 @@ export default function AddTransactionForCurrentAccount(
                       entityName="currencies"
                       placeholder="Currency"
                       name="currencyId"
-                      defaultValue={account?.currency.id.toString()}
+                      value={account?.currency.id.toString()}
                       disabled={true}
                       onChange={(value) => onChangeValue("currencyId", value)}
                     />
@@ -357,7 +368,7 @@ export default function AddTransactionForCurrentAccount(
                 id="description"
                 name="description"
                 onChange={onChangeInput}
-                defaultValue={values.description}
+                value={values.description}
                 placeholder="What is this transaction for?"
                 className="w-full "
               />
@@ -365,24 +376,52 @@ export default function AddTransactionForCurrentAccount(
 
             {/* Category - 2 columns */}
             {transactionType !== TransactionTypes.Transfer && (
-              <div className="mb-3">
-                <Label
-                  htmlFor="categoryId"
-                  className="text-sm font-medium block mb-1 ml-1"
-                >
-                  Category *
-                </Label>
-                <CachedSelect
-                  entityName="categories"
-                  placeholder="Select a category"
-                  name="categoryId"
-                  errorMessage={errors.categoryId}
-                  onChange={(value) => {
-                    onChangeValue("categoryId", value);
-                  }}
-                  defaultValue={values.categoryId}
-                  params={{ transactionTypeId: transactionType.toString() }}
-                />
+              <div className="flex gap-2 mb-3">
+                <div className={`basis-1/2 ${values.categoryId ? "" : "grow"}`}>
+                  <Label
+                    htmlFor="categoryId"
+                    className="text-sm font-medium block mb-1 ml-1"
+                  >
+                    Category *
+                  </Label>
+                  <CachedSelect
+                    entityName="categories"
+                    placeholder="Select a category"
+                    name="categoryId"
+                    errorMessage={errors.categoryId}
+                    onChange={(value) => {
+                      onChangeValue("subCategoryId", "");
+                      onChangeValue("categoryId", value);
+                    }}
+                    value={values.categoryId}
+                    params={{ transactionTypeId: transactionType.toString() }}
+                  />
+                </div>
+                {values.categoryId && (
+                  <div className="basis-1/2">
+                    <Label
+                      htmlFor="subCategoryId"
+                      className="text-sm font-medium block mb-1 ml-1"
+                    >
+                      Subcategory *
+                    </Label>
+                    <CachedSelect
+                      entityName="categories"
+                      placeholder="Select a subategory"
+                      name="subCategoryId"
+                      noOptionsMessage="No subcategories found"
+                      errorMessage={errors.subCategoryId}
+                      onChange={(value) => {
+                        onChangeValue("subCategoryId", value);
+                      }}
+                      value={values.subCategoryId}
+                      params={{
+                        parentCategoryId: values.categoryId,
+                        transactionTypeId: transactionType.toString(),
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             )}
 
@@ -396,7 +435,7 @@ export default function AddTransactionForCurrentAccount(
               </Label>
               <CachedSelect
                 className=""
-                defaultValue={values.accountId}
+                value={values.accountId}
                 entityName="accounts"
                 placeholder="Select an account"
                 name="accountId"
@@ -420,7 +459,7 @@ export default function AddTransactionForCurrentAccount(
                   placeholder="Select a transfer account"
                   name="destinationAccountId"
                   errorMessage={errors.destinationAccountId}
-                  defaultValue={values.destinationAccountId}
+                  value={values.destinationAccountId}
                   onChange={(value) =>
                     onChangeValue("destinationAccountId", value)
                   }

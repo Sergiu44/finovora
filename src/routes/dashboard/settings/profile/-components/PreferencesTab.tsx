@@ -50,7 +50,7 @@ export function PreferencesTab({
               placeholder="Select currency"
               name="preferredCurrency"
               onChange={(e: string) => onChangeValue("preferredCurrency", e)}
-              defaultValue={values.preferredCurrency}
+              value={values.preferredCurrency}
               errorMessage={errors.preferredCurrency}
               className="w-full"
             />

@@ -6,7 +6,7 @@ import { Category } from "../categories/category";
 import { Transaction } from "./transaction";
 import { TransactionType } from "./transactionTypes/transactionType";
 import User from "../users/user";
-import { Op, Sequelize, WhereOptions } from "sequelize";
+import { Op, WhereOptions } from "sequelize";
 import SequelizeDatabaseWrapper from "../../config/db/sequelize";
 import { DateUtils } from "../../utils/utilities/DateUtils";
 

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState, type PropsWithChildren } from "react";
+import { useMemo, type PropsWithChildren } from "react";
 import { createEnhancedAxios } from "../../../configs/axios";
 import {
   Select,
@@ -16,11 +16,12 @@ interface ICachedSelectProps {
   name: string;
   errorMessage?: string;
   onChange: (value: string) => void;
-  defaultValue?: string;
+  value?: string;
   className?: string;
   params?: Record<string, string>;
   omitIds?: string[];
   disabled?: boolean;
+  noOptionsMessage?: string;
 }
 
 export default function CachedSelect({
@@ -29,22 +30,13 @@ export default function CachedSelect({
   name,
   errorMessage,
   onChange,
-  defaultValue,
+  value,
   className,
   params,
   omitIds,
   disabled,
+  noOptionsMessage,
 }: PropsWithChildren<ICachedSelectProps>) {
-  const [value, setValue] = useState<string | undefined>(
-    defaultValue ? defaultValue.toString() : undefined
-  );
-
-  useEffect(() => {
-    if (defaultValue) {
-      setValue(defaultValue.toString());
-    }
-  }, [defaultValue]);
-
   const { data, isLoading } = useQuery({
     queryKey: [`cached-select-${entityName}`, params],
     queryFn: async () => {
@@ -63,6 +55,9 @@ export default function CachedSelect({
       ? data?.filter((item: any) => !omitIds.includes(item.id.toString()))
       : data;
   }, [data, omitIds]);
+
+  const hasNoOptions = !filteredData || filteredData.length === 0;
+  const isDisabled = disabled || hasNoOptions;
 
   if (isLoading) {
     return (
@@ -108,17 +103,21 @@ export default function CachedSelect({
     <div>
       <Select
         onValueChange={(e) => {
-          setValue(e);
           onChange(e);
         }}
         value={value}
         name={name}
-        disabled={disabled}
+        disabled={isDisabled}
       >
         <SelectTrigger
-          className={`h-[40px]! ${className} mt-2 data-[placeholder]:text-muted-foreground/40! text-black ${errorMessage && "border-error! focus-visible:ring-error-600! focus-visible:border-error!"}`}
+          disabled={disabled}
+          className={`h-[40px]! ${className} mt-2 data-[placeholder]:text-muted-foreground/80! text-black ${errorMessage && "border-error! focus-visible:ring-error-600! focus-visible:border-error!"}`}
         >
-          <SelectValue placeholder={placeholder} />
+          {hasNoOptions && noOptionsMessage && !value ? (
+            <span className="text-muted-foreground/40">{noOptionsMessage}</span>
+          ) : (
+            <SelectValue placeholder={placeholder} />
+          )}
         </SelectTrigger>
         <SelectContent className={`${errorMessage && "input-error"}`}>
           {filteredData?.map((item: any) => (

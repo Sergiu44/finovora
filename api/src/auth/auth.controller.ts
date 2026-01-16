@@ -55,7 +55,7 @@ export const loginHandler = catchErrors(async (req: Request, res: Response) => {
   const userProfile = await UserProfile.findOne({ where: { userId: user.id } });
 
   let sessionSetupToken = null;
-  if(!userProfile)
+  if (!userProfile)
     sessionSetupToken = await createProfileSetupSession(user.id);
 
   // Add hasProfile field to user object

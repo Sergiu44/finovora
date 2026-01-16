@@ -31,7 +31,7 @@ import {
   isDefaultGradientItem,
 } from "../../../../../utils/actions/nomenclatures/defaultGradient";
 import ErrorMessage from "../../../../../components/reusable/errorMessages/errorMessage";
-import { SettingsPageHeader, SettingsPageLayout } from "../../-components/SettingsPageHeader";
+import { SettingsPageLayout } from "../../-components/SettingsPageHeader";
 
 interface IUpdateCreateAccountProps {
   id?: string;
@@ -144,7 +144,10 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
   }, [props.data, setValues]);
 
   return (
-      <SettingsPageLayout title={`Let's ${props.data?.name ? "update your " : "create a new "} account`} description="This account will allow you to manage your transactions more efficiently.">
+    <SettingsPageLayout
+      title={`Let's ${props.data?.name ? "update your " : "create a new "} account`}
+      description="This account will allow you to manage your transactions more efficiently."
+    >
       <form onSubmit={handleSubmit} className="flex flex-col gap-0">
         <Input
           onChange={onChangeInput}
@@ -160,7 +163,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
         <CachedSelect
           onChange={(value) => onChangeValue("accountTypeId", value)}
           errorMessage={errors["accountTypeId"]}
-          defaultValue={props.data?.accountTypeId?.toString() ?? ""}
+          value={props.data?.accountTypeId?.toString() ?? ""}
           name="accountTypeId"
           entityName="account-types"
           placeholder="Select Account Type"
@@ -169,7 +172,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
         <CachedSelect
           onChange={(value) => onChangeValue("currencyId", value)}
           errorMessage={errors["currencyId"]}
-          defaultValue={props.data?.currencyId?.toString() ?? ""}
+          value={props.data?.currencyId?.toString() ?? ""}
           name="currencyId"
           entityName="currencies"
           placeholder="Select Currency"
@@ -205,7 +208,8 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
               <GradientCard
                 key={"default-gradient-" + item.id}
                 isSelected={
-                  values["gradientId"]?.toString() == item.id?.toString() && values["type"] == "default"
+                  values["gradientId"]?.toString() == item.id?.toString() &&
+                  values["type"] == "default"
                 }
                 onSelect={() => {
                   setErrors({
@@ -252,7 +256,8 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
                 }}
                 key={"user-gradient-" + item.id}
                 isSelected={
-                  values["gradientId"]?.toString() == item.id?.toString() && values["type"] == "user"
+                  values["gradientId"]?.toString() == item.id?.toString() &&
+                  values["type"] == "user"
                 }
                 onSelect={() => {
                   setErrors({
@@ -345,6 +350,6 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
           </Button>
         </div>
       </form>
-      </SettingsPageLayout>
+    </SettingsPageLayout>
   );
 }
