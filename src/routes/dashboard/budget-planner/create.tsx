@@ -74,6 +74,7 @@ function RouteComponent() {
   const [isDragging, setIsDragging] = useState<number | null>(null);
   const [maxBudgetAmount, setMaxBudgetAmount] = useState<number>(100);
   const dragRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+  const budgetsRef = useRef<CategoryBudget[]>([]);
 
   const { data: categoriesData } = useQuery({
     queryKey: ["categories-with-budget", TransactionTypes.Expense],
@@ -121,6 +122,10 @@ function RouteComponent() {
     }
   }, [categoriesData, categoryBudgets.length]);
 
+  useEffect(() => {
+    budgetsRef.current = categoryBudgets;
+  }, [categoryBudgets]);
+
   const totalBudget = useMemo(
     () => categoryBudgets.reduce((sum, cat) => sum + cat.budgetAmount, 0),
     [categoryBudgets]
@@ -137,7 +142,10 @@ function RouteComponent() {
   );
 
   // Round to nearest $50 increment
-  const roundToFifty = (value: number) => Math.round(value / 50) * 50;
+  const roundToFifty = useCallback(
+    (value: number) => Math.round(value / 50) * 50,
+    []
+  );
 
   // Update budget for a category
   const updateBudget = useCallback((categoryId: number, newAmount: number) => {
@@ -150,6 +158,23 @@ function RouteComponent() {
       })
     );
   }, []);
+
+  const incrementBudget = useCallback(
+    (categoryId: number, delta: number) => {
+      setCategoryBudgets((prev) =>
+        prev.map((cat) => {
+          if (cat.id === categoryId) {
+            return {
+              ...cat,
+              budgetAmount: Math.max(0, roundToFifty(cat.budgetAmount + delta)),
+            };
+          }
+          return cat;
+        })
+      );
+    },
+    [roundToFifty]
+  );
 
   // Handle manual input change
   const handleInputChange = (categoryId: number, value: string) => {
@@ -164,6 +189,22 @@ function RouteComponent() {
 
   // Global mouse event handlers for live dragging
   useEffect(() => {
+    let autoIncreaseId: number | null = null;
+    const edgeThreshold = 4;
+
+    const startAutoIncrease = (categoryId: number) => {
+      if (autoIncreaseId !== null) return;
+      autoIncreaseId = window.setInterval(() => {
+        incrementBudget(categoryId, 50);
+      }, 120);
+    };
+
+    const stopAutoIncrease = () => {
+      if (autoIncreaseId === null) return;
+      window.clearInterval(autoIncreaseId);
+      autoIncreaseId = null;
+    };
+
     const handleGlobalMouseMove = (e: MouseEvent) => {
       if (isDragging === null) return;
 
@@ -171,24 +212,45 @@ function RouteComponent() {
       if (!dragElement) return;
 
       const rect = dragElement.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-
-      // In restrictive mode, limit to 100%, otherwise allow unlimited
-      const maxPercentage = isBudgetRestrictive ? 100 : Infinity;
-      const percentage = Math.max(
-        0,
-        Math.min(maxPercentage, (x / rect.width) * 100)
+      const clampedClientX = Math.min(
+        Math.max(e.clientX, 0),
+        window.innerWidth - 1
       );
+      const x = Math.min(Math.max(clampedClientX - rect.left, 0), rect.width);
+
+      // In restrictive mode, limit to 100%, otherwise allow unlimited via auto-increase
+      const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
 
       // Calculate amount based on percentage of user-defined maximum budget
       // At 100% of bar, amount equals maxBudgetAmount
       // At 200% of bar, amount equals 2 * maxBudgetAmount
       const newAmount = (percentage / 100) * maxBudgetAmount;
 
-      updateBudget(isDragging, roundToFifty(newAmount));
+      const isAtRightEdge =
+        clampedClientX >=
+        Math.min(rect.right - edgeThreshold, window.innerWidth - 1);
+
+      if (!isBudgetRestrictive && isAtRightEdge) {
+        const currentBudget =
+          budgetsRef.current.find((cat) => cat.id === isDragging)
+            ?.budgetAmount ?? 0;
+        updateBudget(
+          isDragging,
+          Math.max(currentBudget, roundToFifty(newAmount))
+        );
+      } else {
+        updateBudget(isDragging, roundToFifty(newAmount));
+      }
+
+      if (!isBudgetRestrictive && isAtRightEdge) {
+        startAutoIncrease(isDragging);
+      } else {
+        stopAutoIncrease();
+      }
     };
 
     const handleGlobalMouseUp = () => {
+      stopAutoIncrease();
       setIsDragging(null);
     };
 
@@ -200,8 +262,16 @@ function RouteComponent() {
     return () => {
       document.removeEventListener("mousemove", handleGlobalMouseMove);
       document.removeEventListener("mouseup", handleGlobalMouseUp);
+      stopAutoIncrease();
     };
-  }, [isDragging, maxBudgetAmount, updateBudget, isBudgetRestrictive]);
+  }, [
+    isDragging,
+    maxBudgetAmount,
+    updateBudget,
+    isBudgetRestrictive,
+    roundToFifty,
+    incrementBudget,
+  ]);
 
   // Handle bar click (for non-drag interactions)
   const handleBarClick = (categoryId: number, event: React.MouseEvent) => {
@@ -209,14 +279,14 @@ function RouteComponent() {
     if (isDragging !== null) return;
 
     const rect = event.currentTarget.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-
-    // In restrictive mode, limit to 100%, otherwise allow unlimited
-    const maxPercentage = isBudgetRestrictive ? 100 : Infinity;
-    const percentage = Math.max(
-      0,
-      Math.min(maxPercentage, (x / rect.width) * 100)
+    const clampedClientX = Math.min(
+      Math.max(event.clientX, 0),
+      window.innerWidth - 1
     );
+    const x = Math.min(Math.max(clampedClientX - rect.left, 0), rect.width);
+
+    // In restrictive mode, limit to 100%, otherwise allow unlimited via auto-increase
+    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
 
     // Calculate amount based on percentage of user-defined maximum budget
     // At 100% of bar, amount equals maxBudgetAmount
@@ -460,53 +530,61 @@ function RouteComponent() {
                           dragRefs.current[category.id] = el;
                         }
                       }}
-                      className="relative h-10 bg-muted rounded-lg cursor-pointer group overflow-hidden"
+                      className="relative h-9 rounded-full cursor-pointer group overflow-hidden border border-border/60 bg-muted/40"
                       onClick={(e) => handleBarClick(category.id, e)}
                       onMouseDown={() => handleMouseDown(category.id)}
                     >
-                      {/* Main Progress Bar - compresses as percentage exceeds 100% */}
+                      {/* Track highlight */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-muted/20 to-transparent" />
+
+                      {/* Main Progress Bar */}
                       <div
-                        className={`absolute top-0 left-0 h-full rounded-lg transition-all duration-150 ${
+                        className={`absolute top-0 left-0 h-full rounded-full transition-all duration-150 ${
                           isActive
-                            ? "bg-primary shadow-lg"
-                            : "bg-primary/80 hover:bg-primary"
+                            ? "bg-primary shadow-md"
+                            : "bg-primary/85 hover:bg-primary"
                         } ${!isBudgetRestrictive && percentage > 100 ? "rounded-r-none" : ""}`}
                         style={{
                           width: `${mainBarWidth}%`,
                         }}
-                      >
-                        <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 w-4 h-8 bg-primary border-2 border-background rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                      {/* Extended bar for values beyond 100% - shows compressed "infinity" effect */}
+                      />
+
+                      {/* Overflow for values beyond 100% */}
                       {!isBudgetRestrictive &&
                         percentage > 100 &&
                         extendedBarWidth > 0 && (
-                          <>
-                            <div
-                              className="absolute top-0 h-full bg-primary/60 rounded-r-lg transition-all duration-150 border-l-2 border-primary/50"
-                              style={{
-                                left: `${mainBarWidth}%`,
-                                width: `${extendedBarWidth}%`,
-                              }}
-                            />
-                            {/* Percentage badge at the end of extended bar */}
-                            <div
-                              className="absolute top-1/2 transform -translate-y-1/2 flex items-center gap-1 text-xs font-medium text-primary bg-primary/20 px-2 py-1 rounded-full z-10 border border-primary/30"
-                              style={{
-                                left: `${mainBarWidth + extendedBarWidth}%`,
-                              }}
-                            >
-                              <span>{percentage.toFixed(0)}%</span>
-                            </div>
-                          </>
+                          <div
+                            className="absolute top-0 h-full rounded-r-full bg-primary/50 border-l border-primary/40"
+                            style={{
+                              left: `${mainBarWidth}%`,
+                              width: `${extendedBarWidth}%`,
+                              backgroundImage:
+                                "repeating-linear-gradient(45deg, rgba(255,255,255,0.25) 0 8px, rgba(255,255,255,0) 8px 16px)",
+                            }}
+                          />
                         )}
 
+                      {/* Thumb */}
+                      <div
+                        className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border border-background bg-primary shadow ${
+                          isActive ? "scale-110" : "opacity-80 group-hover:opacity-100"
+                        } transition`}
+                        style={{
+                          left: `calc(${Math.min(mainBarWidth, 100)}% - 8px)`,
+                        }}
+                      />
+
+                      {/* Percentage badge */}
+                      <div className="absolute right-2 top-1/2 -translate-y-1/2 text-[11px] font-medium text-muted-foreground">
+                        {percentage.toFixed(0)}%
+                      </div>
+
                       {/* Grid Lines */}
-                      <div className="absolute inset-0 flex">
+                      <div className="absolute inset-0 pointer-events-none">
                         {[25, 50, 75].map((line) => (
                           <div
                             key={line}
-                            className="absolute top-0 bottom-0 w-px bg-border/50"
+                            className="absolute top-0 bottom-0 w-px bg-border/40"
                             style={{ left: `${line}%` }}
                           />
                         ))}

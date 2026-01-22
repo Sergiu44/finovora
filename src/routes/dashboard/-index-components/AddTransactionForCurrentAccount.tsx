@@ -106,11 +106,6 @@ export default function AddTransactionForCurrentAccount(
         transactionType === TransactionTypes.Transfer
       )
       .forProperty("subCategoryId")
-      .check(
-        VALIDATIONS.isRequired,
-        "Subcategory is required.",
-        transactionType === TransactionTypes.Transfer
-      )
       .forProperty("date", moment().format("YYYY-MM-DD"))
       .check(VALIDATIONS.isRequired, "Date is required.")
       .forProperty("accountId", account?.id.toString())

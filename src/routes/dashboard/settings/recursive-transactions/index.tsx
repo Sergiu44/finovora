@@ -22,6 +22,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../../components/ui/select";
+import { Card, CardContent } from "../../../../components/ui/card";
+import { ArrowDownLeft, ArrowsUpFromLine, ArrowUpCircle, ArrowUpRight, RefreshCw, SearchIcon } from "lucide-react";
+import { ArrowsPointingInIcon } from "@heroicons/react/24/outline";
+import { ArrowPathRoundedSquareIcon } from "@heroicons/react/20/solid";
 
 export const Route = createFileRoute(
   "/dashboard/settings/recursive-transactions/"
@@ -30,85 +34,18 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
-  const { theme } = useTheme();
-  const { status } = useQuery({
+  const { status, data } = useQuery({
     queryKey: ["recursive-transactions"],
     queryFn: getRecursiveTransactionsAsync,
   });
+
   return (
     <BaseWrapper>
-      <div className="flex justify-between gap-4">
-        <Input placeholder="Search..." />
-        <Drawer direction="right">
-          <DrawerTrigger>
-            <Button>Add Recursive Transaction</Button>
-          </DrawerTrigger>
-          <DrawerContent
-            className={`
-              ${theme === "dark" ? "bg-sidebar-primary text-white" : "bg-sidebar"} min-w-2/5
-            `}
-          >
-            <form className="w-full flex flex-col p-6 h-full">
-              <DrawerHeader className="px-0">
-                <DrawerTitle
-                  className={`text-2xl font-bold ${theme === "dark" ? "text-white" : "text-black"}`}
-                >
-                  Test
-                </DrawerTitle>
-              </DrawerHeader>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2 col-span-2">
-                  <Label>Description</Label>
-                  <CustomInput name="description" placeholder="Description" />
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <Label>Amount</Label>
-                  <CustomInput name="amount" placeholder="Amount" />
-                </div>
-
-                <div className="flex flex-col">
-                  <Label>Currency</Label>
-                  <CachedSelect
-                    name="currency"
-                    placeholder="Currency"
-                    entityName="currencies"
-                    onChange={() => {}}
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <Label>Account</Label>
-                  <CachedSelect
-                    name="currency"
-                    placeholder="Currency"
-                    entityName="accounts"
-                    onChange={() => {}}
-                  />
-                </div>
-
-                <div className="flex flex-col">
-                  <Label className="mb-2">Day in month</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Day in month" />
-                    </SelectTrigger>
-                    <SelectContent className="max-h-[200px]">
-                      {Array.from({ length: 31 }, (_, index) => (
-                        <SelectItem key={index} value={(index + 1).toString()}>
-                          {index + 1}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <Button type="submit" variant="accent" className="w-full mt-auto">
-                Create
-              </Button>
-            </form>
-          </DrawerContent>
-        </Drawer>
+      <div className="mb-4">
+        <h1 className="text-3xl font-bold">Recursive Transactions</h1>
+        <p className="text-sm text-muted-foreground">
+          Manage your scheduled income and expenses
+        </p>
       </div>
 
       {status === "pending" && (
@@ -130,6 +67,69 @@ function RouteComponent() {
           <div className="text-green-500">Recursive transactions loaded</div>
         </div>
       )}
+
+      <div className="grid grid-cols-3 gap-4">
+        <Card>
+          <CardContent>
+            <div className="flex gap-4 items-center">
+              <div className="bg-green-100 p-2 rounded-[8px]">
+                <ArrowDownLeft className="text-green-500" />
+              </div>
+              <div className="flex flex-col">
+                <h3 className="text-sm text-muted-foreground tracking-wider">Monthly Income</h3>
+                <p className="text-xl text-green-500 font-bold tracking-wider">1000.00 RON</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent>
+            <div className="flex gap-4 items-center">
+              <div className="bg-red-100 p-2 rounded-[8px]">
+                <ArrowUpRight className="text-red-500" />
+              </div>
+              <div className="flex flex-col">
+                <h3 className="text-sm text-muted-foreground tracking-wider">Monthly Expenses</h3>
+                <p className="text-xl text-red-500 font-bold tracking-wider">1000.00 RON</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent>
+            <div className="flex gap-4 items-center">
+              <div className="bg-violet-100 p-2 rounded-[8px]">
+                <RefreshCw className="text-violet-500" />
+              </div>
+              <div className="flex flex-col">
+                <h3 className="text-sm text-muted-foreground tracking-wider">Net Monthly</h3>
+                <p className="text-xl text-violet-500 font-bold tracking-wider">1000.00 RON</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <CustomInput wrapperClassName="my-4" name="transactions-search" placeholder="Search transactions..." leftElement={<SearchIcon className="text-muted-foreground" size={20} />} className="pl-10!" />
+
+      {data && data.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {data.map((transaction) => (
+            <Card key={transaction.id}>
+              <CardContent>
+                <h3>{transaction.name}</h3>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <div className="flex justify-center items-center h-full">
+          <p className="text-muted-foreground">No recursive transactions found</p>
+        </div>
+      )}
+
     </BaseWrapper>
   );
 }

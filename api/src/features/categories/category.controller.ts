@@ -247,7 +247,7 @@ export const getBudgetOverviewAsync = catchErrors(
     // Get actual spending for each category in current month
     const budgetData = await Promise.all(
       budgetExpenses.map(async (budget) => {
-        const actualSpending = await Transaction.sum("amount", {
+        const actualSpending = -(await Transaction.sum("amount", {
           where: {
             userId,
             categoryId: budget.categoryId,
@@ -256,7 +256,7 @@ export const getBudgetOverviewAsync = catchErrors(
               [Op.between]: [firstDayOfMonth, lastDayOfMonth],
             },
           },
-        });
+        })) || 0;
 
         return {
           categoryId: budget.categoryId,
