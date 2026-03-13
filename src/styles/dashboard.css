@@ -52,8 +52,3 @@
     }
   }
 }
-
-#bg-cover-btn:hover {
-  transform: translateX(300%) scale(1000%, 200%);
-  transition: translate 0.3s ease-in-out, scale 0.3s ease-in-out;
-}

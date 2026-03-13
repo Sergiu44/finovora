@@ -1,16 +1,20 @@
 import { Router } from "express";
+import multer from "multer";
 import authenticate from "../../../middleware/authenticate";
 import {
   completeProfileSetupSessionHandler,
   createOrResumeProfileSetupSessionHandler,
   getProfileSetupSessionHandler,
 } from "./profileSetupSession.controller";
+import { validateDto } from "../../../middleware/validate";
+import { createOrResumeProfileSetupSessionSchema } from "./profileSetupSession.schemas";
 
 const profileSetupSessionRoutes = Router();
+const upload = multer();
 
 profileSetupSessionRoutes.post(
   "/",
-  [authenticate],
+  [authenticate, validateDto(createOrResumeProfileSetupSessionSchema)],
   createOrResumeProfileSetupSessionHandler
 );
 
@@ -21,8 +25,8 @@ profileSetupSessionRoutes.get(
 );
 
 profileSetupSessionRoutes.post(
-  "/:token/complete",
-  [authenticate],
+  "/:token/setup",
+  [authenticate, upload.any()],
   completeProfileSetupSessionHandler
 );
 

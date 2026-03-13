@@ -19,6 +19,7 @@ export function PersonalInfoTab({
   onChangeInput,
   handleImageUpload,
 }: PersonalInfoTabProps) {
+  const fullName = values.firstName + " " + values.lastName;
   return (
     <Card>
       <CardHeader>
@@ -34,7 +35,7 @@ export function PersonalInfoTab({
         <div className="flex items-center gap-6 mt-6">
           <div className="relative">
             <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-white text-2xl font-bold">
-              {values.fullName
+              {fullName
                 ?.split(" ")
                 .map((n: string) => n[0])
                 .join("")}
@@ -47,7 +48,7 @@ export function PersonalInfoTab({
             )}
           </div>
           <div>
-            <h3 className="text-lg font-semibold">{values.fullName}</h3>
+            <h3 className="text-lg font-semibold">{fullName}</h3>
             <p className="text-muted-foreground">@{values.username}</p>
             {isEditing && (
               <p className="text-sm text-muted-foreground mt-1">
@@ -59,17 +60,17 @@ export function PersonalInfoTab({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="fullName">Full Name</Label>
+            <Label htmlFor="firstName">Full Name</Label>
             <Input
-              id="fullName"
-              name="fullName"
-              value={values.fullName}
+              id="firstName"
+              name="firstName"
+              value={values.firstName}
               onChange={onChangeInput}
               disabled={!isEditing}
               placeholder="Enter your full name"
-              className={errors.fullName ? "border-destructive" : ""}
+              className={errors.firstName ? "border-destructive" : ""}
             />
-            {errors.fullName && <p className="text-sm text-destructive">{errors.fullName}</p>}
+            {errors.firstName && <p className="text-sm text-destructive">{errors.firstName}</p>}
           </div>
 
           <div className="space-y-2">
@@ -124,7 +125,7 @@ export function PersonalInfoTab({
             onChange={onChangeInput}
             disabled={!isEditing}
             placeholder="Tell us about yourself..."
-            className={`w-full min-h-[100px] px-3 py-2 border rounded-md bg-background text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+            className={`w-full min-h-[100px] px-3 py-2 border rounded-base bg-background text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
               errors.description ? "border-destructive" : "border-input"
             }`}
           />

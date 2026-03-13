@@ -1,9 +1,10 @@
 import { DataTypes, NonAttribute, Optional, Sequelize } from "sequelize";
-import { HasMany, Model, Table } from "sequelize-typescript";
+import { HasMany, HasOne, Model, Table } from "sequelize-typescript";
 import { compareValues, hashPassword } from "../../utils/utilities/bcrypt";
 import { Account } from "../accounts/account";
 import { AccountType } from "../accounts/accountTypes/accountType";
 import { ProfileSetupSession } from "./profileSetupSessions/profileSetupSession";
+import { UserProfile } from "./userProfiles/userProfile";
 
 type UserAttributes = {
   id: number;
@@ -56,6 +57,9 @@ export default class User extends Model<
 
   @HasMany(() => ProfileSetupSession, "userId")
   declare profileSetupSessions?: NonAttribute<ProfileSetupSession[]>;
+
+  @HasOne(() => UserProfile, "userId")
+  declare profile: NonAttribute<UserProfile | null>;
 
   public omitPassword(): Omit<UserAttributes, "password"> {
     const { password, ...userWithoutPassword } = this.dataValues;

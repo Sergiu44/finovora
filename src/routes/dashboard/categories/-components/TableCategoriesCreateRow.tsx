@@ -1,55 +1,69 @@
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, CornerDownRight } from "lucide-react";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Button } from "../../../../components/ui/button";
 import { TableRow, TableCell } from "../../../../components/ui/table";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import VALIDATIONS from "../../../../utils/hooks/useValidation";
 import { Input } from "../../../../components/ui/input";
 import {
   type CreateCategory,
   createCategory,
+  editCategory,
 } from "../../../../utils/actions/categories";
 import { useValidation } from "../../../../utils/hooks/useValidation/useValidation";
 import Validator from "../../../../utils/hooks/useValidation/Validator";
-
-const validator = new Validator()
-  .forProperty("name")
-  .check(VALIDATIONS.isRequired, "Name is required");
+import useCreateEditMutation from "../../../../utils/hooks/useCreateEditMutation/useCreateEditMutation";
 
 export default function TableCategoriesCreateRow({
   columns,
   parentCategoryId,
   transactionTypeId,
+  isEditing = false,
+  categoryName = undefined,
+  categoryId = undefined,
 }: {
   columns: unknown[];
-  parentCategoryId?: string;
+  parentCategoryId?: number;
   transactionTypeId: number;
+  isEditing?: boolean;
+  categoryName?: string;
+  categoryId?: string;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
-  const [isCreating, setIsCreating] = useState(false);
+  const [isCreating, setIsCreating] = useState(isEditing);
+
+  const validator = new Validator()
+    .forProperty("name", categoryName)
+    .check(VALIDATIONS.isRequired, "Name is required");
+
   const { errors, onChangeInput, values, onChangeValue } =
     useValidation(validator);
 
-  const queryClient = useQueryClient();
-  const { mutate } = useMutation({
-    mutationKey: ["createCategory"],
-    mutationFn: (data: CreateCategory) => {
-      return createCategory(data);
-    },
-    onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-      setIsCreating(false);
-    },
+  const editCreateCategory = useCreateEditMutation<CreateCategory>({
+    basePath: "categories",
+    createFn: createCategory,
+    editFn: editCategory,
+    id: categoryId ? categoryId : undefined,
   });
+
   const handleCreateCategory = (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
     onChangeValue("name", "");
 
-    mutate({
-      name: values["name"] as string,
-      parentCategoryId,
-      transactionTypeId,
-    });
+    if (categoryId) {
+      editCreateCategory({
+        id: categoryId as string,
+        name: values["name"] as string,
+        parentCategoryId,
+        transactionTypeId,
+      });
+    } else {
+      editCreateCategory({
+        id: categoryId as string,
+        name: values["name"] as string,
+        parentCategoryId,
+        transactionTypeId,
+      });
+    }
   };
 
   useEffect(() => {
@@ -62,6 +76,7 @@ export default function TableCategoriesCreateRow({
     const toggleCreating = (ev: MouseEvent) => {
       if (formRef.current && !formRef.current.contains(ev.target as Node)) {
         setIsCreating(false);
+        onChangeValue("name", "");
       }
     };
     window.addEventListener("mousedown", toggleCreating);
@@ -69,11 +84,24 @@ export default function TableCategoriesCreateRow({
     return () => {
       window.removeEventListener("mousedown", toggleCreating);
     };
-  }, []);
+  }, [onChangeValue]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsCreating(false);
+        onChangeValue("name", "");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onChangeValue]);
 
   return (
-    <TableRow>
-      <TableCell className={`m-0 py-2 px-2}`} colSpan={columns.length}>
+    <TableRow className={`select-none`}>
+      <TableCell className={`m-0 py-2 px-2`} colSpan={columns.length}>
         {isCreating ? (
           <form onSubmit={handleCreateCategory} ref={formRef}>
             <div className="relative">
@@ -101,8 +129,11 @@ export default function TableCategoriesCreateRow({
             className="w-full flex gap-1 items-center justify-start"
             variant="ghost"
           >
+            {parentCategoryId && (
+              <CornerDownRight className="h-3.5 w-3.5 text-muted-foreground mr-3" />
+            )}
             <PlusIcon />
-            Create
+            {parentCategoryId ? "Create subcategory" : "Create"}
           </Button>
         )}
       </TableCell>

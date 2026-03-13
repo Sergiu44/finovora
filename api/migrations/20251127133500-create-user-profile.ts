@@ -1,6 +1,6 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("user_profiles", {
+    await queryInterface.createTable("user-profiles", {
       id: {
         type: Sequelize.BIGINT,
         autoIncrement: true,
@@ -52,7 +52,6 @@ module.exports = {
         allowNull: false,
         defaultValue: 1,
       },
-      
       themePreference: {
         type: Sequelize.ENUM("light", "dark", "system"),
         allowNull: false,
@@ -67,9 +66,15 @@ module.exports = {
         type: Sequelize.STRING(50),
         allowNull: true,
       },
-      preferredCurrency: {
-        type: Sequelize.STRING(10),
+      preferredCurrencyId: {
+        type: Sequelize.BIGINT,
         allowNull: true,
+        references: {
+          model: "currencies",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -90,9 +95,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("user_profiles");
-    await queryInterface.sequelize.query(
-      "DROP TYPE IF EXISTS \"enum_user_profiles_themePreference\";"
-    );
+    await queryInterface.dropTable("user-profiles");
   },
 }

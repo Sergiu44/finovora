@@ -50,7 +50,7 @@ type UserProfileCreationAttributes = Optional<
 >;
 
 @Table({
-  tableName: "user_profiles",
+  tableName: "user-profiles",
 })
 export class UserProfile extends Model<
   UserProfileAttributes,
@@ -179,7 +179,7 @@ export class UserProfile extends Model<
       },
       {
         sequelize: SequelizeInstance,
-        tableName: "user_profiles",
+        tableName: "user-profiles",
         paranoid: true,
       }
     );

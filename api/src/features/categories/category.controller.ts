@@ -84,12 +84,18 @@ export const getCategoriesDropdownAsync = catchErrors(
       where: {
         userId: req.userId,
         transactionTypeId: req.query.transactionTypeId as string,
+        parentCategoryId: req.query.parentCategoryId ? req.query.parentCategoryId as string : null,
       },
       attributes: ["id", "name"],
+      include: [{
+        model: Category,
+        as: "subCategories",
+        attributes: ["id", "name"],
+      }]
     });
     return res
       .status(200)
-      .json(categories.map((c) => ({ id: c.id, value: c.name })));
+      .json(categories.map((c) => ({ id: c.id, value: c.name, subCategories: c.subCategories?.map((sc) => ({ id: sc.id, value: sc.name })) || [] })));
   }
 );
 
@@ -241,7 +247,7 @@ export const getBudgetOverviewAsync = catchErrors(
     // Get actual spending for each category in current month
     const budgetData = await Promise.all(
       budgetExpenses.map(async (budget) => {
-        const actualSpending = await Transaction.sum("amount", {
+        const actualSpending = -(await Transaction.sum("amount", {
           where: {
             userId,
             categoryId: budget.categoryId,
@@ -250,7 +256,7 @@ export const getBudgetOverviewAsync = catchErrors(
               [Op.between]: [firstDayOfMonth, lastDayOfMonth],
             },
           },
-        });
+        })) || 0;
 
         return {
           categoryId: budget.categoryId,
@@ -264,7 +270,7 @@ export const getBudgetOverviewAsync = catchErrors(
           percentage: Math.round(
             ((actualSpending || 0) /
               parseFloat(budget.budgetAmount.toString())) *
-              100
+            100
           ),
           currency: budget.currency,
         };

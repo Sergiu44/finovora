@@ -27,7 +27,7 @@ import { Button } from "../../../../components/ui/button";
 import { ChevronDownIcon, ChevronRightIcon, EditIcon } from "lucide-react";
 import { Checkbox } from "../../../../components/ui/checkbox";
 import TableCategoriesCreateRow from "./TableCategoriesCreateRow";
-import EditCategoryDialog from "./EditCategoryDialog";
+import CategoryNameInput from "./CategoryNameInput";
 import type { TransactionType } from "../../../../types/enums/TransactionTypes";
 
 export default function TableCategories({
@@ -41,10 +41,9 @@ export default function TableCategories({
   rowSelection: RowSelectionState;
   transactionTypeId: TransactionType;
 }) {
-  const [selectedCategory, setSelectedCategory] = useState<{
-    name: string;
-    id: string;
-  } | null>(null);
+  const [editingCategoryId, setEditingCategoryId] = useState<number | null>(
+    null
+  );
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -66,7 +65,9 @@ export default function TableCategories({
           </div>
         ),
         cell: ({ row }) => (
-          <div className="flex justify-center items-center">
+          <div
+            className={`flex justify-center items-center ${row.depth > 0 ? "justify-self-end" : ""}`}
+          >
             <Checkbox
               checked={row.getIsSelected()}
               onCheckedChange={(e) => row.toggleSelected(!!e)}
@@ -79,43 +80,148 @@ export default function TableCategories({
         header: "Name",
         size: 300,
         minSize: 200,
+        cell: ({ row }) => {
+          const isEditing = editingCategoryId === row.original.id;
+
+          if (isEditing) {
+            return (
+              <div className={`pl-${row.depth * 4}`}>
+                <CategoryNameInput
+                  initialValue={row.original.name}
+                  categoryId={String(row.original.id)}
+                  transactionTypeId={transactionTypeId}
+                  onCancel={() => setEditingCategoryId(null)}
+                  onSuccess={() => setEditingCategoryId(null)}
+                />
+              </div>
+            );
+          }
+
+          return (
+            <div
+              className={`pl-${row.depth * 4} cursor-pointer select-none`}
+              onDoubleClick={() => setEditingCategoryId(row.original.id)}
+              title="Double-click to edit"
+            >
+              {row.original.name}
+            </div>
+          );
+        },
+      },
+      {
+        id: "count",
+        header: () => <div className="text-center">No of subcategories</div>,
+        size: 50,
+        maxSize: 50,
+        minSize: 50,
+        cell: ({ row }) => {
+          const count = row.original?.subCategories?.length || 0;
+
+          // Calculate gradient intensity based on count (0-10+ scale)
+          // Higher count = brighter/more intense gradient
+          const getBadgeStyles = (count: number) => {
+            if (count <= 2)
+              return {
+                gradient: "bg-gradient-to-r from-primary/10 to-accent/10",
+                text: "text-muted-foreground",
+                border: "border-muted",
+                shadow: "",
+              };
+            if (count <= 4)
+              return {
+                gradient: "bg-gradient-to-r from-primary/30 to-accent/30",
+                text: "text-accent-800",
+                border: "border-primary/40",
+                shadow: "",
+              };
+            if (count <= 6)
+              return {
+                gradient: "bg-gradient-to-r from-primary/50 to-accent/50",
+                text: "text-accent-900",
+                border: "border-primary/60",
+                shadow: "shadow-sm",
+              };
+            if (count <= 8)
+              return {
+                gradient: "bg-gradient-to-r from-primary/70 to-accent/70",
+                text: "text-accent-900",
+                border: "border-primary/80",
+                shadow: "shadow-md shadow-primary/20",
+              };
+            if (count <= 10)
+              return {
+                gradient: "bg-gradient-to-r from-primary to-accent",
+                text: "text-white",
+                border: "border-primary",
+                shadow: "shadow-lg shadow-primary/30",
+              };
+            return {
+              gradient: "bg-gradient-to-br from-primary via-accent to-primary",
+              text: "text-white",
+              border: "border-2 border-accent",
+              shadow: "shadow-xl shadow-accent/40",
+            }; // 10+
+          };
+
+          const badgeStyles = getBadgeStyles(count);
+
+          return (
+            count > 0 && (
+              <div className="text-center pr-4">
+                <span
+                  className={`inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${badgeStyles.gradient} ${badgeStyles.text} ${badgeStyles.border} ${badgeStyles.shadow} transition-all`}
+                >
+                  {count}
+                </span>
+              </div>
+            )
+          );
+        },
       },
       {
         id: "actions",
-        size: 100,
-        maxSize: 100,
-        minSize: 100,
-        cell: ({ row }) => (
-          <div className="flex items-center justify-end gap-2">
-            <EditIcon
-              size="16"
-              onClick={() =>
-                setSelectedCategory({
-                  id: row.original.id,
-                  name: row.original.name,
-                })
-              }
-            />
-            {row.depth < 1 && (
-              <div className={`pr-${row.depth * 2}`}>
-                <Button
-                  className="pl-0!"
-                  variant="link"
-                  onClick={() => row.toggleExpanded()}
-                >
-                  {row.getIsExpanded() ? (
-                    <ChevronDownIcon size="24" />
-                  ) : (
-                    <ChevronRightIcon size="24" />
-                  )}
-                </Button>
-              </div>
-            )}
-          </div>
-        ),
+        header: () => <div className="text-right pr-4">Actions</div>,
+        size: 50,
+        maxSize: 50,
+        minSize: 50,
+        cell: ({ row }) => {
+          const isEditing = editingCategoryId === row.original.id;
+
+          return (
+            <div
+              className={`flex items-center justify-end gap-2 ${row.depth > 0 && "pr-9"}`}
+            >
+              {!isEditing && (
+                <EditIcon
+                  size="16"
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setEditingCategoryId(row.original.id);
+                  }}
+                />
+              )}
+              {row.depth < 1 && (
+                <div className={`pr-${row.depth * 2}`}>
+                  <Button
+                    className="pl-0!"
+                    variant="link"
+                    onClick={() => row.toggleExpanded()}
+                    disabled={isEditing}
+                  >
+                    {row.getIsExpanded() ? (
+                      <ChevronDownIcon size="24" />
+                    ) : (
+                      <ChevronRightIcon size="24" />
+                    )}
+                  </Button>
+                </div>
+              )}
+            </div>
+          );
+        },
       },
     ],
-    []
+    [editingCategoryId, transactionTypeId]
   );
 
   const table = useReactTable({
@@ -145,7 +251,7 @@ export default function TableCategories({
   });
 
   return (
-    <div className="rounded-[12px] overflow-hidden border border-input">
+    <div className="rounded-base overflow-hidden border border-input">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -207,16 +313,18 @@ export default function TableCategories({
                       data-state={subRow.getIsSelected() && "selected"}
                     >
                       {subRow.getVisibleCells().map((cell) => (
-                        <TableCell
-                          className="py-3"
-                          key={cell.id}
-                          style={{ width: cell.column.getSize() }}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
+                        <>
+                          <TableCell
+                            className="py-3"
+                            key={cell.id}
+                            style={{ width: cell.column.getSize() }}
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TableCell>
+                        </>
                       ))}
                     </TableRow>
                   ))}
@@ -240,13 +348,6 @@ export default function TableCategories({
           />
         </TableBody>
       </Table>
-
-      {selectedCategory && (
-        <EditCategoryDialog
-          category={selectedCategory}
-          onClose={() => setSelectedCategory(null)}
-        />
-      )}
     </div>
   );
 }

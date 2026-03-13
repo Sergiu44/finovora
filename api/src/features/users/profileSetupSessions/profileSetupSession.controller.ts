@@ -1,59 +1,33 @@
-import { randomUUID } from "crypto";
 import { Request, Response } from "express";
-import { CLIENT_APP_ORIGIN } from "../../../utils/constants/env";
 import {
   BAD_REQUEST,
   CREATED,
-  FORBIDDEN,
   NOT_FOUND,
   OK,
 } from "../../../utils/constants/http";
 import appAssert from "../../../utils/utilities/appAssert";
 import catchErrors from "../../../utils/utilities/catchErrors";
-import { ProfileSetupSession } from "./profileSetupSession";
-
-const PROFILE_SETUP_SESSION_TTL_MINUTES = 30;
-
-const buildSessionPath = (token: string) => `/profile-setup/${token}`;
-
-const buildSessionUrl = (token: string) =>
-  `${CLIENT_APP_ORIGIN}${buildSessionPath(token)}`;
-
-const serializeSession = (session: ProfileSetupSession) => ({
-  id: session.id,
-  userId: session.userId,
-  token: session.token,
-  status: session.status,
-  expiresAt: session.expiresAt,
-  completedAt: session.completedAt,
-  createdAt: session.createdAt,
-  updatedAt: session.updatedAt,
-});
-
-const expireSessionIfNeeded = async (session?: ProfileSetupSession | null) => {
-  if (!session) {
-    return null;
-  }
-  const now = new Date();
-  if (session.status === "active" && session.expiresAt <= now) {
-    session.status = "expired";
-    await session.save();
-    return null;
-  }
-  return session;
-};
+import { CreateOrResumeProfileSetupSessionSchema } from "./profileSetupSession.schemas";
+import {
+  PROFILE_SETUP_SESSION_TTL_MINUTES,
+  buildSessionPath,
+  buildSessionUrl,
+  serializeSession,
+  findActiveSessionForUser,
+  findSessionForUserOrThrow,
+  createProfileSetupSession,
+  expireSession,
+  completeSession,
+} from "./profileSetupSession.service";
+import User from "../user";
+import { UserProfile } from "../userProfiles/userProfile";
 
 export const createOrResumeProfileSetupSessionHandler = catchErrors(
   async (req: Request, res: Response) => {
     const userId = req.userId!;
-    const { forceNew } = (req.body ?? {}) as { forceNew?: boolean };
+    const { forceNew } = req.body as CreateOrResumeProfileSetupSessionSchema;
 
-    let existingSession = await ProfileSetupSession.findOne({
-      where: { userId, status: "active" },
-      order: [["updatedAt", "DESC"]],
-    });
-
-    existingSession = await expireSessionIfNeeded(existingSession);
+    const existingSession = await findActiveSessionForUser(userId);
 
     if (existingSession && !forceNew) {
       return res.status(OK).json({
@@ -66,19 +40,10 @@ export const createOrResumeProfileSetupSessionHandler = catchErrors(
     }
 
     if (existingSession && forceNew) {
-      existingSession.status = "expired";
-      await existingSession.save();
+      await expireSession(existingSession);
     }
 
-    const expiresAt = new Date(
-      Date.now() + PROFILE_SETUP_SESSION_TTL_MINUTES * 60 * 1000
-    );
-
-    const session = await ProfileSetupSession.create({
-      userId,
-      token: randomUUID(),
-      expiresAt,
-    });
+    const session = await createProfileSetupSession(userId);
 
     return res.status(CREATED).json({
       resumed: false,
@@ -89,22 +54,6 @@ export const createOrResumeProfileSetupSessionHandler = catchErrors(
     });
   }
 );
-
-const findSessionForUserOrThrow = async (
-  token: string,
-  userId: number
-): Promise<ProfileSetupSession> => {
-  let session = await ProfileSetupSession.findOne({ where: { token } });
-  appAssert(session, NOT_FOUND, "Session not found");
-  appAssert(
-    session!.userId === userId,
-    FORBIDDEN,
-    "You cannot access this session"
-  );
-  session = await expireSessionIfNeeded(session);
-  appAssert(session, NOT_FOUND, "Session expired");
-  return session!;
-};
 
 export const getProfileSetupSessionHandler = catchErrors(
   async (req: Request, res: Response) => {
@@ -134,12 +83,93 @@ export const completeProfileSetupSessionHandler = catchErrors(
       "Session already closed"
     );
 
-    session.status = "completed";
-    session.completedAt = new Date();
-    await session.save();
+    const user = await User.findByPk(userId);
+    appAssert(user, NOT_FOUND, "User not found");
+
+    // Multer parses form data into req.body and req.files
+    // Handle file upload if present (for future avatar upload)
+    const files = (req.files as Express.Multer.File[]) || [];
+    const avatarFile = files.find((file) => file.fieldname === "avatar");
+
+    // Form data fields come as strings, so we need to parse them
+    const {
+      firstName,
+      lastName,
+      username,
+      dateOfBirth,
+      statusMessage,
+      bio,
+      avatarUrl,
+      preferredStartDayOfMonth,
+      themePreference,
+      preferredCurrency,
+    } = req.body || {};
+
+    // Parse numeric field - form data sends numbers as strings
+    const preferredStartDay = preferredStartDayOfMonth
+      ? parseInt(String(preferredStartDayOfMonth), 10)
+      : 1;
+
+    // Validate parsed number
+    appAssert(
+      !isNaN(preferredStartDay) && preferredStartDay >= 1 && preferredStartDay <= 15,
+      BAD_REQUEST,
+      "Preferred start day must be between 1 and 15"
+    );
+
+    // Handle optional fields - empty strings should be null
+    const statusMsg = statusMessage && String(statusMessage).trim() ? String(statusMessage).trim() : null;
+    
+    // TO BE DONE: Handle avatar file upload to cloud storage
+    // For now, use avatarUrl from form data if provided
+    // When cloud storage is implemented, process avatarFile here
+    let avatar = null;
+    if (avatarFile) {
+      // TODO: Upload avatarFile to cloud storage (S3, Cloudinary, etc.)
+      // avatar = await uploadToCloudStorage(avatarFile);
+    } else if (avatarUrl && String(avatarUrl).trim()) {
+      avatar = String(avatarUrl).trim();
+    }
+
+    // Validate theme preference
+    const theme = (themePreference === "light" || themePreference === "dark" || themePreference === "system")
+      ? themePreference
+      : "system";
+
+    const profile = await UserProfile.create({
+      userId,
+      firstName: firstName?.trim() || null,
+      lastName: lastName?.trim() || null,
+      username: username?.trim() || null,
+      dateOfBirth: dateOfBirth || null,
+      statusMessage: statusMsg,
+      bio: bio?.trim() || null,
+      avatarUrl: avatar,
+      preferredStartDayOfMonth: preferredStartDay,
+      themePreference: theme,
+      language: "en", // Default language (can be made configurable later)
+      preferredCurrency: preferredCurrency?.trim() || null,
+    });
+
+    await completeSession(session);
 
     return res.status(OK).json({
-      session: serializeSession(session),
+      message: "Profile setup completed successfully",
+      profile: {
+        id: profile.id,
+        userId: profile.userId,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        username: profile.username,
+        dateOfBirth: profile.dateOfBirth,
+        statusMessage: profile.statusMessage,
+        bio: profile.bio,
+        avatarUrl: profile.avatarUrl,
+        preferredStartDayOfMonth: profile.preferredStartDayOfMonth,
+        themePreference: profile.themePreference,
+        language: profile.language,
+        preferredCurrency: profile.preferredCurrency,
+      },
     });
   }
 );

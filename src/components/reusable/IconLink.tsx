@@ -35,7 +35,7 @@ export default function IconLink({
                 "bg-primary-300 hover:bg-primary! text-white! transition-all ease-in-out duration-500",
             }
       }
-      className={`group text-muted-foreground hover:text-foreground font-medium select-none py-1.5 px-4 rounded-full cursor-pointer items-center gap-2 w-full dark:text-muted-foreground ${className || ""} ${variant === "slim" ? "font-medium py-1.5! px-3! rounded-[20px]! hover:bg-primary/10" : "hover:bg-gray-100 dark:hover:text-white"}`}
+      className={`group text-muted-foreground hover:text-foreground font-medium select-none py-1.5 px-4 rounded-[8px] cursor-pointer items-center gap-2 w-full dark:text-muted-foreground ${className || ""} ${variant === "slim" ? "font-medium py-1.5! px-3! rounded-[16px]! hover:bg-primary/10" : "hover:bg-gray-100 dark:hover:text-white"}`}
     >
       {({ isActive }) => (
           <div

@@ -6,70 +6,43 @@ import {
   type PropsWithChildren,
   useCallback,
 } from "react";
-import { createEnhancedAxios } from "../configs/axios";
+import {
+  startProfileSetupSession as startSessionAction,
+  validateProfileSetupSession as validateSessionAction,
+  type ProfileSetupSessionState,
+} from "../utils/actions/users/profileSetupSessions";
 
-type ThemePreference = "light" | "dark" | "system";
+export type { ProfileSetupSessionState };
 
-interface UserProfile {
+// User type matches the backend User entity (without password)
+export interface UserEntity {
   id: number;
-  userId: number;
   firstName?: string | null;
   lastName?: string | null;
-  username?: string | null;
-  dateOfBirth?: string | null;
-  statusMessage?: string | null;
-  bio?: string | null;
-  avatarUrl?: string | null;
-  preferredStartDayOfMonth: number;
-  themePreference: ThemePreference;
-  language: string;
-  timezone?: string | null;
-  preferredCurrency?: string | null;
+  email: string;
+  verified: boolean;
+  primaryAccountId?: number | null;
+  primaryCurrencyId?: number | null;
   createdAt: string;
   updatedAt: string;
   deletedAt?: string | null;
-}
-
-export type ProfileSetupSessionStatus = "active" | "completed" | "expired";
-
-export interface ProfileSetupSessionState {
-  id: number;
-  userId: number;
-  token: string;
-  status: ProfileSetupSessionStatus;
-  expiresAt: string;
-  completedAt?: string | null;
-  createdAt: string;
-  updatedAt: string;
-  path: string;
-  url: string;
-  resumed: boolean;
-}
-
-interface User {
-  createdAt: string;
-  deletedAt: string | null;
-  email: string;
-  firstName: string;
-  id: number;
-  lastName: string;
-  primaryAccountId: number;
-  updatedAt: string;
-  verified: boolean;
-  profile: UserProfile | null;
+  hasProfile: boolean;
 }
 
 interface UserDetailsContextState {
-  user: User | null;
+  user: UserEntity | null;
   token: string | null;
-  setUser: (user: User | null) => void;
+  setUser: (user: UserEntity | null) => void;
   setToken: (token: string | null) => void;
   isAuthenticated: boolean;
   logout: () => void;
   profileSetupSession: ProfileSetupSessionState | null;
-  startProfileSetupSession: (options?: { forceNew?: boolean }) => Promise<ProfileSetupSessionState>;
-  validateProfileSetupSession: (token: string) => Promise<ProfileSetupSessionState>;
-  completeProfileSetupSession: (token: string) => Promise<void>;
+  startProfileSetupSession: (options?: {
+    forceNew?: boolean;
+  }) => Promise<ProfileSetupSessionState>;
+  validateProfileSetupSession: (
+    token: string
+  ) => Promise<ProfileSetupSessionState>;
 }
 
 const UserDetailsContext = createContext<UserDetailsContextState>({
@@ -86,15 +59,20 @@ const UserDetailsContext = createContext<UserDetailsContextState>({
   validateProfileSetupSession: async () => {
     throw new Error("UserDetailsProvider missing");
   },
-  completeProfileSetupSession: async () => {
-    throw new Error("UserDetailsProvider missing");
-  },
 });
 
 export const UserDetailsProvider = (props: PropsWithChildren) => {
-  const [user, setUserState] = useState<User | null>(() => {
+  const [user, setUserState] = useState<UserEntity | null>(() => {
     const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
+    if (!storedUser) return null;
+    const parsed = JSON.parse(storedUser);
+    // Ensure hasProfile field exists (for backward compatibility)
+    if (parsed && typeof parsed.hasProfile !== "boolean") {
+      parsed.hasProfile = Boolean(parsed.profile);
+      // Remove profile field if it exists
+      delete parsed.profile;
+    }
+    return parsed;
   });
 
   const [token, setTokenState] = useState<string | null>(() => {
@@ -104,10 +82,23 @@ export const UserDetailsProvider = (props: PropsWithChildren) => {
   const [profileSetupSession, setProfileSetupSession] =
     useState<ProfileSetupSessionState | null>(null);
 
-  const setUser = (newUser: User | null) => {
+  const setUser = (newUser: UserEntity | null) => {
     setUserState(newUser);
     if (newUser) {
-      localStorage.setItem("user", JSON.stringify(newUser));
+      // Ensure we only store UserEntity structure (no profile details)
+      const userToStore: UserEntity = {
+        id: newUser.id,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        email: newUser.email,
+        verified: newUser.verified,
+        primaryAccountId: newUser.primaryAccountId,
+        createdAt: newUser.createdAt,
+        updatedAt: newUser.updatedAt,
+        deletedAt: newUser.deletedAt,
+        hasProfile: newUser.hasProfile,
+      };
+      localStorage.setItem("user", JSON.stringify(userToStore));
     } else {
       localStorage.removeItem("user");
     }
@@ -127,59 +118,32 @@ export const UserDetailsProvider = (props: PropsWithChildren) => {
     setToken(null);
   };
 
-  const mapSessionResponse = useCallback(
-    (data: any, resumed: boolean): ProfileSetupSessionState => {
-      const { session, path, url } = data;
-      return {
-        ...session,
-        expiresAt: session.expiresAt,
-        completedAt: session.completedAt,
-        path,
-        url,
-        resumed,
-      };
+  const startProfileSetupSession = useCallback(
+    async (options?: { forceNew?: boolean }) => {
+      const payload = await startSessionAction(options);
+      setProfileSetupSession(payload);
+      return payload;
     },
     []
   );
 
-  const startProfileSetupSession = useCallback(
-    async (options?: { forceNew?: boolean }) => {
-      const response = await createEnhancedAxios().post(
-        `${import.meta.env.VITE_API_URL}/profile-setup-sessions`,
-        options ?? {}
-      );
-
-      const payload = mapSessionResponse(response.data, response.data.resumed);
-      setProfileSetupSession(payload);
-      return payload;
-    },
-    [mapSessionResponse]
-  );
-
-  const validateProfileSetupSession = useCallback(
-    async (token: string) => {
-      const response = await createEnhancedAxios().get(
-        `${import.meta.env.VITE_API_URL}/profile-setup-sessions/${token}`
-      );
-      const payload = mapSessionResponse(response.data, false);
-      setProfileSetupSession(payload);
-      return payload;
-    },
-    [mapSessionResponse]
-  );
-
-  const completeProfileSetupSession = useCallback(async (token: string) => {
-    await createEnhancedAxios().post(
-      `${import.meta.env.VITE_API_URL}/profile-setup-sessions/${token}/complete`
-    );
-    setProfileSetupSession(null);
+  const validateProfileSetupSession = useCallback(async (token: string) => {
+    const payload = await validateSessionAction(token);
+    setProfileSetupSession(payload);
+    return payload;
   }, []);
 
   // Sync with localStorage changes from other tabs/windows
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "user") {
-        setUserState(e.newValue ? JSON.parse(e.newValue) : null);
+        const parsed = e.newValue ? JSON.parse(e.newValue) : null;
+        // Ensure hasProfile field exists (for backward compatibility)
+        if (parsed && typeof parsed.hasProfile !== "boolean") {
+          parsed.hasProfile = Boolean(parsed.profile);
+          delete parsed.profile;
+        }
+        setUserState(parsed);
       } else if (e.key === "token") {
         setTokenState(e.newValue);
       }
@@ -201,7 +165,6 @@ export const UserDetailsProvider = (props: PropsWithChildren) => {
         profileSetupSession,
         startProfileSetupSession,
         validateProfileSetupSession,
-        completeProfileSetupSession,
       }}
     >
       {props.children}
@@ -209,4 +172,5 @@ export const UserDetailsProvider = (props: PropsWithChildren) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useUserDetails = () => useContext(UserDetailsContext);

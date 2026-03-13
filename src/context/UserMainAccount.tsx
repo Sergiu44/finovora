@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   createContext,
   useContext,
+  useEffect,
   useState,
   type PropsWithChildren,
 } from "react";
@@ -33,10 +34,17 @@ export const UserMainAccountProvider = (props: PropsWithChildren) => {
     queryKey: ["userMainAccount", userMainAccountId],
     enabled: !!userMainAccountId,
     queryFn: async () => {
-      if(userMainAccountId)
-        return getUserAccount(userMainAccountId);
+      if (userMainAccountId) return await getUserAccount(userMainAccountId);
     },
   });
+
+  useEffect(() => {
+    if (globalThis?.localStorage.getItem("user")) {
+      const user = JSON.parse(globalThis.localStorage.getItem("user") || "{}");
+      setUserMainAccountId(user.primaryAccountId);
+    }
+  }, []);
+
   return (
     <UserMainAccountContext.Provider
       value={{ account: data, status, userMainAccountId, setUserMainAccountId }}

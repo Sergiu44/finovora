@@ -1,7 +1,7 @@
 import { createEnhancedAxios } from "../../../configs/axios";
 
 export interface BaseCategory {
-  id: string;
+  id: number;
   name: string;
   subCategories: BaseCategory[];
 }
@@ -92,7 +92,7 @@ export async function getBudgetOverview(): Promise<BudgetOverviewData[]> {
 export interface CreateCategory {
   name: string;
   transactionTypeId: number;
-  parentCategoryId?: string;
+  parentCategoryId?: number;
 }
 export async function createCategory(data: CreateCategory): Promise<boolean[]> {
   const { data: response } = await createEnhancedAxios().post(

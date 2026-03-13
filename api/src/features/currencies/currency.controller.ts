@@ -2,6 +2,15 @@ import catchErrors from "../../utils/utilities/catchErrors";
 import { Currency } from "./currency";
 import { Request, Response } from "express";
 
+export const getCurrenciesHandler = catchErrors(
+  async (req: Request, res: Response) => {
+    const currencies = await Currency.findAll({
+      order: [["code", "ASC"]],
+    });
+    return res.status(200).json(currencies);
+  }
+);
+
 export const getCurrenciesDropDownHandler = catchErrors(
   async (req: Request, res: Response) => {
     const userCurrencies = await Currency.findAll();

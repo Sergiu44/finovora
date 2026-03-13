@@ -56,7 +56,7 @@ export default function GradientCard({
       }`}
       onClick={() => onSelect()}
     >
-      <div className="h-24 rounded-md mb-2" style={getGradientBgStyle()} />
+      <div className="h-24 rounded-base mb-2" style={getGradientBgStyle()} />
       <div className="text-sm font-medium text-gray-800">{card.name}</div>
       <div className="text-xs text-gray-500">{card.colors.length} colors</div>
       {/* Type Badge */}

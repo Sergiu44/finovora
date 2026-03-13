@@ -2,6 +2,7 @@ import { createEnhancedAxios } from "../../../configs/axios";
 
 export interface RecursiveTransaction {
   name: string;
+  id: number;
 }
 
 export const getRecursiveTransactionsAsync = async () => {
