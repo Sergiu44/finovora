@@ -49,6 +49,7 @@ export class VerificationCode extends Model<
             key: "id",
           },
           allowNull: false,
+          onDelete: "CASCADE"
         },
         code: {
           type: DataTypes.STRING,

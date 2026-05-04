@@ -55,6 +55,7 @@ export class AccountType extends Model<
         userId: {
           type: DataTypes.BIGINT,
           allowNull: true,
+          onDelete: "CASCADE"
         },
         name: {
           type: DataTypes.STRING(50),

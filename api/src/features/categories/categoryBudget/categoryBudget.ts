@@ -75,6 +75,7 @@ export class BudgetExpense extends Model<
             model: User,
             key: "id",
           },
+          onDelete: "CASCADE"
         },
         categoryId: {
           type: DataTypes.BIGINT,

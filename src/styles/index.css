@@ -228,7 +228,7 @@ textarea:not([rows]) {
   --shadow-2xl: 0px 2px 3px 0px hsl(0 0% 0% / 0.40);
 
   /* Personal colors */
-  --primary-50: 94.27% 0.029 301;
+  --primary-50: 94.27% 0.029 301; 
 --primary-100: 88.42% 0.061 302.12;
 --primary-200: 77.06% 0.121 300.55;
 --primary-300: 65.97% 0.184 298.28;

@@ -10,7 +10,7 @@ export interface UserProfileDTO {
     avatarUrl?: string | null;
     preferredStartDayOfMonth: number;
     themePreference: "light" | "dark" | "system";
-    preferredCurrency?: string | null;
+    preferredCurrencyId?: string | null;
 }
 
 export interface UpdateUserProfilePayload {
@@ -22,7 +22,7 @@ export interface UpdateUserProfilePayload {
     bio?: string;
     preferredStartDayOfMonth?: number;
     themePreference?: "light" | "dark" | "system";
-    preferredCurrency?: string;
+    preferredCurrencyId?: string;
 }
 
 export async function getUserProfile(): Promise<UserProfileDTO> {

@@ -41,7 +41,7 @@ export const updateUserProfileHandler = catchErrors(
     userProfile.bio = updateData.bio;
     userProfile.preferredStartDayOfMonth = updateData.preferredStartDayOfMonth;
     userProfile.themePreference = updateData.themePreference;
-    userProfile.preferredCurrency = updateData.preferredCurrency;
+    userProfile.preferredCurrencyId = updateData.preferredCurrencyId;
 
     await userProfile.save();
 

@@ -52,6 +52,7 @@ export class UserGradient extends Model<
             },
             key: "id",
           },
+          onDelete: "CASCADE"
         },
         name: {
           type: DataTypes.STRING(100),

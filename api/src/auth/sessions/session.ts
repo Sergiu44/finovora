@@ -41,6 +41,7 @@ export class Session extends Model<SessionAttributes, SessionCreationAttributes>
             key: "id",
           },
           allowNull: false,
+          onDelete: "CASCADE"
         },
         userAgent: {
           type: DataTypes.STRING(255),

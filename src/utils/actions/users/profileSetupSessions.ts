@@ -46,7 +46,7 @@ export interface SetupUserProfilePayload {
   avatarUrl?: string;
   preferredStartDayOfMonth: number;
   themePreference: "light" | "dark" | "system";
-  preferredCurrency: string;
+  preferredCurrencyId: string;
 }
 
 function mapSessionResponse(data: any, resumed: boolean): ProfileSetupSessionState {
@@ -101,7 +101,7 @@ export async function setupUserProfile(
   formData.append("dateOfBirth", profileData.dateOfBirth);
   formData.append("preferredStartDayOfMonth", profileData.preferredStartDayOfMonth.toString());
   formData.append("themePreference", profileData.themePreference);
-  formData.append("preferredCurrency", profileData.preferredCurrency);
+  formData.append("preferredCurrencyId", profileData.preferredCurrencyId);
   
   // Append optional fields if they exist
   if (profileData.statusMessage) {

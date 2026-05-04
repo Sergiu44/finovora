@@ -97,6 +97,7 @@ export class Account extends Model<
         userId: {
           type: DataTypes.BIGINT,
           allowNull: false,
+          onDelete: "CASCADE"
         },
         name: {
           type: DataTypes.STRING(50),

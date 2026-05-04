@@ -6,6 +6,7 @@ import {
 } from "sequelize";
 import { Model, Table } from "sequelize-typescript";
 import User from "../user";
+import { Currency } from "../../currencies/currency";
 
 type ThemePreference = "light" | "dark" | "system";
 
@@ -23,7 +24,7 @@ type UserProfileAttributes = {
   themePreference: ThemePreference;
   language: string;
   timezone?: string | null;
-  preferredCurrency?: string | null;
+  preferredCurrencyId?: string | null;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date | null;
@@ -43,7 +44,7 @@ type UserProfileCreationAttributes = Optional<
   | "themePreference"
   | "language"
   | "timezone"
-  | "preferredCurrency"
+  | "preferredCurrencyId"
   | "createdAt"
   | "updatedAt"
   | "deletedAt"
@@ -69,7 +70,7 @@ export class UserProfile extends Model<
   declare themePreference: ThemePreference;
   declare language: string;
   declare timezone?: string | null;
-  declare preferredCurrency?: string | null;
+  declare preferredCurrencyId?: number | null;
   declare createdAt: Date;
   declare updatedAt: Date;
   declare deletedAt?: Date | null;
@@ -108,6 +109,7 @@ export class UserProfile extends Model<
             model: "users",
             key: "id",
           },
+          onDelete: "CASCADE"
         },
         firstName: {
           type: DataTypes.STRING(255),
@@ -157,9 +159,13 @@ export class UserProfile extends Model<
           type: DataTypes.STRING(50),
           allowNull: true,
         },
-        preferredCurrency: {
-          type: DataTypes.STRING(10),
+        preferredCurrencyId: {
+          type: DataTypes.NUMBER,
           allowNull: true,
+          references: {
+            model: Currency,
+            key: "id"
+          }
         },
         createdAt: {
           type: DataTypes.DATE,
