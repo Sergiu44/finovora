@@ -52,8 +52,9 @@ export default function InputCode({
               type="text"
               inputMode="numeric"
               maxLength={1}
-              className="text-foreground! border-2! border-chart-5!"
+              className="text-foreground! border-2! border-primary/30!"
               value={num}
+              autoComplete="one-time-code"
               autoFocus={!code[0].length && idx === 0}
               readOnly={loading}
               onChange={(e) => processInput(e, idx)}

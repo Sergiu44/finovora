@@ -79,6 +79,7 @@ export class Category extends Model<
             model: User,
             key: "id",
           },
+          onDelete: "CASCADE"
         },
         name: {
           type: DataTypes.STRING,

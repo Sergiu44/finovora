@@ -1,9 +1,9 @@
 import { useCallback, useState } from "react";
-import type { CardGradientItem } from "../../../../../utils/actions/nomenclatures/defaultGradient";
+import type { CardGradientItem } from "../../../utils/actions/nomenclatures/defaultGradient";
 import { useMutation } from "@tanstack/react-query";
-import { deleteUserGradientAsync } from "../../../../../utils/actions/users/userGradients";
+import { deleteUserGradientAsync } from "../../../utils/actions/users/userGradients";
 import { toast } from "sonner";
-import ConfirmationModal from "../../../../../components/reusable/dialogs/ConfirmationModal";
+import ConfirmationModal from "../dialogs/ConfirmationModal";
 import { Trash2 } from "lucide-react";
 
 interface IGradientCardProps {

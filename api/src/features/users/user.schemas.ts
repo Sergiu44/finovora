@@ -16,7 +16,7 @@ export const updateUserProfileSchema = z.object({
     .min(1)
     .max(15),
   themePreference: z.enum(["light", "dark", "system"]),
-  preferredCurrency: z.string().trim().max(10).transform((val) => (val === "" ? null : val)).nullable(),
+  preferredCurrencyId: z.string().trim().max(10).transform((val) => (val === "" ? null : val)).nullable(),
 });
 
 export type UpdateUserProfileSchema = z.infer<typeof updateUserProfileSchema>;

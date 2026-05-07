@@ -6,7 +6,7 @@ import {
   setPrimaryCurrencyAsync,
   deleteUserCurrencyAsync,
 } from "../../../utils/actions/users/userCurrencies";
-import EmptyCard from "../settings/accounts/-components/EmptyCard";
+import EmptyCard from "../../../components/reusable/cards/EmptyCard/EmptyCard";
 import { PlusIcon } from "@heroicons/react/16/solid";
 import { useState } from "react";
 import AddUserCurrencyModal from "./-components/AddUserCurrencyModal";
@@ -36,7 +36,7 @@ function RouteComponent() {
     },
     onError: (error: any) => {
       toast.error(
-        error?.response?.data?.message || "Failed to set primary currency"
+        error?.response?.data?.message || "Failed to set primary currency",
       );
     },
   });
@@ -50,7 +50,7 @@ function RouteComponent() {
     },
     onError: (error: any) => {
       toast.error(
-        error?.response?.data?.message || "Failed to remove currency"
+        error?.response?.data?.message || "Failed to remove currency",
       );
     },
   });
@@ -60,12 +60,12 @@ function RouteComponent() {
 
   return (
     <>
-      <BaseWrapper>
+      <BaseWrapper
+        title="My Currencies"
+        subtitle="Add currencies to track and compare exchange rates"
+      >
         <div className="mb-4">
-          <h1 className="text-3xl font-bold">My Currencies</h1>
-          <p className="text-sm text-muted-foreground">
-            Add currencies to track and compare exchange rates
-          </p>
+          <p className="text-sm text-muted-foreground"></p>
         </div>
 
         {isLoading && <div>Loading...</div>}
@@ -169,6 +169,7 @@ function RouteComponent() {
 
             {/* Placeholder empty card for adding a new currency */}
             <div className="group">
+              {"test123"}
               <EmptyCard
                 text="Add a new currency"
                 icon={

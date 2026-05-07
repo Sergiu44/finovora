@@ -28,7 +28,7 @@ export function ProfileSettingsView() {
   const [isEditing, setIsEditing] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: userProfile, isLoading: isLoadingUserProfile } = useQuery({
+  const { data: userProfile } = useQuery({
     queryKey: ["userProfile", user?.id],
     queryFn: () => getUserProfile(),
     enabled: Boolean(user?.id)
@@ -120,7 +120,7 @@ export function ProfileSettingsView() {
       bio: values.description,
       preferredStartDayOfMonth: Number(values.preferredStartDayOfMonth),
       themePreference: values.themePreference as "light" | "dark" | "system",
-      preferredCurrency: values.preferredCurrency,
+      preferredCurrencyId: values.preferredCurrency,
     });
   };
 
@@ -143,7 +143,7 @@ export function ProfileSettingsView() {
         statusMessage: userProfile.statusMessage ?? "",
         preferredStartDayOfMonth: userProfile.preferredStartDayOfMonth.toString(),
         themePreference: userProfile.themePreference,
-        preferredCurrency: userProfile.preferredCurrency ?? "",
+        preferredCurrencyId: userProfile.preferredCurrencyId ?? "",
       });
     }
   }, [userProfile, setValues])

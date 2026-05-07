@@ -71,6 +71,7 @@ export class ProfileSetupSession extends Model<
             model: "users",
             key: "id",
           },
+          onDelete: "CASCADE"
         },
         token: {
           type: DataTypes.STRING(191),

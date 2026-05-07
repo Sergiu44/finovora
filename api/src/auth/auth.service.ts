@@ -94,7 +94,7 @@ export const loginUser = async ({
   appAssert(newUser, NOT_FOUND, "Email/password combination does not exist");
 
   const isValid = await newUser.comparePassword(newUser, password);
-  appAssert(isValid, UNAUTHORIZED, "Email/password combination does not exist");
+  appAssert(isValid, NOT_FOUND, "Email/password combination does not exist");
 
   const userId = newUser.id;
   const newSession = await Session.create({

@@ -53,7 +53,7 @@ export default function AccountPreviewCard({
       >
         <div className="flex flex-col justify-between h-full">
           <div>
-            <h3 className="text-2xl font-bold">{name || "- Card Name -"}</h3>
+            <h3 className="text-xl font-bold">{name || "- Card Name -"}</h3>
             <p className="text-sm opacity-90">
               {description || "- Description -"}
             </p>

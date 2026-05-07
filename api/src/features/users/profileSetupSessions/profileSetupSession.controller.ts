@@ -21,6 +21,9 @@ import {
 } from "./profileSetupSession.service";
 import User from "../user";
 import { UserProfile } from "../userProfiles/userProfile";
+import { Account } from "../../accounts/account";
+import { AccountType } from "../../accounts/accountTypes/accountType";
+import { Currency } from "../../currencies/currency";
 
 export const createOrResumeProfileSetupSessionHandler = catchErrors(
   async (req: Request, res: Response) => {
@@ -102,7 +105,7 @@ export const completeProfileSetupSessionHandler = catchErrors(
       avatarUrl,
       preferredStartDayOfMonth,
       themePreference,
-      preferredCurrency,
+      preferredCurrencyId,
     } = req.body || {};
 
     // Parse numeric field - form data sends numbers as strings
@@ -148,8 +151,24 @@ export const completeProfileSetupSessionHandler = catchErrors(
       preferredStartDayOfMonth: preferredStartDay,
       themePreference: theme,
       language: "en", // Default language (can be made configurable later)
-      preferredCurrency: preferredCurrency?.trim() || null,
+      preferredCurrencyId: preferredCurrencyId || null,
     });
+    
+
+    const accountType = await AccountType.create({ 
+      userId,
+      name: "Cash",
+      description: "This is a cash demo account"
+    });
+
+    await Account.create({
+      userId,
+      accountTypeId: accountType.id,
+      currencyId: preferredCurrencyId, // Default for Romanian
+      name: "Cash Account Demo - RON",
+      balance: 0,
+      defaultGradientId: 1
+    })
 
     await completeSession(session);
 
@@ -168,7 +187,7 @@ export const completeProfileSetupSessionHandler = catchErrors(
         preferredStartDayOfMonth: profile.preferredStartDayOfMonth,
         themePreference: profile.themePreference,
         language: profile.language,
-        preferredCurrency: profile.preferredCurrency,
+        preferredCurrencyId: profile.preferredCurrencyId,
       },
     });
   }

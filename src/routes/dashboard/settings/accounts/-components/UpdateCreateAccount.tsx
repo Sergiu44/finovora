@@ -14,7 +14,7 @@ import { Button } from "../../../../../components/ui/button";
 import Validator from "../../../../../utils/hooks/useValidation/Validator";
 import { Input } from "../../../../../components/ui/input";
 import CustomInput from "../../../../../components/reusable/inputs/CustomInput";
-import GradientCard from "./GradientCard";
+import GradientCard from "../../../../../components/reusable/cards/GradientCard";
 import { Eye } from "lucide-react";
 import {
   Dialog,
@@ -73,7 +73,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
       .check(VALIDATIONS.isRequired, "Color is required")
       .forProperty("type")
       .check(VALIDATIONS.isRequired, "Color is required")
-      .applyCheckOnlyOnSubmit()
+      .applyCheckOnlyOnSubmit(),
   );
 
   const { mutate, isPending } = useMutation({
@@ -116,7 +116,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
             {
               description: `Account '${name}' ${props.id ? "updated" : "created"} successfully`,
               duration: 3000,
-            }
+            },
           );
           queryClient.invalidateQueries({ queryKey: ["accounts"] });
           router.navigate({ to: "/dashboard/settings/accounts" });
@@ -124,7 +124,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
         onError(error) {
           console.error("Error creating account type", error);
         },
-      }
+      },
     );
   };
 
@@ -137,7 +137,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
                 ...prevState,
                 [accountKey]: (props.data as any)[accountKey],
               }
-            : prevState
+            : prevState,
         );
       }
     }
@@ -163,7 +163,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
         <CachedSelect
           onChange={(value) => onChangeValue("accountTypeId", value)}
           errorMessage={errors["accountTypeId"]}
-          value={props.data?.accountTypeId?.toString() ?? ""}
+          value={values["accountTypeId"]}
           name="accountTypeId"
           entityName="account-types"
           placeholder="Select Account Type"
@@ -172,7 +172,7 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
         <CachedSelect
           onChange={(value) => onChangeValue("currencyId", value)}
           errorMessage={errors["currencyId"]}
-          value={props.data?.currencyId?.toString() ?? ""}
+          value={values["currencyId"]}
           name="currencyId"
           entityName="currencies"
           placeholder="Select Currency"
@@ -248,10 +248,10 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
                       return {
                         ...oldData,
                         items: oldData.items.filter(
-                          (item: any) => item.id !== cardId
+                          (item: any) => item.id !== cardId,
                         ),
                       };
-                    }
+                    },
                   );
                 }}
                 key={"user-gradient-" + item.id}
@@ -300,22 +300,22 @@ export default function UpdateCreateAccount(props: IUpdateCreateAccountProps) {
                 description={values["description"]}
                 accountType={
                   document.querySelector(
-                    `select[name="accountTypeId"] option[value="${values["accountTypeId"]}"]`
+                    `select[name="accountTypeId"] option[value="${values["accountTypeId"]}"]`,
                   )?.textContent || undefined
                 }
                 currency={
                   document.querySelector(
-                    `select[name="currencyId"] option[value="${values["currencyId"]}"]`
+                    `select[name="currencyId"] option[value="${values["currencyId"]}"]`,
                   )?.textContent || undefined
                 }
                 gradient={(() => {
                   const selectedGradient =
                     values.type === "default"
                       ? defaultGradientData?.items.find(
-                          (item) => item.id.toString() == values["gradientId"]
+                          (item) => item.id.toString() == values["gradientId"],
                         )
                       : userGradientData?.items.find(
-                          (item) => item.id.toString() == values["gradientId"]
+                          (item) => item.id.toString() == values["gradientId"],
                         );
                   if (!selectedGradient) return undefined;
 

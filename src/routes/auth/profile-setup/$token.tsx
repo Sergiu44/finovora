@@ -104,7 +104,7 @@ export default function ProfileSetup() {
       }, "Day must be between 1 and 15.")
       .forProperty("themePreference", "system")
       .check(VALIDATIONS.isRequired, "Theme preference is required.")
-      .forProperty("preferredCurrency", "")
+      .forProperty("preferredCurrencyId", "")
       .check(VALIDATIONS.isRequired, "Preferred currency is required.")
   );
 
@@ -185,7 +185,7 @@ export default function ProfileSetup() {
             | "light"
             | "dark"
             | "system",
-          preferredCurrency: values.preferredCurrency,
+          preferredCurrencyId: values.preferredCurrencyId,
         });
 
         // Update UserDetails context - set hasProfile to true
@@ -226,12 +226,12 @@ export default function ProfileSetup() {
     switch (currentStep) {
       case 0:
         return (
-          <div className="grid grid-cols-2 gap-x-4 space-y-6">
+          <div className="grid grid-cols-2 gap-x-4 space-y-4">
             <div className="space-y-1 col-span-2">
               <Label htmlFor="username" className="text-foreground font-medium">
                 Username
               </Label>
-              <div className="flex rounded-[12px] border border-border overflow-hidden">
+              <div className="flex rounded-[8px] border border-border overflow-hidden">
                 <span className="inline-flex items-center px-4 bg-muted text-muted-foreground text-sm">
                   finovora/
                 </span>
@@ -456,7 +456,7 @@ export default function ProfileSetup() {
             </div>
             <div className="space-y-1">
               <Label
-                htmlFor="preferredCurrency"
+                htmlFor="preferredCurrencyId"
                 className="text-foreground font-medium"
               >
                 Preferred Currency
@@ -464,10 +464,10 @@ export default function ProfileSetup() {
               <CachedSelect
                 entityName="currencies"
                 placeholder="Select currency"
-                name="preferredCurrency"
-                onChange={(e: string) => onChangeValue("preferredCurrency", e)}
-                value={values.preferredCurrency}
-                errorMessage={errors.preferredCurrency}
+                name="preferredCurrencyId"
+                onChange={(e: string) => onChangeValue("preferredCurrencyId", e)}
+                value={values.preferredCurrencyId}
+                errorMessage={errors.preferredCurrencyId}
                 className="w-full"
               />
             </div>
