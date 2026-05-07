@@ -14,15 +14,16 @@ export const Route = createFileRoute("/auth/_auth/login")({
 });
 
 function RouteComponent() {
-  const { errors, onChangeInput, applyErrorsFromApi, setErrors } =
+  const { errors, onChangeInput, applyErrorsFromApi, setErrors, handleCheckFormErrors } =
     useValidation(
       new Validator()
         .forProperty("email")
         .check(VALIDATIONS.isEmail, "Invalid email")
         .forProperty("password")
-        .check(VALIDATIONS.isRequired, "Password is required")
+        .check(VALIDATIONS.minLength(6), "Password requires at least 6 characters")
+        .applyCheckOnlyOnSubmit()
     );
-  const [active, setIsActive] = useState(false);
+  const [active, setActive] = useState(false);
   const { setUserMainAccountId } = useUserMainAccount();
 
   const router = useRouter();
@@ -41,8 +42,11 @@ function RouteComponent() {
         <form
           className="block mt-12"
           onSubmit={(e) => {
-            setErrors({ ...errors, email: "", password: "" });
             e.preventDefault();
+            if(handleCheckFormErrors()) {
+              return;
+            }
+            setErrors({ ...errors, email: "", password: "" });
 
             const formData = new FormData(e.currentTarget);
             const email = formData.get("email");
@@ -96,12 +100,12 @@ function RouteComponent() {
             leftElement={
               active ? (
                 <EyeIcon
-                  onClick={() => setIsActive(!active)}
+                  onClick={() => setActive(!active)}
                   className="h-4 w-4 select-none text-muted-foreground"
                 />
               ) : (
                 <EyeClosedIcon
-                  onClick={() => setIsActive(!active)}
+                  onClick={() => setActive(!active)}
                   className="h-4 w-4 select-none text-muted-foreground"
                 />
               )

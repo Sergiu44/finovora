@@ -16,7 +16,7 @@ import nomenclatureRoutes from "./features/nomenclatures";
 import authRoutes from "./auth/auth.routes";
 import sessionRoutes from "./auth/sessions/session.routes";
 import { CLIENT_APP_ORIGIN, NODE_ENV, PORT } from "./utils/constants/env";
-import path from "path";
+import path from "node:path";
 import userGradientRoutes from "./features/users/userGradients/userGradient.routes";
 import profileSetupSessionRoutes from "./features/users/profileSetupSessions/profileSetupSession.routes";
 import cron from "node-cron";
@@ -30,15 +30,15 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
-  cors({
-    origin: CLIENT_APP_ORIGIN,
-    credentials: true,
-  })
+    cors({
+        origin: CLIENT_APP_ORIGIN,
+        credentials: true,
+    }),
 );
 app.use(cookieParser());
 
 app.get("/", (_, res) => {
-  res.status(OK).send("Hello world!");
+    res.status(OK).send("Hello world!");
 });
 
 app.use("/sessions", sessionRoutes);
@@ -57,20 +57,18 @@ app.use("/user-currencies", userCurrenciesRoutes);
 app.use(errorHandler);
 
 // Initialize database connection using factory
-const db: IDatabaseConnection =
-  DatabaseFactory.createDatabaseConnection(NODE_ENV);
+const db: IDatabaseConnection = DatabaseFactory.createDatabaseConnection(NODE_ENV);
 db.connectToDatabase()
-  .then(() => {
-    app.listen(PORT, () => {
-      console.log("API server is running on http://localhost:" + PORT);
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log("API server is running on http://localhost:" + PORT);
+        });
+    })
+    .catch((error) => {
+        console.error("Failed to start server:", error);
+        process.exit(1);
     });
-  })
-  .catch((error) => {
-    console.error("Failed to start server:", error);
-    process.exit(1);
-  });
 
-
-jobs.forEach(job => {
-  cron.schedule(job.rate, job.fn);
-})
+jobs.forEach((job) => {
+    cron.schedule(job.rate, job.fn);
+});
