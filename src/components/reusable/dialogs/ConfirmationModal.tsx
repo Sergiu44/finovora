@@ -28,11 +28,11 @@ interface IConfirmationModalProps<T> {
 }
 
 export default function ConfirmationModal<T>(
-  props: IConfirmationModalProps<T>
+  props: IConfirmationModalProps<T>,
 ) {
   const queryClient = useQueryClient();
   return (
-    <Dialog open={props.open}>
+    <Dialog open={props.open} onOpenChange={props.setOpen}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Are you sure?</DialogTitle>

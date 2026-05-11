@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import Logo from "../dashboard/-index-components/Logo";
+import Logo from "../dashboard/-components/Logo";
 import { useTheme } from "../../context/ThemeProvider";
 import { motion, AnimatePresence } from "framer-motion";
 import SwitchTheme from "../../components/reusable/switch/SwitchTheme";
@@ -49,12 +49,10 @@ function RouteComponent() {
             />
           )}
         </AnimatePresence>
-
-
       </div>
-        <div className="absolute bottom-4 right-4">
-          <SwitchTheme />
-        </div>
+      <div className="absolute bottom-4 right-4">
+        <SwitchTheme />
+      </div>
     </div>
   );
 }

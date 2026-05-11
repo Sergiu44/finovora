@@ -14,7 +14,7 @@ import {
   Upload,
 } from "lucide-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import Logo from "../../dashboard/-index-components/Logo";
+import Logo from "../../dashboard/-components/Logo";
 import { useValidation } from "../../../utils/hooks/useValidation/useValidation";
 import Validator from "../../../utils/hooks/useValidation/Validator";
 import VALIDATIONS from "../../../utils/hooks/useValidation";
@@ -65,36 +65,36 @@ export default function ProfileSetup() {
       .check(VALIDATIONS.isRequired, "Username is required.")
       .check(
         VALIDATIONS.minLength(3),
-        "Username must be at least 3 characters."
+        "Username must be at least 3 characters.",
       )
       .check(
         VALIDATIONS.isText,
-        "Username can only contain letters, numbers and special characters."
+        "Username can only contain letters, numbers and special characters.",
       )
       .forProperty("firstName", "")
       .check(VALIDATIONS.isRequired, "First name is required.")
       .check(
         VALIDATIONS.minLength(2),
-        "First name must be at least 2 characters."
+        "First name must be at least 2 characters.",
       )
       .forProperty("lastName", "")
       .check(VALIDATIONS.isRequired, "Last name is required.")
       .check(
         VALIDATIONS.minLength(2),
-        "Last name must be at least 2 characters."
+        "Last name must be at least 2 characters.",
       )
       .forProperty("bio", "")
       .check(VALIDATIONS.isRequired, "Bio is required.")
       .check(
         VALIDATIONS.maxLength(500),
-        "Bio must be less than 500 characters."
+        "Bio must be less than 500 characters.",
       )
       .forProperty("dateOfBirth", "")
       .check(VALIDATIONS.isRequired, "Date of birth is required.")
       .forProperty("statusMessage", "")
       .check(
         VALIDATIONS.maxLength(255),
-        "Status message must be less than 255 characters."
+        "Status message must be less than 255 characters.",
       )
       .forProperty("avatarUrl", "")
       .forProperty("preferredStartDayOfMonth", "1")
@@ -105,7 +105,7 @@ export default function ProfileSetup() {
       .forProperty("themePreference", "system")
       .check(VALIDATIONS.isRequired, "Theme preference is required.")
       .forProperty("preferredCurrencyId", "")
-      .check(VALIDATIONS.isRequired, "Preferred currency is required.")
+      .check(VALIDATIONS.isRequired, "Preferred currency is required."),
   );
 
   useEffect(() => {
@@ -201,7 +201,7 @@ export default function ProfileSetup() {
       } catch (error: any) {
         toast.error(
           error?.response?.data?.message ||
-            "Failed to create profile. Please try again."
+            "Failed to create profile. Please try again.",
         );
       } finally {
         setIsSubmitting(false);
@@ -219,7 +219,7 @@ export default function ProfileSetup() {
     (field) => {
       const errorValue = errors[field];
       return typeof errorValue === "string" && errorValue.trim().length > 0;
-    }
+    },
   );
 
   const renderStepContent = () => {
@@ -465,7 +465,9 @@ export default function ProfileSetup() {
                 entityName="currencies"
                 placeholder="Select currency"
                 name="preferredCurrencyId"
-                onChange={(e: string) => onChangeValue("preferredCurrencyId", e)}
+                onChange={(e: string) =>
+                  onChangeValue("preferredCurrencyId", e)
+                }
                 value={values.preferredCurrencyId}
                 errorMessage={errors.preferredCurrencyId}
                 className="w-full"

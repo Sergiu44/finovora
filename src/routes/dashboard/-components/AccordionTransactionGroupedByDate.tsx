@@ -5,12 +5,12 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../../../../components/ui/accordion";
-import AddTransactionForCurrentAccount from "../AddTransactionForCurrentAccount";
+} from "../../../components/ui/accordion";
+import AddTransactionForCurrentAccount from "./AddTransactionForCurrentAccount";
 import { useState } from "react";
-import { Button } from "../../../../components/ui/button";
+import { Button } from "../../../components/ui/button";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteTransactionAsync } from "../../../../utils/actions/transactions";
+import { deleteTransactionAsync } from "../../../utils/actions/transactions";
 
 export interface TransactionType {
   id: number;
@@ -165,7 +165,7 @@ const AccordionTransactionGroupedByDate = ({
                         <div className="flex items-center gap-3">
                           <div className="flex items-center justify-center w-8 h-8 bg-gray-50 rounded-full border border-gray-200">
                             {getTransactionIcon(
-                              transaction.transactionType.name
+                              transaction.transactionType.name,
                             )}
                           </div>
                           <div className="flex flex-col">
@@ -183,7 +183,7 @@ const AccordionTransactionGroupedByDate = ({
                               )}
                               <span>
                                 {moment(transaction.transactionDate).format(
-                                  "DD/MM/YYYY"
+                                  "DD/MM/YYYY",
                                 )}
                               </span>
                             </div>

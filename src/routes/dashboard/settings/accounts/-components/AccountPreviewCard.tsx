@@ -10,6 +10,7 @@ interface IAccountPreviewCardProps {
   wrapperClassName?: string;
   onClick?: () => void;
   isRemoving?: boolean;
+  icons?: React.ReactNode[];
 }
 
 export default function AccountPreviewCard({
@@ -21,6 +22,7 @@ export default function AccountPreviewCard({
   wrapperClassName,
   onClick,
   isRemoving = false,
+  icons,
 }: IAccountPreviewCardProps) {
   const getGradientBgStyle = () => {
     if (!gradient) return { background: "#f3f4f6" };
@@ -48,15 +50,20 @@ export default function AccountPreviewCard({
       transition={{ duration: 0.3, ease: "easeInOut" }}
     >
       <motion.div
-        className="rounded-base py-4 px-6 text-white shadow-sm h-[200px] hover:shadow-lg"
+        className="rounded-base py-4 px-6 text-white shadow-sm aspect-[8/3]"
         style={getGradientBgStyle()}
       >
         <div className="flex flex-col justify-between h-full">
-          <div>
-            <h3 className="text-xl font-bold">{name || "- Card Name -"}</h3>
-            <p className="text-sm opacity-90">
-              {description || "- Description -"}
-            </p>
+          <div className="flex justify-between">
+            <div>
+              <h3 className="text-xl font-bold">{name || "- Card Name -"}</h3>
+              <p className="text-sm opacity-90">
+                {description || "- Description -"}
+              </p>
+            </div>
+            <div className="flex gap-3">
+              {icons && icons.map((icon) => icon)}
+            </div>
           </div>
           <div className="flex justify-between items-center text-sm">
             <div>

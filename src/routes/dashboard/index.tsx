@@ -1,24 +1,16 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent } from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
-import {
-  deleteUserAccount,
-  getUserCardAccounts,
-  type DeleteAccount,
-} from "../../utils/actions/accounts/userAccounts";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { type DeleteAccount } from "../../utils/actions/accounts/userAccounts";
+import { useQueryClient } from "@tanstack/react-query";
 import AccountPreviewCard from "./settings/accounts/-components/AccountPreviewCard";
 import EmptyCard from "../../components/reusable/cards/EmptyCard/EmptyCard";
 import { isDefaultGradientItem } from "../../utils/actions/nomenclatures/defaultGradient";
-import { useMemo, useState } from "react";
-import { AnimatePresence } from "framer-motion";
 
-import { useUserMainAccount } from "../../context/UserMainAccount";
 import ConfirmationModal from "../../components/reusable/dialogs/ConfirmationModal";
 import BaseWrapper from "../../components/reusable/layouts/BaseWrapper";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import SelectedCardTransactions from "./-index-components/Home/SelectedCardTransactions";
-import { CreditCard, Plus } from "lucide-react";
+import SelectedCardTransactions from "./-components/SelectedCardTransactions";
+import { ArrowLeftRightIcon, CreditCard } from "lucide-react";
 import {
   Drawer,
   DrawerContent,
@@ -26,170 +18,113 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "../../components/ui/drawer";
+import { useDashboard, useDashboardTransformers } from "./-hook";
+import TransactionPeriodSummary from "./-components/TransactionPeriodSummary";
+import { useTransactionsPreferences } from "../../context/TransactionsPreferences";
+import { format } from "date-fns/format";
+import { useMemo } from "react";
 
 export const Route = createFileRoute("/dashboard/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const [openDeleteAccountModal, setOpenDeleteAccountModal] = useState(false);
-  const [isRemoving, setIsRemoving] = useState(false);
-
   const queryClient = useQueryClient();
-  const { account, setUserMainAccountId } = useUserMainAccount();
+  const {
+    account,
+    deleteAccount,
+    isRemoving,
+    openDeleteAccountModal,
+    userAccounts,
+    setOpenDeleteAccountModal,
+    setUserMainAccountId,
+  } = useDashboard({ queryClient });
 
-  const { data: userAccounts } = useQuery({
-    queryKey: ["userAccounts"],
-    queryFn: () => getUserCardAccounts(),
-  });
+  const {
+    formattedBalance,
+    thisMonthNet,
+    topSpendingCategory,
+    income,
+    expenses,
+  } = useDashboardTransformers({ account });
 
-  const { mutate: deleteAccount } = useMutation({
-    mutationKey: ["deleteAccount"],
-    mutationFn: (account: DeleteAccount) => {
-      setIsRemoving(true);
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          deleteUserAccount(account).then(resolve);
-          setOpenDeleteAccountModal(false);
-          setUserMainAccountId(undefined);
-        }, 300); // Match animation duration
-      });
-    },
-    onSuccess: () => {
-      setIsRemoving(false);
-      queryClient.invalidateQueries({ queryKey: ["userAccounts"] });
-    },
-  });
-
-  const income = useMemo(() => {
-    return account?.transactions
-      ?.filter((transaction) => transaction.transactionType.name === "Income")
-      .reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
-  }, [account?.transactions]);
-  const expenses = useMemo(() => {
-    return account?.transactions
-      ?.filter((transaction) => transaction.transactionType.name === "Expense")
-      .reduce((acc, transaction) => {
-        const amount = parseFloat(transaction.amount);
-        // Get absolute value for expenses total (always positive for display)
-        return acc + Math.abs(amount);
-      }, 0);
-  }, [account?.transactions]);
-
-  // This month's net (income - expenses for current month only)
-  const thisMonthNet = useMemo(() => {
-    return (income || 0) - (expenses || 0);
-  }, [income, expenses]);
-
-  // Format balance for display
-  const formattedBalance = useMemo(() => {
-    if (!account) return null;
-    return parseFloat(account.balance.toString()).toFixed(2);
-  }, [account]);
-
-  const topSpendingCategory = useMemo(() => {
-    if (!account?.transactions) return null;
-
-    const expenseTransactions = account.transactions.filter(
-      (transaction) => transaction.transactionType.name === "Expense",
-    );
-
-    const categoryTotals = expenseTransactions.reduce(
-      (acc, transaction) => {
-        if (!transaction.category) return acc;
-        const categoryName = transaction.category.name;
-        const amount = Math.abs(parseFloat(transaction.amount));
-
-        if (!acc[categoryName]) {
-          acc[categoryName] = 0;
-        }
-        acc[categoryName] += amount;
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
-
-    const entries = Object.entries(categoryTotals);
-    if (entries.length === 0) return null;
-
-    const [topCategory, topAmount] = entries.reduce((max, [name, amount]) =>
-      amount > max[1] ? [name, amount] : max,
-    );
-
-    return { name: topCategory, amount: topAmount };
-  }, [account?.transactions]);
+  const { currentDate, currentDateRange, setCurrentDate } =
+    useTransactionsPreferences();
+  const rangeLabel = useMemo(() => {
+    if (!currentDateRange.from || !currentDateRange.to) {
+      return "";
+    }
+    return `${format(currentDateRange.from, "MMM dd")} – ${format(
+      currentDateRange.to,
+      "MMM dd",
+    )}`;
+  }, [currentDateRange.from, currentDateRange.to]);
 
   return (
     <BaseWrapper title="Dashboard" subtitle="Easy way to manage your finances">
-      {account && (
-        <Card className="border-border mt-4 py-2">
-          <CardContent className="px-2">
-            <Button
-              type="button"
-              variant="ghost-destructive"
-              className="w-full justify-start transition-none rounded-[8px]!"
-              size="xs"
-              onClick={() => setOpenDeleteAccountModal(true)}
-            >
-              <TrashIcon className="w-4 h-4 mr-2" /> Delete account
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-      <div className="grid grid-cols-[1fr_250px] gap-6 mt-4">
+      <div className="grid grid-cols-[3fr_1fr] gap-6 mt-4">
+        <TransactionPeriodSummary
+          className="col-span-2"
+          monthValue={currentDate}
+          periodLabel={rangeLabel}
+          onChangeMonth={(val: Date) => setCurrentDate(val)}
+        />
         <div className="relative">
           <Drawer direction="right">
-            <DrawerTrigger asChild>
-              {account ? (
-                <div className="relative">
-                  <AccountPreviewCard
-                    isRemoving={isRemoving}
-                    wrapperClassName={`z-10 cursor-pointer relative transition-all duration-200`}
-                    name={account.name}
-                    description={account.description || ""}
-                    accountType={account.accountType.name}
-                    currency={account.currency.code}
-                    gradient={(() => {
-                      return {
-                        type: "default",
-                        id:
-                          account.defaultGradient?.id ||
-                          account.userGradient?.id ||
-                          0,
-                        name:
-                          account.defaultGradient?.name ||
-                          account.userGradient?.name ||
-                          "",
-                        slug:
-                          account.defaultGradient?.slug ||
-                          account.userGradient?.slug ||
-                          "",
+            {account ? (
+              <div className="relative">
+                <AccountPreviewCard
+                  icons={[
+                    <TrashIcon
+                      className="w-8 h-8 p-2 hover:bg-white/30 rounded-full bg-white/10"
+                      onClick={() => setOpenDeleteAccountModal(true)}
+                    />,
+                    <DrawerTrigger asChild>
+                      <ArrowLeftRightIcon className="w-8 h-8 p-2 hover:bg-white/30 rounded-full bg-white/10" />
+                    </DrawerTrigger>,
+                  ]}
+                  isRemoving={isRemoving}
+                  name={account.name}
+                  description={account.description || ""}
+                  accountType={account.accountType.name}
+                  currency={account.currency.code}
+                  gradient={(() => {
+                    return {
+                      type: "default",
+                      id:
+                        account.defaultGradient?.id ||
+                        account.userGradient?.id ||
+                        0,
+                      name:
+                        account.defaultGradient?.name ||
+                        account.userGradient?.name ||
+                        "",
+                      slug:
+                        account.defaultGradient?.slug ||
+                        account.userGradient?.slug ||
+                        "",
 
-                        colors: isDefaultGradientItem(
-                          account.defaultGradient || account.userGradient,
-                        )
-                          ? [
-                              account.defaultGradient.color1,
-                              account.defaultGradient.color2,
-                              account.defaultGradient.color3,
-                              account.defaultGradient.color4,
-                              account.defaultGradient.color5,
-                            ]
-                          : [
-                              account.userGradient.to,
-                              account.userGradient.from,
-                            ],
-                      };
-                    })()}
-                  />
-                </div>
-              ) : (
-                <EmptyCard.Root wrapperClassName="z-10 cursor-pointer relative" />
-              )}
-            </DrawerTrigger>
+                      colors: isDefaultGradientItem(
+                        account.defaultGradient || account.userGradient,
+                      )
+                        ? [
+                            account.defaultGradient.color1,
+                            account.defaultGradient.color2,
+                            account.defaultGradient.color3,
+                            account.defaultGradient.color4,
+                            account.defaultGradient.color5,
+                          ]
+                        : [account.userGradient.to, account.userGradient.from],
+                    };
+                  })()}
+                />
+              </div>
+            ) : (
+              <EmptyCard.Root wrapperClassName="z-10 cursor-pointer relative" />
+            )}
 
-            <DrawerContent>
-              <div className="mx-auto w-full max-w-sm">
+            <DrawerContent className="bg-white focus:border-none border-none focus:outline-none outline-none">
+              <div className="mx-auto w-full">
                 <DrawerHeader>
                   <DrawerTitle>Select account</DrawerTitle>
                 </DrawerHeader>
@@ -428,7 +363,6 @@ function RouteComponent() {
         {/* <SelectedCardDetails /> */}
         <SelectedCardTransactions />
       </div>
-
       {openDeleteAccountModal && account && (
         <ConfirmationModal
           open={openDeleteAccountModal}

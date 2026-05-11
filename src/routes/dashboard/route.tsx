@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import "../../styles/dashboard.css";
-import RouteWrapper from "./-index-components/RouteWrapper";
-import Sidebar from "./-index-components/Sidebar";
+import RouteWrapper from "./-components/RouteWrapper";
+import Sidebar from "./-components/Sidebar";
 
 export const Route = createFileRoute("/dashboard")({
   component: RouteComponent,

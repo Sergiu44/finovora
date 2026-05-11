@@ -41,7 +41,7 @@ interface UserDetailsContextState {
     forceNew?: boolean;
   }) => Promise<ProfileSetupSessionState>;
   validateProfileSetupSession: (
-    token: string
+    token: string,
   ) => Promise<ProfileSetupSessionState>;
 }
 
@@ -124,7 +124,7 @@ export const UserDetailsProvider = (props: PropsWithChildren) => {
       setProfileSetupSession(payload);
       return payload;
     },
-    []
+    [],
   );
 
   const validateProfileSetupSession = useCallback(async (token: string) => {
