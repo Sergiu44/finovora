@@ -1,11 +1,15 @@
+import { PlusIcon } from "@heroicons/react/24/outline";
+import { Button } from "../../../../../components/ui/button";
 import { type CardGradientItem } from "../../../../../utils/actions/nomenclatures/defaultGradient";
 import { motion } from "framer-motion";
+import { SendIcon } from "lucide-react";
 
 interface IAccountPreviewCardProps {
   name?: string;
   description?: string;
   accountType?: string;
-  currency?: string;
+  amount: number;
+  currency: string;
   gradient?: CardGradientItem;
   wrapperClassName?: string;
   onClick?: () => void;
@@ -16,8 +20,9 @@ interface IAccountPreviewCardProps {
 export default function AccountPreviewCard({
   name,
   description,
-  accountType,
+  amount,
   currency,
+  accountType,
   gradient,
   wrapperClassName,
   onClick,
@@ -50,30 +55,38 @@ export default function AccountPreviewCard({
       transition={{ duration: 0.3, ease: "easeInOut" }}
     >
       <motion.div
-        className="rounded-base py-4 px-6 text-white shadow-sm aspect-[8/3]"
+        className="rounded-lg py-8 px-12 text-white shadow-sm"
         style={getGradientBgStyle()}
       >
         <div className="flex flex-col justify-between h-full">
           <div className="flex justify-between">
             <div>
-              <h3 className="text-xl font-bold">{name || "- Card Name -"}</h3>
-              <p className="text-sm opacity-90">
-                {description || "- Description -"}
-              </p>
+              <span className="uppercase opacity-60">Current Balance</span>
+              <h3 className="text-2xl font-bold mt-2">
+                {name || "- Card Name -"}
+              </h3>
+              <p className="opacity-60">{description || "- Description -"}</p>
             </div>
             <div className="flex gap-3">
               {icons && icons.map((icon) => icon)}
             </div>
           </div>
-          <div className="flex justify-between items-center text-sm">
-            <div>
-              <p className="opacity-75">Account Type</p>
-              <p className="font-medium">{accountType || "- Type -"}</p>
-            </div>
-            <div className="text-right">
-              <p className="opacity-75">Currency</p>
-              <p className="font-medium">{currency || "- Currency -"}</p>
-            </div>
+          <div className="my-8 text-5xl">
+            {amount} <span className="text-white/60 text-xl">{currency}</span>
+          </div>
+          <div className="flex gap-4">
+            <Button variant="pure" size="xl">
+              <PlusIcon />
+              Add Transaction
+            </Button>
+            <Button
+              variant="none"
+              size="xl"
+              className="bg-white/10 !rounded-full"
+            >
+              <SendIcon />
+              Transfer
+            </Button>
           </div>
         </div>
       </motion.div>

@@ -62,25 +62,25 @@ function RouteComponent() {
 
   return (
     <BaseWrapper title="Dashboard" subtitle="Easy way to manage your finances">
-      <div className="grid grid-cols-[3fr_1fr] gap-6 mt-4">
+      <div className="grid grid-cols-[1fr_1fr_1fr_1fr] grid-rows-[] gap-3 mt-4">
         <TransactionPeriodSummary
-          className="col-span-2"
+          className="col-span-4 bg-white py-3 px-6 shadow-md rounded-base"
           monthValue={currentDate}
           periodLabel={rangeLabel}
           onChangeMonth={(val: Date) => setCurrentDate(val)}
         />
-        <div className="relative">
+        <div className="relative col-span-3">
           <Drawer direction="right">
             {account ? (
               <div className="relative">
                 <AccountPreviewCard
                   icons={[
                     <TrashIcon
-                      className="w-8 h-8 p-2 hover:bg-white/30 rounded-full bg-white/10"
+                      className="w-10 h-10 p-2.5 hover:bg-white/30 rounded-full bg-white/10"
                       onClick={() => setOpenDeleteAccountModal(true)}
                     />,
                     <DrawerTrigger asChild>
-                      <ArrowLeftRightIcon className="w-8 h-8 p-2 hover:bg-white/30 rounded-full bg-white/10" />
+                      <ArrowLeftRightIcon className="w-10 h-10 p-2.5 hover:bg-white/30 rounded-full bg-white/10" />
                     </DrawerTrigger>,
                   ]}
                   isRemoving={isRemoving}
@@ -88,6 +88,7 @@ function RouteComponent() {
                   description={account.description || ""}
                   accountType={account.accountType.name}
                   currency={account.currency.code}
+                  amount={account.balance}
                   gradient={(() => {
                     return {
                       type: "default",
@@ -186,80 +187,6 @@ function RouteComponent() {
             </DrawerContent>
           </Drawer>
         </div>
-
-        <Card className="border border-border py-4">
-          <CardContent className="h-full flex flex-col">
-            <h3 className="font-bold text-base mb-4">Account Information</h3>
-
-            {account ? (
-              <div className="flex-1 mt-3">
-                <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-0.5">
-                  <span className="text-sm font-semibold text-muted-foreground">
-                    Name:
-                  </span>
-                  <span className="text-sm text-foreground font-medium">
-                    {account.name}
-                  </span>
-
-                  {account.description && (
-                    <>
-                      <span className="text-sm font-semibold text-muted-foreground">
-                        Description:
-                      </span>
-                      <span className="text-sm text-foreground">
-                        {account.description}
-                      </span>
-                    </>
-                  )}
-
-                  <span className="text-sm font-semibold text-muted-foreground">
-                    Type:
-                  </span>
-                  <span className="text-sm text-foreground">
-                    {account.accountType.name}
-                  </span>
-
-                  <span className="text-sm font-semibold text-muted-foreground">
-                    Currency:
-                  </span>
-                  <span className="text-sm text-foreground">
-                    {account.currency.code} ({account.currency.symbol})
-                  </span>
-
-                  <span className="text-sm font-semibold text-muted-foreground">
-                    Balance:
-                  </span>
-                  <span className="text-sm text-foreground font-semibold">
-                    {formattedBalance} {account.currency.symbol}
-                  </span>
-
-                  <span className="text-sm font-semibold text-muted-foreground">
-                    Created:
-                  </span>
-                  <span className="text-sm text-foreground">
-                    {account.createdAt
-                      ? new Date(account.createdAt).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          },
-                        )
-                      : "N/A"}
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div className="my-auto flex flex-col items-center justify-center py-8">
-                <CreditCard className="w-10 h-10 mx-auto opacity-50 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground text-center mt-4">
-                  Please select an account
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
 
         {/* Net This Month Card */}
         <Card className="border border-border py-4">
